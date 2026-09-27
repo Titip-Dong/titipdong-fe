@@ -46,7 +46,6 @@ export const router = createBrowserRouter([
           {
             element: <RequireRole role="jastiper" />,
             children: [
-              { path: "/profile/kyc", lazy: () => import("@/features/auth/pages/KycFormPage") },
               { path: "/my-trips", lazy: () => import("@/features/trip/pages/MyTripsPage") },
               { path: "/my-trips/new", lazy: () => import("@/features/trip/pages/TripFormPage") },
               {
@@ -86,7 +85,6 @@ export const router = createBrowserRouter([
           { path: "transactions", lazy: () => import("@/features/admin/pages/TransactionsPage") },
           { path: "users", lazy: () => import("@/features/admin/pages/UsersPage") },
           { path: "audit", lazy: () => import("@/features/admin/pages/AuditLogPage") },
-          { path: "kyc", lazy: () => import("@/features/auth/pages/admin/KycReviewPage") },
           {
             path: "disputes",
             lazy: () => import("@/features/dispute/pages/admin/DisputeListPage"),

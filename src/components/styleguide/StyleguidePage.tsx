@@ -51,7 +51,6 @@ const trips = [
   {
     city: "Seoul",
     jastiper: "Rina",
-    kyc: true,
     depart: "2026-10-12",
     close: "2026-10-08",
     leftKg: 6,
@@ -61,7 +60,6 @@ const trips = [
   {
     city: "Tokyo",
     jastiper: "Dimas",
-    kyc: true,
     depart: "2026-10-20",
     close: "2026-10-15",
     leftKg: 12,
@@ -71,7 +69,6 @@ const trips = [
   {
     city: "Bangkok",
     jastiper: "Sekar",
-    kyc: false,
     depart: "2026-11-02",
     close: "2026-10-28",
     leftKg: 1,
@@ -288,12 +285,6 @@ export function Component() {
                   <p className="font-heading text-2xl font-bold tracking-tight">{t.city}</p>
                   <p className="text-sm">
                     Bersama <span className="font-medium">{t.jastiper}</span>
-                    {t.kyc && (
-                      <span className="ml-2 inline-flex items-center gap-1 text-primary">
-                        <ShieldCheckIcon className="size-3.5" aria-hidden />
-                        Terverifikasi
-                      </span>
-                    )}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Berangkat {formatDate(t.depart)}, titip sebelum {formatDate(t.close)}

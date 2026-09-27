@@ -1,1 +1,1 @@
-export * from './health/health.zod';
+export * from './default/default.zod';

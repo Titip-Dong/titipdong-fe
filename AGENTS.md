@@ -7,7 +7,8 @@ The full product plan lives in the `titipdong-docs` repo (`PLAN.md`); per-featur
 
 TITIP DONG is an escrow-backed jastip (personal shopper) platform. A **Jastiper** (someone who is traveling) opens a
 trip, a **Pembeli** (buyer) asks them to buy items, and the money is held by the platform and only released to the
-Jastiper (minus a 5% fee) after the buyer receives the items. An **Admin** verifies KYC and resolves disputes.
+Jastiper (minus a 5% fee) after the buyer receives the items. For this prototype, registration is simple and an
+**Admin** resolves disputes; there is no KYC upload or verification.
 
 Order status: `Requested → Approved → Paid → Shipped → Delivered → Released`, with branches to `Rejected`,
 `Cancelled`, `Refunded`, and `Disputed`. Only the backend (Go, modular monolith) changes order status.
@@ -27,7 +28,7 @@ Order status: `Requested → Approved → Paid → Shipped → Delivered → Rel
 - TanStack Query v5 (server data), Zustand (client state only)
 - React Hook Form + **Zod v4** (`z.url()`, not `z.string().url()`)
 - orval: TanStack Query hooks, types, and Zod schemas generated from the backend OpenAPI spec
-- Midtrans Snap for payments; hosted on Cloudflare Pages
+- Internal mock payment flow for the prototype; target hosting is Azure Static Web Apps
 
 ## Commands
 
@@ -63,7 +64,7 @@ src/stores/auth.ts          Zustand: accessToken + user (no persist)
 
 | Folder         | Module               | Owner  | Pages                                                                         |
 | -------------- | -------------------- | ------ | ----------------------------------------------------------------------------- |
-| `auth`         | F01 Auth & User      | Carlo  | `/login`, `/register`, `/profile`, `/profile/kyc`, `/admin/kyc`               |
+| `auth`         | F01 Auth & User      | Carlo  | `/login`, `/register`, `/profile`                                             |
 | `trip`         | F02 Trip & Catalog   | Carlo  | `/`, `/trips`, `/trip/:slug`, `/my-trips`, `/my-trips/new`                    |
 | `order`        | F03 Order            | Alfian | `/trip/:slug/request`, `/my-trips/:id/requests`, `/orders`, `/orders/:id`     |
 | `payment`      | F04 Payment & Escrow | Barru  | `/orders/:id/pay`, `/wallet`                                                  |
@@ -120,20 +121,19 @@ Only change the module folder you are working on. Changes to `src/components/`, 
 
 ### Payments (F04)
 
-- Snap is loaded via a `<script>` in `index.html`; `window.snap` types are in `src/features/payment/midtrans.d.ts`.
-- Only the backend sets an order to _Paid_, after verifying the Midtrans webhook. Snap callbacks in the FE only
-  trigger a refetch/polling.
+- Payments use the internal prototype mock, not Midtrans Snap or a real payment gateway.
+- Only the backend changes an order to _Paid_. The frontend completes the mock payment UI and refetches the order.
 
 ### Environment
 
 - Access env vars only through `env` from `@/lib/env` (validated with Zod). New variables go in `.env.example`,
   `src/lib/env.ts`, and `src/vite-env.d.ts`.
-- Every `VITE_*` variable ends up in the public bundle. Never put secrets there (Midtrans server key, storage
-  credentials).
+- Every `VITE_*` variable ends up in the public bundle. Never put secrets there (storage credentials or any future
+  external-service keys).
 
 ## Design and UI
 
-Direction: **safe shopping through jastip**. Products are the star; trust signals (escrow, KYC) are always visible.
+Direction: **safe shopping through jastip**. Products are the star; trust signals such as mock escrow are visible.
 Living reference: `/styleguide` (`src/components/styleguide/StyleguidePage.tsx`).
 
 - Use the tokens in `src/index.css`; never hardcode colors. Palette: Paspor `#1F4D3F` (`primary`, primary actions
@@ -155,12 +155,13 @@ Living reference: `/styleguide` (`src/components/styleguide/StyleguidePage.tsx`)
 
 - Branches: `feat/<module>-<description>` or `fix/<module>-<description>`, e.g. `feat/order-request-form`.
 - Commits: Conventional Commits scoped by module, e.g. `feat(order): add request inbox page`.
-- Everything reaches `main` through a PR with green CI. `main` auto-deploys to Cloudflare Pages; each PR gets a
-  `*.pages.dev` preview.
+- Everything reaches `main` through a PR with green CI. Azure Static Web Apps deployment is planned once the public
+  backend Ingress and frontend Azure workflow are configured.
 
 ## Temporary (TODO)
 
-- `openapi/openapi.json` is a placeholder with only `/health`. Run `pnpm api` once the backend serves its spec.
+- `openapi/openapi.json` is generated from the backend contract. Auth routes are implemented with PostgreSQL and JWT; generate clients with `pnpm api` whenever the contract changes.
+- KYC routes/pages and Midtrans files were removed because they are outside the prototype plan.
 - `AuthUser` in `src/stores/auth.ts`, the `/auth/refresh` path, and the `accessToken`/`user` field names are
   assumptions (F01).
 - Status values in `OrderStatusBadge` must be aligned with the enum in the backend spec (F03).

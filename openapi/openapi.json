@@ -2,38 +2,73 @@
   "openapi": "3.1.0",
   "info": {
     "title": "TITIP DONG API",
-    "version": "0.0.0",
-    "description": "Placeholder until the backend serves /openapi.json. Replace it with `pnpm api`."
+    "version": "0.1.0-proposed",
+    "description": "The health endpoint is implemented. Auth paths are a proposed first-milestone contract only and are not registered or usable until the PostgreSQL/JWT implementation is completed; see docs/FIRST_MILESTONE.md."
   },
   "paths": {
     "/health": {
       "get": {
-        "operationId": "get-health",
-        "summary": "Health check",
-        "tags": ["health"],
+        "operationId": "health",
+        "summary": "AKS liveness and readiness endpoint",
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HealthResponse" }
-              }
-            }
+            "description": "Healthy",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Health" } } }
           }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "x-titipdong-status": "proposed-not-implemented",
+        "operationId": "register",
+        "summary": "Register a buyer or jastiper account (proposed)",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterRequest" } } } },
+        "responses": {
+          "201": { "description": "Account created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
+          "400": { "$ref": "#/components/responses/Problem" },
+          "409": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "x-titipdong-status": "proposed-not-implemented",
+        "operationId": "login",
+        "summary": "Obtain a short-lived access token (proposed)",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } } } },
+        "responses": {
+          "200": { "description": "Authenticated", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthResponse" } } } },
+          "400": { "$ref": "#/components/responses/Problem" },
+          "401": { "$ref": "#/components/responses/Problem" }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "x-titipdong-status": "proposed-not-implemented",
+        "operationId": "getCurrentUser",
+        "summary": "Return the authenticated user's profile (proposed)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Current user", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/User" } } } },
+          "401": { "$ref": "#/components/responses/Problem" }
         }
       }
     }
   },
   "components": {
+    "securitySchemes": { "bearerAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" } },
+    "responses": {
+      "Problem": { "description": "RFC 9457-style problem response", "content": { "application/problem+json": { "schema": { "$ref": "#/components/schemas/Problem" } } } }
+    },
     "schemas": {
-      "HealthResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["status"],
-        "properties": {
-          "status": { "type": "string", "examples": ["ok"] }
-        }
-      }
+      "Health": { "type": "object", "required": ["status"], "properties": { "status": { "type": "string", "example": "ok" } } },
+      "RegisterRequest": { "type": "object", "required": ["name", "email", "password", "role"], "properties": { "name": { "type": "string", "minLength": 1, "maxLength": 100 }, "email": { "type": "string", "format": "email" }, "password": { "type": "string", "format": "password", "minLength": 8 }, "role": { "type": "string", "enum": ["buyer", "jastiper"] } } },
+      "LoginRequest": { "type": "object", "required": ["email", "password"], "properties": { "email": { "type": "string", "format": "email" }, "password": { "type": "string", "format": "password" } } },
+      "AuthResponse": { "type": "object", "required": ["accessToken", "user"], "properties": { "accessToken": { "type": "string" }, "user": { "$ref": "#/components/schemas/User" } } },
+      "User": { "type": "object", "required": ["id", "name", "email", "role", "createdAt"], "properties": { "id": { "type": "string", "format": "uuid" }, "name": { "type": "string" }, "email": { "type": "string", "format": "email" }, "role": { "type": "string", "enum": ["buyer", "jastiper", "admin"] }, "createdAt": { "type": "string", "format": "date-time" } } },
+      "Problem": { "type": "object", "required": ["type", "title", "status"], "properties": { "type": { "type": "string", "format": "uri-reference" }, "title": { "type": "string" }, "status": { "type": "integer" }, "detail": { "type": "string" }, "instance": { "type": "string" } } }
     }
   }
 }

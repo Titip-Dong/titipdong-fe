@@ -5,7 +5,6 @@ const menu = [
   { to: "/admin", label: "Dashboard", end: true },
   { to: "/admin/transactions", label: "Transaksi" },
   { to: "/admin/users", label: "User" },
-  { to: "/admin/kyc", label: "Review KYC" },
   { to: "/admin/disputes", label: "Sengketa" },
   { to: "/admin/audit", label: "Audit log" },
 ];
