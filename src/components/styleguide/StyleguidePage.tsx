@@ -15,16 +15,21 @@ import { cn } from "@/lib/utils";
 
 const palette = [
   {
-    name: "Paspor",
-    hex: "#1F4D3F",
-    role: "Primary actions and trust signals",
+    name: "Merah",
+    hex: "#DD010F",
+    role: "Brand color from the logo, primary actions, trust signals",
     swatch: "bg-primary",
   },
-  { name: "Rambu", hex: "#F5C400", role: "Brand color, cheerful surfaces", swatch: "bg-highlight" },
-  { name: "Tinta", hex: "#18231F", role: "Body text", swatch: "bg-foreground" },
-  { name: "Kertas", hex: "#F4F6F3", role: "Page background", swatch: "bg-background" },
-  { name: "Garis", hex: "#D5DBD6", role: "Borders and dividers", swatch: "bg-border" },
-  { name: "Cap", hex: "#B3372B", role: "Errors and disputes", swatch: "bg-destructive" },
+  { name: "Tinta", hex: "#161616", role: "Body text", swatch: "bg-foreground" },
+  { name: "Kertas", hex: "#F7F6F4", role: "Page background", swatch: "bg-background" },
+  { name: "Garis", hex: "#E2DFDB", role: "Borders and dividers", swatch: "bg-border" },
+  {
+    name: "Rambu",
+    hex: "#F5C400",
+    role: "Attention only (waiting states)",
+    swatch: "bg-highlight",
+  },
+  { name: "Cap", hex: "#8F1420", role: "Errors and disputes", swatch: "bg-destructive" },
 ];
 
 const statuses: OrderStatus[] = [
@@ -118,7 +123,7 @@ function Section({
 
 function Hero() {
   return (
-    <div className="overflow-hidden rounded-3xl bg-highlight text-highlight-foreground">
+    <div className="overflow-hidden rounded-3xl bg-primary text-primary-foreground">
       <div className="grid items-center gap-8 p-6 sm:p-10 md:grid-cols-[1.2fr_1fr]">
         <div className="space-y-5">
           <h3 className="text-4xl leading-[1.05] font-extrabold sm:text-5xl">
@@ -135,9 +140,13 @@ function Hero() {
             <Input
               id="sg-hero-search"
               placeholder="Cari barang atau kota"
-              className="h-12 rounded-full border-transparent px-5"
+              className="h-12 border-transparent px-4 text-foreground focus-visible:ring-primary-foreground/70"
             />
-            <Button size="lg" type="submit">
+            <Button
+              size="lg"
+              type="submit"
+              className="bg-foreground text-background hover:bg-foreground/85 focus-visible:ring-primary-foreground/70"
+            >
               <SearchIcon data-icon="inline-start" />
               Cari
             </Button>
@@ -147,7 +156,7 @@ function Hero() {
               <a
                 key={c}
                 href="#"
-                className="rounded-full border border-highlight-foreground/20 px-3 py-1 hover:bg-highlight-foreground/5"
+                className="rounded-md border border-primary-foreground/40 px-3 py-1 font-medium outline-none hover:bg-primary-foreground/10 focus-visible:ring-3 focus-visible:ring-primary-foreground/70"
               >
                 {c}
               </a>
@@ -218,7 +227,7 @@ export function Component() {
 
       <Section
         title="Typography"
-        note="Bricolage Grotesque for headings, Barlow for text. Prices always use tabular-nums."
+        note="Plus Jakarta Sans throughout; headings extra-bold like the logo. Prices always use tabular-nums."
       >
         <div className="space-y-3">
           <p className="font-heading text-5xl font-extrabold tracking-tight">Titipan dari Tokyo</p>

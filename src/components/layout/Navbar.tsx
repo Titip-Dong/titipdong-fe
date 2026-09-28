@@ -29,11 +29,14 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b bg-card">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:gap-6">
-        <Link
-          to="/"
-          className="font-heading text-xl leading-none font-bold whitespace-nowrap text-primary sm:text-2xl"
-        >
-          TITIP DONG
+        <Link to="/" className="shrink-0 rounded-sm">
+          <img
+            src="/titipdong-logo-navbar.png"
+            alt="TITIP DONG"
+            width={205}
+            height={96}
+            className="h-8 w-auto"
+          />
         </Link>
         <nav className="flex items-center gap-4 text-sm whitespace-nowrap">
           <NavLink

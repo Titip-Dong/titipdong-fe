@@ -48,7 +48,7 @@ export function Component() {
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-14 px-4 py-8 sm:py-10">
-      <section className="overflow-hidden rounded-3xl bg-highlight text-highlight-foreground">
+      <section className="overflow-hidden rounded-3xl bg-primary text-primary-foreground">
         <div className="grid items-center gap-8 p-6 sm:p-10 md:grid-cols-[1.2fr_1fr]">
           <div className="space-y-5">
             <h1 className="text-4xl leading-[1.05] font-extrabold sm:text-5xl">
@@ -73,9 +73,13 @@ export function Component() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Cari kota, misalnya Tokyo"
-                className="h-12 rounded-full border-transparent px-5"
+                className="h-12 border-transparent px-4 text-foreground focus-visible:ring-primary-foreground/70"
               />
-              <Button size="lg" type="submit">
+              <Button
+                size="lg"
+                type="submit"
+                className="bg-foreground text-background hover:bg-foreground/85 focus-visible:ring-primary-foreground/70"
+              >
                 <SearchIcon data-icon="inline-start" />
                 Cari
               </Button>
@@ -85,7 +89,7 @@ export function Component() {
                 <Link
                   key={c}
                   to={`/trips?city=${c}`}
-                  className="rounded-full border border-highlight-foreground/20 px-3 py-1 hover:bg-highlight-foreground/5"
+                  className="rounded-md border border-primary-foreground/40 px-3 py-1 font-medium outline-none hover:bg-primary-foreground/10 focus-visible:ring-3 focus-visible:ring-primary-foreground/70"
                 >
                   {c}
                 </Link>

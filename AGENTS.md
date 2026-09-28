@@ -136,11 +136,13 @@ Only change the module folder you are working on. Changes to `src/components/`, 
 Direction: **safe shopping through jastip**. Products are the star; trust signals such as mock escrow are visible.
 Living reference: `/styleguide` (`src/components/styleguide/StyleguidePage.tsx`).
 
-- Use the tokens in `src/index.css`; never hardcode colors. Palette: Paspor `#1F4D3F` (`primary`, primary actions
-  and trust signals), Rambu `#F5C400` (`highlight`, brand color; a full-yellow surface only on the landing hero,
-  otherwise only as a highlight background with dark text, never as a text color), Tinta (text), Kertas (background),
-  Garis (borders), Cap `#B3372B` (`destructive`, errors and disputes).
-- Fonts: Bricolage Grotesque for headings (`h1`–`h3` automatically, or `font-heading`), Barlow for body text.
+- The visual system follows the logo (`public/titipdong-logo.png`, navbar uses `titipdong-logo-navbar.png`):
+  solid red blocks, bold white geometric type, small radii.
+- Use the tokens in `src/index.css`; never hardcode colors. Palette: Merah `#DD010F` (`primary`, brand color,
+  primary actions and trust signals; a full-red surface with white text only on the landing hero), Tinta (text),
+  Kertas (background), Garis (borders), Rambu `#F5C400` (`highlight`, attention only such as waiting states, with dark
+  text, never as a text color), Cap `#8F1420` (`destructive`, errors and disputes; kept darker than Merah).
+- Font: Plus Jakarta Sans for everything; `h1`–`h3` get the extra-bold heading style automatically (or `font-heading`).
 - Lead with product photos: `ProductImage`, `ProductTile`. Trip lists show item thumbnails, not just the schedule.
 - Order details use `Receipt` (nota titipan): item and price breakdown on top, payment status and actions below the
   tear line.
