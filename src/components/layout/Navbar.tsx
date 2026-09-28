@@ -1,4 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router";
+import { logout as logoutRequest } from "@/api/generated/endpoints/auth/auth";
 import { NotificationBell } from "@/features/notification";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,8 +19,9 @@ export function Navbar() {
   const clear = useAuthStore((s) => s.clear);
   const navigate = useNavigate();
 
-  const logout = () => {
-    // TODO(F01): call the backend logout endpoint so the refresh token cookie is cleared.
+  const logout = async () => {
+    // Clear the local session even if the request fails; the refresh cookie then expires on its own.
+    await logoutRequest().catch(() => undefined);
     clear();
     navigate("/");
   };
@@ -64,13 +66,18 @@ export function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link to="/profile">Profil</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/orders">Order Saya</Link>
-                  </DropdownMenuItem>
+                  {hasRole("buyer") && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/orders">Titipan Saya</Link>
+                    </DropdownMenuItem>
+                  )}
                   {hasRole("jastiper") && (
                     <>
                       <DropdownMenuItem asChild>
                         <Link to="/my-trips">Trip Saya</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/orders">Titipan Masuk</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link to="/wallet">Saldo</Link>

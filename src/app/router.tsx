@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
           { path: "/orders/:id", lazy: () => import("@/features/order/pages/OrderDetailPage") },
 
           {
-            element: <RequireRole role="pembeli" />,
+            element: <RequireRole role="buyer" />,
             children: [
               {
                 path: "/trip/:slug/request",
