@@ -12,6 +12,8 @@ export default defineConfig({
       clean: true,
       override: {
         mutator: { path: "./src/api/client.ts", name: "apiFetch" },
+        // apiFetch throws ApiError on non-2xx, so hooks return the success body directly.
+        fetch: { includeHttpResponseReturnType: false },
       },
     },
   },
