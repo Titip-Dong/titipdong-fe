@@ -155,7 +155,8 @@ no bottom tab bar and no footer.
 - **Product photos** (`ProductImage`, `ProductTile`): square (`aspect-square`), `object-cover`, on `muted` while
   loading. Without a photo: a tinted surface with a shopping bag icon (the existing fallback). Never stretch or
   letterbox.
-- Trip lists show item thumbnails when the API provides them (open question in `docs/PLAN.md` §6).
+- Trip lists show the first three catalog photos (`catalogPreview` from the API) and "+N" for the rest; a trip
+  without items shows one fallback tile with "Katalog belum diisi" (`TripPhotos`).
 - No stock photos and no illustrations other than Titi.
 
 ## 7. Titi (mascot)

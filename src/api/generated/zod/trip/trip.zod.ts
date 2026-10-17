@@ -22,6 +22,18 @@ export const ListMyTripsResponse = zod.object({
     zod.object({
       acceptsRequests: zod.boolean(),
       capacity: zod.int(),
+      catalogPreview: zod
+        .object({
+          itemCount: zod.int(),
+          items: zod.array(
+            zod.object({
+              name: zod.string(),
+              photoUrl: zod.string().optional().describe("Signed read URL, valid for one hour"),
+            }),
+          ),
+        })
+        .optional()
+        .describe("Only in trip lists: the first catalog items and the item count"),
       createdAt: zod.iso.datetime({ offset: true }),
       departsOn: zod.iso.date(),
       description: zod.string(),
@@ -68,6 +80,18 @@ export const ListTripsResponse = zod.object({
     zod.object({
       acceptsRequests: zod.boolean(),
       capacity: zod.int(),
+      catalogPreview: zod
+        .object({
+          itemCount: zod.int(),
+          items: zod.array(
+            zod.object({
+              name: zod.string(),
+              photoUrl: zod.string().optional().describe("Signed read URL, valid for one hour"),
+            }),
+          ),
+        })
+        .optional()
+        .describe("Only in trip lists: the first catalog items and the item count"),
       createdAt: zod.iso.datetime({ offset: true }),
       departsOn: zod.iso.date(),
       description: zod.string(),
@@ -122,6 +146,18 @@ export const CreateTripBody = zod.object({
 export const CreateTripResponse = zod.object({
   acceptsRequests: zod.boolean(),
   capacity: zod.int(),
+  catalogPreview: zod
+    .object({
+      itemCount: zod.int(),
+      items: zod.array(
+        zod.object({
+          name: zod.string(),
+          photoUrl: zod.string().optional().describe("Signed read URL, valid for one hour"),
+        }),
+      ),
+    })
+    .optional()
+    .describe("Only in trip lists: the first catalog items and the item count"),
   createdAt: zod.iso.datetime({ offset: true }),
   departsOn: zod.iso.date(),
   description: zod.string(),
@@ -174,6 +210,18 @@ export const UpdateTripBody = zod.object({
 export const UpdateTripResponse = zod.object({
   acceptsRequests: zod.boolean(),
   capacity: zod.int(),
+  catalogPreview: zod
+    .object({
+      itemCount: zod.int(),
+      items: zod.array(
+        zod.object({
+          name: zod.string(),
+          photoUrl: zod.string().optional().describe("Signed read URL, valid for one hour"),
+        }),
+      ),
+    })
+    .optional()
+    .describe("Only in trip lists: the first catalog items and the item count"),
   createdAt: zod.iso.datetime({ offset: true }),
   departsOn: zod.iso.date(),
   description: zod.string(),
@@ -202,6 +250,18 @@ export const CancelTripParams = zod.object({
 export const CancelTripResponse = zod.object({
   acceptsRequests: zod.boolean(),
   capacity: zod.int(),
+  catalogPreview: zod
+    .object({
+      itemCount: zod.int(),
+      items: zod.array(
+        zod.object({
+          name: zod.string(),
+          photoUrl: zod.string().optional().describe("Signed read URL, valid for one hour"),
+        }),
+      ),
+    })
+    .optional()
+    .describe("Only in trip lists: the first catalog items and the item count"),
   createdAt: zod.iso.datetime({ offset: true }),
   departsOn: zod.iso.date(),
   description: zod.string(),
@@ -230,6 +290,18 @@ export const CloseTripParams = zod.object({
 export const CloseTripResponse = zod.object({
   acceptsRequests: zod.boolean(),
   capacity: zod.int(),
+  catalogPreview: zod
+    .object({
+      itemCount: zod.int(),
+      items: zod.array(
+        zod.object({
+          name: zod.string(),
+          photoUrl: zod.string().optional().describe("Signed read URL, valid for one hour"),
+        }),
+      ),
+    })
+    .optional()
+    .describe("Only in trip lists: the first catalog items and the item count"),
   createdAt: zod.iso.datetime({ offset: true }),
   departsOn: zod.iso.date(),
   description: zod.string(),

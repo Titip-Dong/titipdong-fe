@@ -91,16 +91,16 @@ src/stores/auth.ts          Zustand: accessToken + user (no persist)
 
 ## Modules and ownership
 
-| Folder         | Module               | Owner  | Pages                                                                         |
-| -------------- | -------------------- | ------ | ----------------------------------------------------------------------------- |
-| `auth`         | F01 Auth & User      | Carlo  | `/login`, `/register`, `/profile`                                             |
-| `trip`         | F02 Trip & Catalog   | Carlo  | `/`, `/trips`, `/trip/:slug`, `/my-trips`, `/my-trips/new`                    |
-| `order`        | F03 Order            | Alfian | `/trip/:slug/request`, `/my-trips/:id/requests`, `/orders`, `/orders/:id`     |
-| `payment`      | F04 Payment & Escrow | Barru  | `/orders/:id/pay`, `/wallet`                                                  |
-| `shipment`     | F05 Shipment         | Alfian | components inside `/orders/:id` (no pages of its own)                         |
-| `dispute`      | F06 Dispute          | Barru  | `/orders/:id/dispute`, `/admin/disputes`                                      |
-| `notification` | F07 Notification     | Azfa   | `/notifications`, navbar icon                                                 |
-| `admin`        | F08 Admin            | Azfa   | admin layout, `/admin`, `/admin/transactions`, `/admin/users`, `/admin/audit` |
+| Folder         | Module               | Owner  | Pages                                                                                                 |
+| -------------- | -------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
+| `auth`         | F01 Auth & User      | Carlo  | `/login`, `/register`, `/profile`                                                                     |
+| `trip`         | F02 Trip & Catalog   | Carlo  | `/`, `/trips`, `/trip/:slug`, `/my-trips`, `/my-trips/new`, `/my-trips/:slug`, `/my-trips/:slug/edit` |
+| `order`        | F03 Order            | Alfian | `/trip/:slug/request`, `/my-trips/:id/requests`, `/orders`, `/orders/:id`                             |
+| `payment`      | F04 Payment & Escrow | Barru  | `/orders/:id/pay`, `/wallet`                                                                          |
+| `shipment`     | F05 Shipment         | Alfian | components inside `/orders/:id` (no pages of its own)                                                 |
+| `dispute`      | F06 Dispute          | Barru  | `/orders/:id/dispute`, `/admin/disputes`                                                              |
+| `notification` | F07 Notification     | Azfa   | `/notifications`, navbar icon                                                                         |
+| `admin`        | F08 Admin            | Azfa   | admin layout, `/admin`, `/admin/transactions`, `/admin/users`, `/admin/audit`                         |
 
 The backend also has admin endpoints without a frontend page yet: `/admin/orders` (`listAdminOrders`, F08) and the
 payout queue `/admin/payouts` (`listPayouts`, `markPayoutPaid`, `rejectPayout`, F04). Agree on a route and an owner
