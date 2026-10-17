@@ -52,8 +52,7 @@ Goal: one written visual and interaction language that every page follows, so th
 generated.
 
 Status (2026-10-17): steps 1 and 2 done. Step 3 in progress: all six Titi poses drawn, `/styleguide` aligned with
-`DESIGN.md` (palette, type scale, radius). Still open: shared components that do not follow `DESIGN.md` yet (see
-below), and team agreement.
+`DESIGN.md` (palette, type scale, radius). Shared components aligned. Still open: team agreement.
 
 1. Discussion with the team: brand direction, references, what "not AI UI" means for TITIP DONG, density, tone.
 2. Write `DESIGN.md`:
@@ -67,9 +66,8 @@ below), and team agreement.
 3. Apply it: tokens in `src/index.css`, base components in `src/components/`, `/styleguide` rebuilt as the living
    version of `DESIGN.md`, Titi's remaining poses (`menunggu`, `khawatir`, `tidur`) drawn and moved to
    `src/components/`.
-   - Shared components still off `DESIGN.md` §5: `Receipt` and `ProductTile` use `rounded-2xl` (should be
-     `rounded-xl`). Module pages that use `rounded-2xl`/`rounded-3xl` are fixed when each page is rebuilt in phases
-     3–8.
+   - Shared components follow `DESIGN.md` §5 (`Receipt`, `ProductTile` moved to `rounded-xl`). Module pages that
+     still use `rounded-2xl`/`rounded-3xl` are fixed when each page is rebuilt in phases 3–8.
 
 Exit: `DESIGN.md` agreed by the team; `/styleguide` shows every token and component; no page work has started yet.
 
