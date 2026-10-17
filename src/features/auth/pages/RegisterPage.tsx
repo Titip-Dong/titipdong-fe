@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { errorMessage } from "@/lib/api-error";
+import { roleHome } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
 import { AuthCard } from "../components/AuthCard";
@@ -52,7 +53,7 @@ export function Component() {
       {
         onSuccess: (res) => {
           setSession(res.accessToken, res.user);
-          navigate(res.user.role === "jastiper" ? "/my-trips" : "/trips", { replace: true });
+          navigate(roleHome[res.user.role], { replace: true });
         },
       },
     ),

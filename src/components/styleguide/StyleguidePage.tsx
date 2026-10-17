@@ -8,7 +8,13 @@ import { ProductTile } from "@/components/ProductTile";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { Titi, type TitiPose } from "./TitiSketch";
+import { ActionBar } from "@/components/ActionBar";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Deadline } from "@/components/Deadline";
+import { EscrowNote } from "@/components/EscrowNote";
+import { ImageUploadField } from "@/components/ImageUploadField";
+import { EmptyState, ErrorState, ListSkeleton } from "@/components/PageState";
+import { Titi, type TitiPose } from "@/components/Titi";
 
 // Visual reference for the team. Only registered in the router during development.
 // Explanations are in English; example UI copy stays in Indonesian like the real app.
@@ -92,6 +98,8 @@ const trips = [
 ];
 
 const tones = ["rambu", "paspor", "netral"] as const;
+
+const hoursFromNow = (hours: number) => new Date(Date.now() + hours * 3_600_000).toISOString();
 
 const typeScale = [
   {
@@ -192,25 +200,13 @@ const titiPoses: { pose: TitiPose; label: string; use: string }[] = [
   { pose: "tidur", label: "Tidur", use: "Trip yang sudah ditutup atau selesai" },
 ];
 
-function TitiEmptyState({ layout }: { layout: "mobile" | "desktop" }) {
+function SampleEmptyState() {
   return (
-    <div
-      className={cn(
-        "flex gap-4 rounded-lg border bg-card p-5",
-        layout === "mobile"
-          ? "flex-col items-center text-center"
-          : "items-center gap-8 p-8 text-left",
-      )}
-    >
-      <Titi pose="bingung" className={layout === "mobile" ? "size-24" : "size-36 shrink-0"} />
-      <div className={cn("space-y-3", layout === "mobile" && "flex flex-col items-center")}>
-        <p className="font-heading text-xl font-bold">Belum ada titipan</p>
-        <p className="max-w-sm text-sm text-muted-foreground">
-          Cari jastiper yang lagi ke kota tujuan barang incaranmu, lalu titip dari halaman trip-nya.
-        </p>
-        <Button className={layout === "mobile" ? "w-full" : undefined}>Cari trip</Button>
-      </div>
-    </div>
+    <EmptyState
+      title="Belum ada titipan"
+      description="Cari jastiper yang lagi ke kota tujuan barang incaranmu, lalu titip dari halaman trip-nya."
+      action={{ label: "Cari trip", to: "#" }}
+    />
   );
 }
 
@@ -321,17 +317,27 @@ export function Component() {
             <p className="text-sm text-muted-foreground">Di atas latar merah, misalnya hero</p>
           </li>
         </ul>
+      </Section>
+
+      <Section
+        title="Page states"
+        note="PageState adapts to its container: stacked when narrow, side by side when wide. Titi is decorative here."
+      >
         <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
           <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">Mobile (360 px)</p>
+            <p className="text-sm font-medium text-muted-foreground">Narrow (360 px)</p>
             <div className="w-full max-w-[360px]">
-              <TitiEmptyState layout="mobile" />
+              <SampleEmptyState />
             </div>
           </div>
-          <div className="hidden space-y-2 lg:block">
-            <p className="text-sm font-medium text-muted-foreground">Desktop</p>
-            <TitiEmptyState layout="desktop" />
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Wide</p>
+            <SampleEmptyState />
           </div>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ErrorState onRetry={() => undefined} />
+          <ListSkeleton />
         </div>
       </Section>
 
@@ -410,6 +416,42 @@ export function Component() {
             <p className="text-sm text-destructive">Jumlah minimal 1.</p>
           </div>
         </div>
+      </Section>
+
+      <Section
+        title="Confirmation and uploads"
+        note="Destructive or final actions confirm in a dialog that names the consequence. The photo field uploads right away (log in as a buyer to try it against the local backend)."
+      >
+        <ConfirmDialog
+          trigger={<Button variant="destructive">Batalkan titipan</Button>}
+          title="Batalkan titipan ini?"
+          description="Titipan yang dibatalkan tidak bisa dilanjutkan lagi. Kamu perlu membuat titipan baru."
+          confirmLabel="Batalkan titipan"
+          destructive
+          onConfirm={() => new Promise((resolve) => setTimeout(resolve, 600))}
+        />
+        <ImageUploadField
+          label="Foto barang (opsional)"
+          purpose="order_photo"
+          onChange={(id) => console.info("[styleguide] upload id", id)}
+        />
+      </Section>
+
+      <Section
+        title="Money, deadlines, and the action bar"
+        note="Every amount the user pays or receives gets an escrow note. Deadlines turn Rambu in the last 24 hours. On phones the main action sticks above the bottom navigation."
+      >
+        <div className="grid max-w-md gap-3">
+          <EscrowNote>
+            Uangmu ditahan TITIP DONG dan baru diteruskan ke Rina setelah barang kamu terima.
+          </EscrowNote>
+          <Deadline label="Bayar sebelum" at={hoursFromNow(5)} />
+          <Deadline label="Titip sebelum" at={hoursFromNow(24 * 4)} />
+        </div>
+        <ActionBar>
+          <Button variant="outline">Batalkan</Button>
+          <Button>Bayar sekarang</Button>
+        </ActionBar>
       </Section>
 
       <Section

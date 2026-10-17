@@ -72,11 +72,15 @@ src/api/client.ts           orval mutator `apiFetch`: base URL, bearer token, au
 src/api/generated/          orval output. NEVER edit by hand
 src/app/                    App (providers), router.tsx (all routes), guards.tsx (RequireAuth, RequireRole)
 src/components/ui/          shadcn components (ours to edit, after discussing with the team)
-src/components/layout/      MainLayout, Navbar, Footer, PlaceholderPage, NotFoundPage, FullPageLoader
-src/components/*.tsx        shared components: OrderStatusBadge, ProductImage, ProductTile, Receipt
+src/components/layout/      MainLayout, Navbar, BottomNav, navigation.ts (items per role), Footer, PlaceholderPage,
+                            NotFoundPage, FullPageLoader
+src/components/*.tsx        shared components (DESIGN.md §8): OrderStatusBadge, ProductImage, ProductTile, Receipt,
+                            Titi, PageState (EmptyState, ErrorState, ListSkeleton), LoadMore, ConfirmDialog,
+                            ImageUploadField, ActionBar, Deadline, EscrowNote
 src/features/<module>/      pages/, components/, hooks/, schemas.ts, index.ts (public exports)
-src/lib/                    env.ts (env validation), format.ts (formatRupiah, formatDate), utils.ts (cn),
-                            api-error.ts (errorMessage: Indonesian copy for an ApiError)
+src/lib/                    env.ts (env validation), format.ts (formatRupiah, formatDate, formatRelativeTime),
+                            utils.ts (cn), api-error.ts (errorMessage, setFieldErrors), pagination.ts
+                            (useCursorList), upload.ts (uploadImage), roles.ts (roleHome, roleLabel)
 src/stores/auth.ts          Zustand: accessToken + user (no persist)
 ```
 
@@ -232,10 +236,11 @@ version. The essentials:
 
 ## Temporary (TODO)
 
-- These pages are still a `PlaceholderPage`: `/notifications` and the unread badge on `NotificationBell` (F07),
-  `/orders/:id/dispute` and `/admin/disputes` (F06), and `/admin`, `/admin/transactions`, `/admin/users`,
-  `/admin/audit` (F08). The backend endpoints for all of them exist.
-- No shared upload helper exists yet; the first module that needs one should discuss putting it in `src/lib/`.
+- These pages are still a `PlaceholderPage`: `/notifications` (F07), `/orders/:id/dispute` and `/admin/disputes`
+  (F06), and `/admin`, `/admin/transactions`, `/admin/users`, `/admin/audit` (F08). The backend endpoints for all of
+  them exist.
+- `window.confirm` is still used in `OrderDetailPage`, `MyTripsPage`, and `ShipmentPanel`; switch them to
+  `ConfirmDialog` when those pages are rebuilt.
 - The deploy workflow builds with a placeholder `VITE_API_URL` (`https://api.titipdong.invalid`) until the backend has
   a public HTTPS Ingress. The frontend and API must then share one parent domain (for example `app.<domain>` and
   `api.<domain>`), because the `SameSite=Lax` refresh cookie is not sent cross-site; otherwise users are signed out

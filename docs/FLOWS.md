@@ -222,11 +222,14 @@ Suspension takes effect at the next refresh: an access token already issued work
 
 ## 8. Shared mechanics
 
-- **Uploads**: `createUpload` → `PUT uploadUrl` with `uploadHeaders` (plain `fetch`) → send the `id`. Details and
-  limits in `AGENTS.md` (File uploads). Read URLs in responses expire after one hour: do not store them.
-- **Pagination**: every list returns `{ items, nextCursor }`; pass `cursor` for the next page.
+- **Uploads**: `createUpload` → `PUT uploadUrl` with `uploadHeaders` (no bearer token) → send the `id`. Use
+  `ImageUploadField` or `uploadImage()` from `src/lib/upload.ts`. Read URLs in responses expire after one hour: do
+  not store them.
+- **Pagination**: every list returns `{ items, nextCursor }`; use `useCursorList(getXQueryKey(params), (cursor) =>
+listX({ ...params, cursor }))` from `src/lib/pagination.ts` with `LoadMore`.
 - **Errors**: 401 session, 403 role, 404 missing or not yours, 409 state changed (refetch and explain), 422 input.
-  On 409, always invalidate the order or trip so the screen shows the new state.
+  On 409, always invalidate the order or trip so the screen shows the new state. Show copy with `errorMessage()` and
+  mark 422 fields with `setFieldErrors(error, form.setError)` (`src/lib/api-error.ts`).
 - **Time windows** (show them, never enforce them in the frontend): payment within 24 hours of approval
   (`paymentDeadline`), auto-release 7 days after shipping, request deadline per trip.
 - **After a mutation**, invalidate what it changed:

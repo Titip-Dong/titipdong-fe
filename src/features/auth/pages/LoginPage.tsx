@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { errorMessage } from "@/lib/api-error";
+import { roleHome } from "@/lib/roles";
 import { useAuthStore } from "@/stores/auth";
 import { AuthCard } from "../components/AuthCard";
 
@@ -16,7 +17,7 @@ type LoginForm = z.infer<typeof LoginBody>;
 export function Component() {
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: Location } | null)?.from?.pathname ?? "/";
+  const from = (location.state as { from?: Location } | null)?.from?.pathname;
   const setSession = useAuthStore((s) => s.setSession);
   const login = useLogin();
   const form = useForm<LoginForm>({
@@ -30,7 +31,7 @@ export function Component() {
       {
         onSuccess: (res) => {
           setSession(res.accessToken, res.user);
-          navigate(from, { replace: true });
+          navigate(from ?? roleHome[res.user.role], { replace: true });
         },
       },
     ),

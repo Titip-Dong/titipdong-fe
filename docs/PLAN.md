@@ -75,6 +75,9 @@ Exit: `DESIGN.md` agreed by the team; `/styleguide` shows every token and compon
 
 Goal: the shared pieces every module needs, so modules do not each invent their own.
 
+Status (2026-10-17): done, except the admin layout, which moves to phase 8 with the admin pages. Every piece is listed
+in `DESIGN.md` §8 and shown in `/styleguide`; the largest chunk is now ~312 kB.
+
 - App shell per role: navbar for visitor / Pembeli / Jastiper, admin layout, mobile navigation.
 - Role homes and redirects after login (`docs/FLOWS.md` §2).
 - Page states: shared loading, empty, error, and not-found blocks.
@@ -130,6 +133,7 @@ Exit: both decisions work and the order ends in the right status.
 ### Phase 8: Notifications and admin (F07, F08)
 
 - Notification list with copy and links per type (`docs/FLOWS.md` §6), mark read, mark all read.
+- Admin layout per `DESIGN.md` §5 (sidebar from `lg`, sheet menu below), with menu entries for orders and payouts.
 - Admin dashboard, orders, transactions, users (suspend/reactivate), audit log, payout queue.
 
 Exit: an admin can run the platform without the database shell.
