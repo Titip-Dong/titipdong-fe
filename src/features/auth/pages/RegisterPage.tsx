@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckIcon } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import type { z } from "zod";
@@ -15,11 +16,11 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { errorMessage } from "@/lib/api-error";
+import { errorMessage, setFieldErrors } from "@/lib/api-error";
 import { roleHome } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
-import { AuthCard } from "../components/AuthCard";
+import { AuthShell } from "../components/AuthShell";
 
 type RegisterForm = z.infer<typeof RegisterBody>;
 
@@ -55,18 +56,22 @@ export function Component() {
           setSession(res.accessToken, res.user);
           navigate(roleHome[res.user.role], { replace: true });
         },
+        onError: (err) => setFieldErrors(err, form.setError),
       },
     ),
   );
 
   return (
-    <AuthCard
+    <AuthShell
       title="Daftar"
       description="Buat akun TITIP DONG dalam satu menit."
       footer={
         <>
           Sudah punya akun?{" "}
-          <Link to="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+          <Link
+            to="/login"
+            className="font-semibold text-primary underline-offset-4 hover:underline"
+          >
             Masuk
           </Link>
         </>
@@ -77,24 +82,32 @@ export function Component() {
           <FieldSet>
             <FieldLegend variant="label">Kamu daftar sebagai</FieldLegend>
             <div className="grid gap-2 sm:grid-cols-2">
-              {roles.map((r) => (
-                <label
-                  key={r.value}
-                  className={cn(
-                    "cursor-pointer rounded-xl border p-3 has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50",
-                    selectedRole === r.value && "border-primary bg-secondary",
-                  )}
-                >
-                  <input
-                    type="radio"
-                    value={r.value}
-                    className="sr-only"
-                    {...form.register("role")}
-                  />
-                  <span className="block font-medium">{r.title}</span>
-                  <span className="block text-sm text-muted-foreground">{r.description}</span>
-                </label>
-              ))}
+              {roles.map((r) => {
+                const selected = selectedRole === r.value;
+                return (
+                  <label
+                    key={r.value}
+                    className={cn(
+                      "relative cursor-pointer rounded-xl border-2 p-3 pr-9 transition-colors has-focus-visible:ring-3 has-focus-visible:ring-ring/50",
+                      selected ? "border-primary" : "border-border hover:border-foreground",
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      value={r.value}
+                      className="sr-only"
+                      {...form.register("role")}
+                    />
+                    {selected && (
+                      <span className="absolute top-3 right-3 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                        <CheckIcon className="size-3.5" strokeWidth={3} aria-hidden />
+                      </span>
+                    )}
+                    <span className="block font-bold">{r.title}</span>
+                    <span className="block text-sm text-muted-foreground">{r.description}</span>
+                  </label>
+                );
+              })}
             </div>
           </FieldSet>
           <Field data-invalid={!!errors.name}>
@@ -138,10 +151,10 @@ export function Component() {
             </FieldError>
           )}
           <Button type="submit" size="lg" disabled={register.isPending}>
-            {register.isPending ? "Sedang mendaftar..." : "Daftar"}
+            {register.isPending ? "Sedang mendaftar..." : "Buat akun"}
           </Button>
         </FieldGroup>
       </form>
-    </AuthCard>
+    </AuthShell>
   );
 }

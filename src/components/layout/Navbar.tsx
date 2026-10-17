@@ -1,5 +1,5 @@
-import { Link, NavLink, useNavigate } from "react-router";
-import { logout as logoutRequest } from "@/api/generated/endpoints/auth/auth";
+import { Link, NavLink } from "react-router";
+import { useLogout } from "@/features/auth";
 import { NotificationBell } from "@/features/notification";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -27,15 +27,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 /** Top bar. With `items` (Pembeli, Jastiper) the main links show from `md`; phones use BottomNav. */
 export function Navbar({ items }: { items?: NavItem[] }) {
   const user = useAuthStore((s) => s.user);
-  const clear = useAuthStore((s) => s.clear);
-  const navigate = useNavigate();
-
-  const logout = async () => {
-    // Clear the local session even if the request fails; the refresh cookie then expires on its own.
-    await logoutRequest().catch(() => undefined);
-    clear();
-    navigate("/");
-  };
+  const logout = useLogout();
 
   return (
     <header className="sticky top-0 z-40 border-b bg-card">
