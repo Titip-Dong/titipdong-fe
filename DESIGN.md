@@ -57,7 +57,7 @@ Tokens live in `src/index.css`. Use the semantic utility (`bg-primary`), never t
 Rules:
 
 - **Merah is precious.** One primary button per view, plus small trust signals. Full-red surfaces with white text
-  appear only on the landing hero and the Titi panel of the login and register pages.
+  appear only on the landing hero.
 - **Rambu never carries text color** and never fills a large area; it marks something waiting for the user.
 - **Status colors come only from `OrderStatusBadge`** (orders) and the status components in §8.
 - Contrast: body text on Kertas and white on Merah meet WCAG AA. Muted text is for secondary information
@@ -191,7 +191,7 @@ rounded bottom corners. Colors are derived from tokens with `color-mix`, never h
 **Rules**
 
 - At most one Titi per screen. Never inside forms, tables, or the admin area, or next to a primary action it would
-  compete with. The login and register pages show a large still, inverted Titi on a red panel beside the form.
+  compete with. The login and register pages show a large still, red Titi beside the form, with no panel behind it.
 - Titi always sits fully inside its container; never half outside an edge.
 - Titi only moves on screens where it is the focus (empty, success, 404). In dialogs, toasts, and inline use it is
   `still`.
