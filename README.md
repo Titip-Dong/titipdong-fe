@@ -38,6 +38,7 @@ The backend's default `CORS_ORIGINS` already allows `http://localhost:5173`. Loc
 | `pnpm typecheck`                    | Type check only                                                                       |
 | `pnpm api`                          | Pull `openapi.json` from the backend and generate the client (`api:pull` + `api:gen`) |
 | `pnpm api:gen`                      | Regenerate the client from the committed `openapi/openapi.json`                       |
+| `pnpm e2e`                          | Playwright end-to-end tests on desktop and phone (needs the local backend and seed)   |
 
 Use `API_URL=https://... pnpm api` to pull the spec from a backend other than `localhost:8080`. Run it whenever the
 backend contract changes and commit `openapi/` and `src/api/generated/` together; CI fails when they do not match.
