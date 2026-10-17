@@ -11,7 +11,12 @@ export function MainLayout() {
   const items = role ? navItems[role] : undefined;
 
   return (
-    <div className={cn("flex min-h-svh flex-col", items && "pb-16 md:pb-0")}>
+    <div
+      className={cn(
+        "flex min-h-svh flex-col",
+        items && "pb-16 [--bottom-nav-height:4rem] md:pb-0 md:[--bottom-nav-height:0px]",
+      )}
+    >
       <Navbar items={items} />
       <main className="flex-1">
         <Outlet />

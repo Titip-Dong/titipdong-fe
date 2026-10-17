@@ -20,3 +20,14 @@ export function formatDate(value: string | Date): string {
 export function formatDateTime(value: string | Date): string {
   return dateTime.format(new Date(value));
 }
+
+const relative = new Intl.RelativeTimeFormat("id-ID", { numeric: "auto" });
+
+/** Relative time for deadlines, e.g. "dalam 3 jam", "2 hari yang lalu". */
+export function formatRelativeTime(value: string | Date, now: Date = new Date()): string {
+  const minutes = Math.round((new Date(value).getTime() - now.getTime()) / 60_000);
+  if (Math.abs(minutes) < 60) return relative.format(minutes, "minute");
+  const hours = Math.round(minutes / 60);
+  if (Math.abs(hours) < 24) return relative.format(hours, "hour");
+  return relative.format(Math.round(hours / 24), "day");
+}

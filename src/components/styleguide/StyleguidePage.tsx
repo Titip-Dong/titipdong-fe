@@ -8,7 +8,10 @@ import { ProductTile } from "@/components/ProductTile";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { ActionBar } from "@/components/ActionBar";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Deadline } from "@/components/Deadline";
+import { EscrowNote } from "@/components/EscrowNote";
 import { ImageUploadField } from "@/components/ImageUploadField";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/PageState";
 import { Titi, type TitiPose } from "@/components/Titi";
@@ -95,6 +98,8 @@ const trips = [
 ];
 
 const tones = ["rambu", "paspor", "netral"] as const;
+
+const hoursFromNow = (hours: number) => new Date(Date.now() + hours * 3_600_000).toISOString();
 
 const typeScale = [
   {
@@ -430,6 +435,23 @@ export function Component() {
           purpose="order_photo"
           onChange={(id) => console.info("[styleguide] upload id", id)}
         />
+      </Section>
+
+      <Section
+        title="Money, deadlines, and the action bar"
+        note="Every amount the user pays or receives gets an escrow note. Deadlines turn Rambu in the last 24 hours. On phones the main action sticks above the bottom navigation."
+      >
+        <div className="grid max-w-md gap-3">
+          <EscrowNote>
+            Uangmu ditahan TITIP DONG dan baru diteruskan ke Rina setelah barang kamu terima.
+          </EscrowNote>
+          <Deadline label="Bayar sebelum" at={hoursFromNow(5)} />
+          <Deadline label="Titip sebelum" at={hoursFromNow(24 * 4)} />
+        </div>
+        <ActionBar>
+          <Button variant="outline">Batalkan</Button>
+          <Button>Bayar sekarang</Button>
+        </ActionBar>
       </Section>
 
       <Section
