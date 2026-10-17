@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { initials } from "@/lib/format";
 import { roleLabel } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
@@ -76,7 +77,7 @@ export function Navbar({ items }: { items?: NavItem[] }) {
                     aria-label="Menu akun"
                   >
                     <Avatar>
-                      <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>{initials(user.name)}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
