@@ -61,8 +61,8 @@
 :root {
   --merah: #dd010f;
   --tinta: #161616;
-  --kertas: #f7f6f4;
-  --garis: #e2dfdb;
+  --kertas: #ffffff;
+  --garis: #e6e6e6;
   --rambu: #f5c400;
   --cap: #8f1420;
 
@@ -76,24 +76,24 @@
   --primary-foreground: #ffffff;
   --secondary: #fdeced;
   --secondary-foreground: #a8000b;
-  --muted: #efedea;
-  --muted-foreground: #5f5c58;
-  --accent: #f1efec;
+  --muted: #f4f4f4;
+  --muted-foreground: #5c5c5c;
+  --accent: #f4f4f4;
   --accent-foreground: var(--tinta);
   --destructive: var(--cap);
   --highlight: var(--rambu);
   --highlight-foreground: var(--tinta);
   --highlight-soft: #fff4c2;
   --border: var(--garis);
-  --input: #cfcbc6;
+  --input: #d4d4d4;
   --ring: var(--merah);
   --chart-1: var(--merah);
   --chart-2: #f07a82;
   --chart-3: var(--tinta);
-  --chart-4: #9a9690;
+  --chart-4: #9a9a9a;
   --chart-5: var(--rambu);
   --radius: 0.375rem;
-  --sidebar: #f1efec;
+  --sidebar: #f7f7f7;
   --sidebar-foreground: var(--tinta);
   --sidebar-primary: var(--merah);
   --sidebar-primary-foreground: #ffffff;
