@@ -52,10 +52,11 @@ do that first.
 
 ## 3. Check the result
 
-- Run the `design-review` skill on the changed pages.
-- Start the backend (`make db-up`, `make seed` in `../titipdong-be`) and `pnpm dev`, then walk the journey with the
-  demo accounts (`buyer@`, `jastiper@`, `admin@titipdong.test`, password `demo12345`), including one error path
-  (for example a 409 from acting on a stale order).
+- Behavior: add or extend the journey's Playwright spec in `e2e/` (happy path plus at least one error path, e.g. a
+  409 from acting on a stale order) and run `pnpm e2e` against the local backend (`make db-up`, `make seed` in
+  `../titipdong-be`). Create fresh accounts with `e2e/support/api.ts`; use the demo accounts only for reads.
+- Look: run the `design-review` skill, then check each changed page with at most one or two reduced-scale screenshots
+  (phone and desktop). Prefer DOM checks (text, focus, attributes) over screenshots for anything that is not visual.
 - If the page changed a flow, update `docs/FLOWS.md`.
 
 ## 4. Finish

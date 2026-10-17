@@ -59,7 +59,8 @@ Report each finding as `file:line`, the rule in `DESIGN.md` it breaks, and the f
 ## 3. Look at it
 
 Run `pnpm dev` and view the changed pages at phone width (360 px) and desktop width, with real data from the local
-backend and with an empty account. Compare with the matching `/styleguide` sections. Say plainly when this step
+backend and with an empty account. Keep it cheap: one reduced-scale screenshot per width, zoom into a region only
+when a detail needs it. Compare with the matching `/styleguide` sections. Say plainly when this step
 could not be done.
 
 ## 4. Report

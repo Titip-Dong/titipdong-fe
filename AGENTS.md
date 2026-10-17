@@ -51,14 +51,19 @@ pnpm format          # Prettier (CI runs format:check)
 pnpm typecheck
 pnpm api             # pull openapi.json from the backend (API_URL, default localhost:8080), then generate
 pnpm api:gen         # regenerate from the existing openapi/openapi.json
+pnpm e2e             # Playwright end-to-end tests (needs the local backend), desktop + phone
 ```
 
 To run the backend locally, use `make db-up` and then `make seed` in `titipdong-be`. The API is served at
 `http://localhost:8080` (interactive docs at `/docs`). The seed creates `buyer@titipdong.test`,
 `jastiper@titipdong.test`, and `admin@titipdong.test`, all with the password `demo12345`.
 
-Before calling a task done, run `pnpm format && pnpm lint && pnpm build`. CI (`.github/workflows/ci.yml`) runs the
-same checks and also verifies that `src/api/generated/` matches `openapi/openapi.json`.
+Before calling a task done, run `pnpm format && pnpm lint && pnpm build`, and `pnpm e2e` when a user journey changed.
+CI (`.github/workflows/ci.yml`) runs the same checks except e2e (it needs the backend) and also verifies that
+`src/api/generated/` matches `openapi/openapi.json`.
+
+Verify behavior with Playwright specs in `e2e/` (one spec per journey, fresh accounts from `e2e/support/api.ts`);
+look at the UI with at most one or two reduced-scale screenshots per page at phone and desktop width.
 
 ## Structure
 
