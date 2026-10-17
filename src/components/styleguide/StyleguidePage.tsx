@@ -8,6 +8,7 @@ import { ProductTile } from "@/components/ProductTile";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { Titi, type TitiPose } from "./TitiSketch";
 
 // Visual reference for the team. Only registered in the router during development.
 // Explanations are in English; example UI copy stays in Indonesian like the real app.
@@ -121,6 +122,34 @@ function Section({
   );
 }
 
+const titiPoses: { pose: TitiPose; label: string; use: string }[] = [
+  { pose: "menyapa", label: "Menyapa", use: "Landing, onboarding" },
+  { pose: "senang", label: "Senang", use: "Bayar sukses, barang diterima, dana cair" },
+  { pose: "bingung", label: "Bingung", use: "Empty state, pencarian kosong, 404" },
+];
+
+function TitiEmptyState({ layout }: { layout: "mobile" | "desktop" }) {
+  return (
+    <div
+      className={cn(
+        "flex gap-4 rounded-lg border bg-card p-5",
+        layout === "mobile"
+          ? "flex-col items-center text-center"
+          : "items-center gap-8 p-8 text-left",
+      )}
+    >
+      <Titi pose="bingung" className={layout === "mobile" ? "size-24" : "size-36 shrink-0"} />
+      <div className={cn("space-y-3", layout === "mobile" && "flex flex-col items-center")}>
+        <p className="font-heading text-xl font-bold">Belum ada titipan</p>
+        <p className="max-w-sm text-sm text-muted-foreground">
+          Cari jastiper yang lagi ke kota tujuan barang incaranmu, lalu titip dari halaman trip-nya.
+        </p>
+        <Button className={layout === "mobile" ? "w-full" : undefined}>Cari trip</Button>
+      </div>
+    </div>
+  );
+}
+
 function Hero() {
   return (
     <div className="overflow-hidden rounded-3xl bg-primary text-primary-foreground">
@@ -207,6 +236,40 @@ export function Component() {
         note="The only full-yellow surface. Do not repeat it on other pages."
       >
         <Hero />
+      </Section>
+
+      <Section
+        title="Titi (mascot sketch)"
+        note="First sketch for discussion. Animations stop when the device asks for reduced motion."
+      >
+        <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+          {titiPoses.map((p) => (
+            <li key={p.pose} className="flex flex-col items-center gap-2 text-center">
+              <Titi pose={p.pose} className="size-28 lg:size-36" />
+              <p className="font-medium">{p.label}</p>
+              <p className="text-sm text-muted-foreground">{p.use}</p>
+            </li>
+          ))}
+          <li className="flex flex-col items-center gap-2 text-center">
+            <div className="flex w-full justify-center rounded-lg bg-primary py-4">
+              <Titi pose="menyapa" inverted className="size-24 lg:size-28" />
+            </div>
+            <p className="font-medium">Varian terbalik</p>
+            <p className="text-sm text-muted-foreground">Di atas latar merah, misalnya hero</p>
+          </li>
+        </ul>
+        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Mobile (360 px)</p>
+            <div className="w-full max-w-[360px]">
+              <TitiEmptyState layout="mobile" />
+            </div>
+          </div>
+          <div className="hidden space-y-2 lg:block">
+            <p className="text-sm font-medium text-muted-foreground">Desktop</p>
+            <TitiEmptyState layout="desktop" />
+          </div>
+        </div>
       </Section>
 
       <Section title="Color">
