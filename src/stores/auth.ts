@@ -1,15 +1,8 @@
 import { create } from "zustand";
+import type { UserResponse, UserResponseRole } from "@/api/generated/model";
 
-export type Role = "jastiper" | "pembeli" | "admin";
-
-// TODO(F01): replace with the orval-generated type (e.g. `UserResponse` from "@/api/generated/model")
-// once the auth endpoints exist in the backend OpenAPI spec.
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  roles: Role[];
-}
+export type Role = UserResponseRole;
+export type AuthUser = UserResponse;
 
 interface AuthState {
   accessToken: string | null;
@@ -30,5 +23,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setSession: (accessToken, user) => set({ accessToken, user }),
   clear: () => set({ accessToken: null, user: null }),
   setInitialized: () => set({ initialized: true }),
-  hasRole: (role) => get().user?.roles?.includes(role) ?? false,
+  hasRole: (role) => get().user?.role === role,
 }));

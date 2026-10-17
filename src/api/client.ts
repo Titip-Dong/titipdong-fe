@@ -1,5 +1,6 @@
 import { env } from "@/lib/env";
-import { useAuthStore, type AuthUser } from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth";
+import type { AuthResponse } from "./generated/model";
 
 /**
  * Error returned by the backend. Huma uses RFC 9457 (`application/problem+json`),
@@ -24,14 +25,14 @@ let refreshing: Promise<boolean> | null = null;
  * Concurrent requests that all hit 401 share the same in-flight promise.
  */
 export async function refreshAccessToken(): Promise<boolean> {
-  // TODO(F01): align the path and field names with the final OpenAPI spec.
+  // Plain fetch, not the generated refreshSession: that goes through apiFetch and would recurse on 401.
   refreshing ??= fetch(`${env.VITE_API_URL}/auth/refresh`, {
     method: "POST",
     credentials: "include",
   })
     .then(async (res) => {
       if (!res.ok) return false;
-      const { accessToken, user } = (await res.json()) as { accessToken: string; user: AuthUser };
+      const { accessToken, user } = (await res.json()) as AuthResponse;
       useAuthStore.getState().setSession(accessToken, user);
       return true;
     })
@@ -63,5 +64,5 @@ export async function apiFetch<T>(url: string, init: RequestInit = {}): Promise<
     ? undefined
     : await res.json().catch(() => undefined);
   if (!res.ok) throw new ApiError(res.status, body);
-  return { data: body, status: res.status, headers: res.headers } as T;
+  return body as T;
 }

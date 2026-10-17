@@ -24,5 +24,3 @@ jobs:
       - run: pnpm build
         env:
           VITE_API_URL: http://localhost:8080
-          VITE_MIDTRANS_CLIENT_KEY: SB-Mid-client-ci
-          VITE_MIDTRANS_SNAP_URL: https://app.sandbox.midtrans.com/snap/snap.js

@@ -1,17 +1,7 @@
+import type { OrderResponseStatus } from "@/api/generated/model";
 import { cn } from "@/lib/utils";
 
-// TODO(F03): align status values with the enum in the backend OpenAPI spec.
-export type OrderStatus =
-  | "requested"
-  | "approved"
-  | "rejected"
-  | "cancelled"
-  | "paid"
-  | "shipped"
-  | "delivered"
-  | "disputed"
-  | "released"
-  | "refunded";
+export type OrderStatus = OrderResponseStatus;
 
 const statusStyle: Record<OrderStatus, { label: string; className: string }> = {
   requested: { label: "Menunggu persetujuan", className: "border-border bg-card text-foreground" },

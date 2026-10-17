@@ -8,6 +8,7 @@ import { ProductTile } from "@/components/ProductTile";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { Titi, type TitiPose } from "./TitiSketch";
 
 // Visual reference for the team. Only registered in the router during development.
 // Explanations are in English; example UI copy stays in Indonesian like the real app.
@@ -15,16 +16,21 @@ import { cn } from "@/lib/utils";
 
 const palette = [
   {
-    name: "Paspor",
-    hex: "#1F4D3F",
-    role: "Primary actions and trust signals",
+    name: "Merah",
+    hex: "#DD010F",
+    role: "Brand color from the logo, primary actions, trust signals",
     swatch: "bg-primary",
   },
-  { name: "Rambu", hex: "#F5C400", role: "Brand color, cheerful surfaces", swatch: "bg-highlight" },
-  { name: "Tinta", hex: "#18231F", role: "Body text", swatch: "bg-foreground" },
-  { name: "Kertas", hex: "#F4F6F3", role: "Page background", swatch: "bg-background" },
-  { name: "Garis", hex: "#D5DBD6", role: "Borders and dividers", swatch: "bg-border" },
-  { name: "Cap", hex: "#B3372B", role: "Errors and disputes", swatch: "bg-destructive" },
+  { name: "Tinta", hex: "#161616", role: "Body text", swatch: "bg-foreground" },
+  { name: "Kertas", hex: "#F7F6F4", role: "Page background", swatch: "bg-background" },
+  { name: "Garis", hex: "#E2DFDB", role: "Borders and dividers", swatch: "bg-border" },
+  {
+    name: "Rambu",
+    hex: "#F5C400",
+    role: "Attention only (waiting states)",
+    swatch: "bg-highlight",
+  },
+  { name: "Cap", hex: "#8F1420", role: "Errors and disputes", swatch: "bg-destructive" },
 ];
 
 const statuses: OrderStatus[] = [
@@ -51,7 +57,6 @@ const trips = [
   {
     city: "Seoul",
     jastiper: "Rina",
-    kyc: true,
     depart: "2026-10-12",
     close: "2026-10-08",
     leftKg: 6,
@@ -61,7 +66,6 @@ const trips = [
   {
     city: "Tokyo",
     jastiper: "Dimas",
-    kyc: true,
     depart: "2026-10-20",
     close: "2026-10-15",
     leftKg: 12,
@@ -71,7 +75,6 @@ const trips = [
   {
     city: "Bangkok",
     jastiper: "Sekar",
-    kyc: false,
     depart: "2026-11-02",
     close: "2026-10-28",
     leftKg: 1,
@@ -119,9 +122,37 @@ function Section({
   );
 }
 
+const titiPoses: { pose: TitiPose; label: string; use: string }[] = [
+  { pose: "menyapa", label: "Menyapa", use: "Landing, onboarding" },
+  { pose: "senang", label: "Senang", use: "Bayar sukses, barang diterima, dana cair" },
+  { pose: "bingung", label: "Bingung", use: "Empty state, pencarian kosong, 404" },
+];
+
+function TitiEmptyState({ layout }: { layout: "mobile" | "desktop" }) {
+  return (
+    <div
+      className={cn(
+        "flex gap-4 rounded-lg border bg-card p-5",
+        layout === "mobile"
+          ? "flex-col items-center text-center"
+          : "items-center gap-8 p-8 text-left",
+      )}
+    >
+      <Titi pose="bingung" className={layout === "mobile" ? "size-24" : "size-36 shrink-0"} />
+      <div className={cn("space-y-3", layout === "mobile" && "flex flex-col items-center")}>
+        <p className="font-heading text-xl font-bold">Belum ada titipan</p>
+        <p className="max-w-sm text-sm text-muted-foreground">
+          Cari jastiper yang lagi ke kota tujuan barang incaranmu, lalu titip dari halaman trip-nya.
+        </p>
+        <Button className={layout === "mobile" ? "w-full" : undefined}>Cari trip</Button>
+      </div>
+    </div>
+  );
+}
+
 function Hero() {
   return (
-    <div className="overflow-hidden rounded-3xl bg-highlight text-highlight-foreground">
+    <div className="overflow-hidden rounded-3xl bg-primary text-primary-foreground">
       <div className="grid items-center gap-8 p-6 sm:p-10 md:grid-cols-[1.2fr_1fr]">
         <div className="space-y-5">
           <h3 className="text-4xl leading-[1.05] font-extrabold sm:text-5xl">
@@ -138,9 +169,13 @@ function Hero() {
             <Input
               id="sg-hero-search"
               placeholder="Cari barang atau kota"
-              className="h-12 rounded-full border-transparent px-5"
+              className="h-12 border-transparent px-4 text-foreground focus-visible:ring-primary-foreground/70"
             />
-            <Button size="lg" type="submit">
+            <Button
+              size="lg"
+              type="submit"
+              className="bg-foreground text-background hover:bg-foreground/85 focus-visible:ring-primary-foreground/70"
+            >
               <SearchIcon data-icon="inline-start" />
               Cari
             </Button>
@@ -150,7 +185,7 @@ function Hero() {
               <a
                 key={c}
                 href="#"
-                className="rounded-full border border-highlight-foreground/20 px-3 py-1 hover:bg-highlight-foreground/5"
+                className="rounded-md border border-primary-foreground/40 px-3 py-1 font-medium outline-none hover:bg-primary-foreground/10 focus-visible:ring-3 focus-visible:ring-primary-foreground/70"
               >
                 {c}
               </a>
@@ -203,6 +238,40 @@ export function Component() {
         <Hero />
       </Section>
 
+      <Section
+        title="Titi (mascot sketch)"
+        note="First sketch for discussion. Animations stop when the device asks for reduced motion."
+      >
+        <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+          {titiPoses.map((p) => (
+            <li key={p.pose} className="flex flex-col items-center gap-2 text-center">
+              <Titi pose={p.pose} className="size-28 lg:size-36" />
+              <p className="font-medium">{p.label}</p>
+              <p className="text-sm text-muted-foreground">{p.use}</p>
+            </li>
+          ))}
+          <li className="flex flex-col items-center gap-2 text-center">
+            <div className="flex w-full justify-center rounded-lg bg-primary py-4">
+              <Titi pose="menyapa" inverted className="size-24 lg:size-28" />
+            </div>
+            <p className="font-medium">Varian terbalik</p>
+            <p className="text-sm text-muted-foreground">Di atas latar merah, misalnya hero</p>
+          </li>
+        </ul>
+        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Mobile (360 px)</p>
+            <div className="w-full max-w-[360px]">
+              <TitiEmptyState layout="mobile" />
+            </div>
+          </div>
+          <div className="hidden space-y-2 lg:block">
+            <p className="text-sm font-medium text-muted-foreground">Desktop</p>
+            <TitiEmptyState layout="desktop" />
+          </div>
+        </div>
+      </Section>
+
       <Section title="Color">
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {palette.map((c) => (
@@ -221,7 +290,7 @@ export function Component() {
 
       <Section
         title="Typography"
-        note="Bricolage Grotesque for headings, Barlow for text. Prices always use tabular-nums."
+        note="Plus Jakarta Sans throughout; headings extra-bold like the logo. Prices always use tabular-nums."
       >
         <div className="space-y-3">
           <p className="font-heading text-5xl font-extrabold tracking-tight">Titipan dari Tokyo</p>
@@ -288,12 +357,6 @@ export function Component() {
                   <p className="font-heading text-2xl font-bold tracking-tight">{t.city}</p>
                   <p className="text-sm">
                     Bersama <span className="font-medium">{t.jastiper}</span>
-                    {t.kyc && (
-                      <span className="ml-2 inline-flex items-center gap-1 text-primary">
-                        <ShieldCheckIcon className="size-3.5" aria-hidden />
-                        Terverifikasi
-                      </span>
-                    )}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Berangkat {formatDate(t.depart)}, titip sebelum {formatDate(t.close)}
