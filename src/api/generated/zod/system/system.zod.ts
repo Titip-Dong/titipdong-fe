@@ -4,13 +4,18 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
- * @summary Liveness and readiness probe
+ * @summary Liveness probe
  */
 export const HealthResponse = zod.object({
-  "status": zod.string()
-})
+  status: zod.string(),
+});
 
+/**
+ * @summary Readiness probe: the API can reach its database
+ */
+export const ReadyResponse = zod.object({
+  status: zod.string(),
+});

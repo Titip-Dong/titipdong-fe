@@ -4,15 +4,15 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { ListOrdersStatus } from './listOrdersStatus';
+import type { ListOrdersStatus } from "./listOrdersStatus";
 
 export type ListOrdersParams = {
-status?: ListOrdersStatus;
-tripId?: string;
-/**
- * @minimum 1
- * @maximum 100
- */
-limit?: number;
-cursor?: string;
+  status?: ListOrdersStatus;
+  tripId?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  cursor?: string;
 };

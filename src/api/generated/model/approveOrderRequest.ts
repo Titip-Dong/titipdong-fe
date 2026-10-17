@@ -7,15 +7,15 @@
 
 export interface ApproveOrderRequest {
   /**
-     * Per unit, whole rupiah
-     * @minimum 1
-     * @maximum 1000000000
-     */
+   * Per unit, whole rupiah
+   * @minimum 1
+   * @maximum 1000000000
+   */
   itemPrice: number;
   /**
-     * For the whole order, whole rupiah
-     * @minimum 0
-     * @maximum 1000000000
-     */
+   * For the whole order, whole rupiah
+   * @minimum 0
+   * @maximum 1000000000
+   */
   jastipFee: number;
 }

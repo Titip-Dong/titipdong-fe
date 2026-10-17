@@ -4,7 +4,7 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { ErrorDetail } from './errorDetail';
+import type { ErrorDetail } from "./errorDetail";
 
 export interface ErrorModel {
   /** A human-readable explanation specific to this occurrence of the problem. */

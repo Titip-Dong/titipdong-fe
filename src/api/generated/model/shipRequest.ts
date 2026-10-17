@@ -4,20 +4,22 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { ShipRequestMethod } from './shipRequestMethod';
+import type { ShipRequestMethod } from "./shipRequestMethod";
 
 export interface ShipRequest {
   /**
-     * Required for courier, e.g. jne, jnt, sicepat
-     * @maxLength 20
-     */
+   * Required for courier, e.g. jne, jnt, sicepat
+   * @maxLength 20
+   */
   courierCode?: string;
   /** @maxLength 1000 */
   handoverNote?: string;
   method: ShipRequestMethod;
+  /** Upload with purpose shipment_proof */
+  proofUploadId?: string;
   /**
-     * Required for courier
-     * @maxLength 50
-     */
+   * Required for courier
+   * @maxLength 50
+   */
   trackingNumber?: string;
 }

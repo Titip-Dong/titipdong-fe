@@ -4,8 +4,8 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { EventResponse } from './eventResponse';
-import type { OrderResponse } from './orderResponse';
+import type { EventResponse } from "./eventResponse";
+import type { OrderResponse } from "./orderResponse";
 
 export interface OrderDetailResponse {
   events: EventResponse[];

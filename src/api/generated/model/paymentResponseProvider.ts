@@ -5,10 +5,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PaymentResponseProvider = typeof PaymentResponseProvider[keyof typeof PaymentResponseProvider];
-
+export type PaymentResponseProvider =
+  (typeof PaymentResponseProvider)[keyof typeof PaymentResponseProvider];
 
 export const PaymentResponseProvider = {
-  fake: 'fake',
-  midtrans: 'midtrans',
+  fake: "fake",
+  midtrans: "midtrans",
 } as const;

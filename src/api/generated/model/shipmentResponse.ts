@@ -4,16 +4,20 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { ShipmentResponseMethod } from './shipmentResponseMethod';
-import type { ShipmentResponseOrderStatus } from './shipmentResponseOrderStatus';
+import type { ShipmentResponseMethod } from "./shipmentResponseMethod";
+import type { ShipmentResponseOrderStatus } from "./shipmentResponseOrderStatus";
 
 export interface ShipmentResponse {
+  /** While shipped: when funds release unless the buyer confirms or disputes */
+  autoReleaseAt?: string;
   courierCode: string;
   deliveredAt?: string;
   handoverNote: string;
   method: ShipmentResponseMethod;
   orderId: string;
   orderStatus: ShipmentResponseOrderStatus;
+  /** Short-lived signed URL of the handover proof */
+  proofUrl?: string;
   shippedAt: string;
   trackingNumber: string;
 }

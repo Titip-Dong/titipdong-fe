@@ -4,20 +4,20 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { RegisterRequestRole } from './registerRequestRole';
+import type { RegisterRequestRole } from "./registerRequestRole";
 
 export interface RegisterRequest {
   /** @maxLength 254 */
   email: string;
   /**
-     * @minLength 1
-     * @maxLength 100
-     */
+   * @minLength 1
+   * @maxLength 100
+   */
   name: string;
   /**
-     * @minLength 8
-     * @maxLength 128
-     */
+   * @minLength 8
+   * @maxLength 128
+   */
   password: string;
   role: RegisterRequestRole;
 }

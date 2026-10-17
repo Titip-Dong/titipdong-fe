@@ -4,7 +4,7 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { UserResponse } from './userResponse';
+import type { UserResponse } from "./userResponse";
 
 export interface AuthResponse {
   accessToken: string;

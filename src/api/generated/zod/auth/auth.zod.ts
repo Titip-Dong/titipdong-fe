@@ -4,8 +4,7 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import * as zod from 'zod';
-
+import * as zod from "zod";
 
 /**
  * @summary Obtain a short-lived access token
@@ -14,42 +13,44 @@ export const loginBodyEmailMax = 254;
 
 export const loginBodyPasswordMax = 128;
 
-
-
 export const LoginBody = zod.object({
-  "email": zod.email().max(loginBodyEmailMax),
-  "password": zod.string().max(loginBodyPasswordMax)
-})
+  email: zod.email().max(loginBodyEmailMax),
+  password: zod.string().max(loginBodyPasswordMax),
+});
 
 export const LoginResponse = zod.object({
-  "accessToken": zod.string(),
-  "user": zod.object({
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "email": zod.email(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin'])
-})
-})
+  accessToken: zod.string(),
+  user: zod.object({
+    createdAt: zod.iso.datetime({ offset: true }),
+    email: zod.email(),
+    id: zod.string(),
+    name: zod.string(),
+    phone: zod.string().optional(),
+    role: zod.enum(["buyer", "jastiper", "admin"]),
+    status: zod.enum(["active", "suspended"]),
+  }),
+});
 
 /**
  * @summary Revoke the refresh token and clear its cookie
  */
-export const LogoutResponse = zod.void()
+export const LogoutResponse = zod.void();
 
 /**
  * @summary Rotate the refresh token cookie and obtain a new access token
  */
 export const RefreshSessionResponse = zod.object({
-  "accessToken": zod.string(),
-  "user": zod.object({
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "email": zod.email(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin'])
-})
-})
+  accessToken: zod.string(),
+  user: zod.object({
+    createdAt: zod.iso.datetime({ offset: true }),
+    email: zod.email(),
+    id: zod.string(),
+    name: zod.string(),
+    phone: zod.string().optional(),
+    role: zod.enum(["buyer", "jastiper", "admin"]),
+    status: zod.enum(["active", "suspended"]),
+  }),
+});
 
 /**
  * @summary Register a buyer or jastiper account
@@ -61,34 +62,75 @@ export const registerBodyNameMax = 100;
 export const registerBodyPasswordMin = 8;
 export const registerBodyPasswordMax = 128;
 
-
-
 export const RegisterBody = zod.object({
-  "email": zod.email().max(registerBodyEmailMax),
-  "name": zod.string().min(1).max(registerBodyNameMax),
-  "password": zod.string().min(registerBodyPasswordMin).max(registerBodyPasswordMax),
-  "role": zod.enum(['buyer', 'jastiper'])
-})
+  email: zod.email().max(registerBodyEmailMax),
+  name: zod.string().min(1).max(registerBodyNameMax),
+  password: zod.string().min(registerBodyPasswordMin).max(registerBodyPasswordMax),
+  role: zod.enum(["buyer", "jastiper"]),
+});
 
 export const RegisterResponse = zod.object({
-  "accessToken": zod.string(),
-  "user": zod.object({
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "email": zod.email(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin'])
-})
-})
+  accessToken: zod.string(),
+  user: zod.object({
+    createdAt: zod.iso.datetime({ offset: true }),
+    email: zod.email(),
+    id: zod.string(),
+    name: zod.string(),
+    phone: zod.string().optional(),
+    role: zod.enum(["buyer", "jastiper", "admin"]),
+    status: zod.enum(["active", "suspended"]),
+  }),
+});
 
 /**
  * @summary Return the authenticated user's profile
  */
 export const GetCurrentUserResponse = zod.object({
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "email": zod.email(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin'])
-})
+  createdAt: zod.iso.datetime({ offset: true }),
+  email: zod.email(),
+  id: zod.string(),
+  name: zod.string(),
+  phone: zod.string().optional(),
+  role: zod.enum(["buyer", "jastiper", "admin"]),
+  status: zod.enum(["active", "suspended"]),
+});
 
+/**
+ * @summary Update the caller's name, phone, or password
+ */
+export const updateCurrentUserBodyCurrentPasswordMax = 128;
+
+export const updateCurrentUserBodyNameMax = 100;
+
+export const updateCurrentUserBodyNewPasswordMin = 8;
+export const updateCurrentUserBodyNewPasswordMax = 128;
+
+export const updateCurrentUserBodyPhoneMax = 20;
+
+export const updateCurrentUserBodyPhoneRegExp = new RegExp("^\\+?[0-9]*$");
+
+export const UpdateCurrentUserBody = zod.object({
+  currentPassword: zod.string().max(updateCurrentUserBodyCurrentPasswordMax).optional(),
+  name: zod.string().min(1).max(updateCurrentUserBodyNameMax).optional(),
+  newPassword: zod
+    .string()
+    .min(updateCurrentUserBodyNewPasswordMin)
+    .max(updateCurrentUserBodyNewPasswordMax)
+    .optional(),
+  phone: zod
+    .string()
+    .max(updateCurrentUserBodyPhoneMax)
+    .regex(updateCurrentUserBodyPhoneRegExp)
+    .optional()
+    .describe("Empty clears it"),
+});
+
+export const UpdateCurrentUserResponse = zod.object({
+  createdAt: zod.iso.datetime({ offset: true }),
+  email: zod.email(),
+  id: zod.string(),
+  name: zod.string(),
+  phone: zod.string().optional(),
+  role: zod.enum(["buyer", "jastiper", "admin"]),
+  status: zod.enum(["active", "suspended"]),
+});

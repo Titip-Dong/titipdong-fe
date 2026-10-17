@@ -5,13 +5,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PaymentResponseStatus = typeof PaymentResponseStatus[keyof typeof PaymentResponseStatus];
-
+export type PaymentResponseStatus =
+  (typeof PaymentResponseStatus)[keyof typeof PaymentResponseStatus];
 
 export const PaymentResponseStatus = {
-  pending: 'pending',
-  paid: 'paid',
-  failed: 'failed',
-  expired: 'expired',
-  cancelled: 'cancelled',
+  pending: "pending",
+  paid: "paid",
+  failed: "failed",
+  expired: "expired",
+  cancelled: "cancelled",
 } as const;

@@ -1,5 +1,8 @@
 import { defineConfig } from "orval";
 
+// src/api/generated is in .prettierignore, so point prettier at .gitignore only to format the generated files.
+const formatGenerated = { afterAllFilesWrite: "prettier --write --ignore-path .gitignore" };
+
 export default defineConfig({
   titipdong: {
     input: "./openapi/openapi.json",
@@ -16,6 +19,7 @@ export default defineConfig({
         fetch: { includeHttpResponseReturnType: false },
       },
     },
+    hooks: formatGenerated,
   },
   titipdongZod: {
     input: "./openapi/openapi.json",
@@ -26,5 +30,6 @@ export default defineConfig({
       fileExtension: ".zod.ts",
       clean: true,
     },
+    hooks: formatGenerated,
   },
 });

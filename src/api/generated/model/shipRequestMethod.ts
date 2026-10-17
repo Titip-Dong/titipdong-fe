@@ -5,10 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ShipRequestMethod = typeof ShipRequestMethod[keyof typeof ShipRequestMethod];
-
+export type ShipRequestMethod = (typeof ShipRequestMethod)[keyof typeof ShipRequestMethod];
 
 export const ShipRequestMethod = {
-  cod: 'cod',
-  courier: 'courier',
+  cod: "cod",
+  courier: "courier",
 } as const;

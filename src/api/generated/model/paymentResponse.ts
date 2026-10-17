@@ -4,8 +4,8 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { PaymentResponseProvider } from './paymentResponseProvider';
-import type { PaymentResponseStatus } from './paymentResponseStatus';
+import type { PaymentResponseProvider } from "./paymentResponseProvider";
+import type { PaymentResponseStatus } from "./paymentResponseStatus";
 
 export interface PaymentResponse {
   amount: number;

@@ -4,7 +4,7 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { EventResponseActorType } from './eventResponseActorType';
+import type { EventResponseActorType } from "./eventResponseActorType";
 
 export interface EventResponse {
   actorId?: string;
