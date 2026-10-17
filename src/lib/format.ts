@@ -31,3 +31,11 @@ export function formatRelativeTime(value: string | Date, now: Date = new Date())
   if (Math.abs(hours) < 24) return relative.format(hours, "hour");
   return relative.format(Math.round(hours / 24), "day");
 }
+
+/** Up to two initials for an avatar, e.g. "Rina Wijaya" -> "RW", "Budi" -> "BU". */
+export function initials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "?";
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+}

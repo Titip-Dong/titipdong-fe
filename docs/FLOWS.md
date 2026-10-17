@@ -34,18 +34,20 @@ created from the backend CLI. Frontend guards (`RequireAuth`, `RequireRole`) are
 
 ## 2. Session (F01)
 
-| Step               | Hook / call                                 | Notes                                                                      |
-| ------------------ | ------------------------------------------- | -------------------------------------------------------------------------- |
-| Register           | `useRegister`                               | Body `{ name, email, password, role }`; 409 email taken, 422 validation    |
-| Login              | `useLogin`                                  | 401 wrong email or password (same message), 403 suspended account          |
-| Restore on load    | `refreshAccessToken()` in `main.tsx`        | Cookie only; 401 means "not logged in", not an error                       |
-| Any 401 during use | `apiFetch`                                  | Refreshes once and retries; a second 401 clears the session                |
-| Profile            | `useGetCurrentUser`, `useUpdateCurrentUser` | Name, phone, or password (needs the current password)                      |
-| Change password    | `useUpdateCurrentUser`                      | Revokes every refresh token: log the user out and ask them to log in again |
-| Logout             | `logout`                                    | Revokes the session family, clears the cookie                              |
+| Step               | Hook / call                                 | Notes                                                                                                                                                     |
+| ------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Register           | `useRegister`                               | Body `{ name, email, password, role }`; 409 email taken, 422 validation                                                                                   |
+| Login              | `useLogin`                                  | 401 wrong email or password (same message), 403 suspended account                                                                                         |
+| Restore on load    | `refreshAccessToken()` in `main.tsx`        | Cookie only; 401 means "not logged in", not an error                                                                                                      |
+| Any 401 during use | `apiFetch`                                  | Refreshes once and retries; a second 401 clears the session                                                                                               |
+| Profile            | `useGetCurrentUser`, `useUpdateCurrentUser` | Name, phone, or password (needs the current password)                                                                                                     |
+| Change password    | `useUpdateCurrentUser`                      | Revokes every refresh token: `clear({ to: "/login", state: { notice } })`, then log in again. 401 means the current password is wrong (the session stays) |
+| Logout             | `logout`                                    | Revokes the session family, clears the cookie                                                                                                             |
 
 After login, send the user back to `state.from`, or to the role's home: Pembeli `/`, Jastiper `/my-trips`, Admin
-`/admin`.
+`/admin`. To sign out on purpose, call `clear({ to, state })` on the auth store (or `useLogout()` from
+`@/features/auth`): the guards then send the user there instead of to `/login`, so a guarded page cannot race the
+navigation. `apiFetch` only ends the session when the token refresh fails.
 
 ## 3. Trip and catalog (F02)
 

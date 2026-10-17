@@ -93,6 +93,9 @@ Exit: a module can build a list page, a detail page, and a form with photos usin
 
 ### Phase 3: Auth and profile (F01)
 
+Status (2026-10-17): done. Covered by `e2e/auth.spec.ts` (register, login, suspended, profile edit, password change,
+sign-out) on desktop and phone.
+
 - Login and register rebuilt; 403 suspended message; return to `from`.
 - Profile with edit (`useUpdateCurrentUser`): name, phone, password change that logs the user out.
 

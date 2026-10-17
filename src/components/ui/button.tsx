@@ -10,14 +10,14 @@ const buttonVariants = cva(
       variant: {
         // Solid blocks like the logo; no tinted backgrounds (DESIGN.md §8).
         default:
-          "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),black_14%)]",
+          "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),black_14%)] disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100",
         secondary:
-          "border-2 border-foreground bg-card text-foreground hover:bg-foreground hover:text-background aria-expanded:bg-foreground aria-expanded:text-background",
+          "border-2 border-foreground bg-card text-foreground hover:bg-foreground hover:text-background aria-expanded:bg-foreground aria-expanded:text-background disabled:border-border disabled:text-muted-foreground disabled:opacity-100",
         outline:
           "border-border bg-card text-foreground hover:border-foreground aria-expanded:border-foreground",
         ghost: "text-foreground hover:bg-muted aria-expanded:bg-muted",
         destructive:
-          "bg-destructive text-white hover:bg-[color-mix(in_oklch,var(--destructive),black_18%)] focus-visible:ring-destructive/40",
+          "bg-destructive text-white hover:bg-[color-mix(in_oklch,var(--destructive),black_18%)] focus-visible:ring-destructive/40 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

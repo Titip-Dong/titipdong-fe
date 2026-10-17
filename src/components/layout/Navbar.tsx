@@ -1,5 +1,5 @@
-import { Link, NavLink, useNavigate } from "react-router";
-import { logout as logoutRequest } from "@/api/generated/endpoints/auth/auth";
+import { Link, NavLink } from "react-router";
+import { useLogout } from "@/features/auth";
 import { NotificationBell } from "@/features/notification";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { initials } from "@/lib/format";
 import { roleLabel } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
@@ -27,15 +28,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 /** Top bar. With `items` (Pembeli, Jastiper) the main links show from `md`; phones use BottomNav. */
 export function Navbar({ items }: { items?: NavItem[] }) {
   const user = useAuthStore((s) => s.user);
-  const clear = useAuthStore((s) => s.clear);
-  const navigate = useNavigate();
-
-  const logout = async () => {
-    // Clear the local session even if the request fails; the refresh cookie then expires on its own.
-    await logoutRequest().catch(() => undefined);
-    clear();
-    navigate("/");
-  };
+  const logout = useLogout();
 
   return (
     <header className="sticky top-0 z-40 border-b bg-card">
@@ -84,7 +77,7 @@ export function Navbar({ items }: { items?: NavItem[] }) {
                     aria-label="Menu akun"
                   >
                     <Avatar>
-                      <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>{initials(user.name)}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
