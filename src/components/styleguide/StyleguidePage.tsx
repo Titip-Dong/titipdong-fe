@@ -15,6 +15,7 @@ import { EscrowNote } from "@/components/EscrowNote";
 import { ImageUploadField } from "@/components/ImageUploadField";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/PageState";
 import { Titi, type TitiPose } from "@/components/Titi";
+import { PrimitivesShowcase } from "./PrimitivesShowcase";
 
 // Visual reference for the team. Only registered in the router during development.
 // Explanations are in English; example UI copy stays in Indonesian like the real app.
@@ -28,16 +29,25 @@ const palette = [
     swatch: "bg-primary",
   },
   { name: "Tinta", hex: "#161616", role: "Text, icons, Titi's face", swatch: "bg-foreground" },
-  { name: "Kertas", hex: "#F7F6F4", role: "Page background", swatch: "bg-background" },
-  { name: "Putih", hex: "#FFFFFF", role: "Cards, receipts, inputs, dialogs", swatch: "bg-card" },
-  { name: "Garis", hex: "#E2DFDB", role: "Borders and dividers", swatch: "bg-border" },
+  {
+    name: "Kertas",
+    hex: "#FFFFFF",
+    role: "Page, cards, receipts, dialogs",
+    swatch: "bg-background",
+  },
+  { name: "Garis", hex: "#E6E6E6", role: "Borders and dividers", swatch: "bg-border" },
   {
     name: "Merah muda",
     hex: "#FDECED",
     role: "Soft brand surfaces: escrow notes, selected chips",
     swatch: "bg-secondary",
   },
-  { name: "Abu", hex: "#EFEDEA", role: "Quiet surfaces, final statuses", swatch: "bg-muted" },
+  {
+    name: "Abu",
+    hex: "#F4F4F4",
+    role: "Neutral quiet surfaces, final statuses",
+    swatch: "bg-muted",
+  },
   {
     name: "Rambu",
     hex: "#F5C400",
@@ -416,6 +426,13 @@ export function Component() {
             <p className="text-sm text-destructive">Jumlah minimal 1.</p>
           </div>
         </div>
+      </Section>
+
+      <Section
+        title="Primitives"
+        note="Every shadcn primitive in its TITIP DONG style. None of them may keep the library's stock look."
+      >
+        <PrimitivesShowcase />
       </Section>
 
       <Section

@@ -18,7 +18,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {initialized ? <RouterProvider router={router} /> : <FullPageLoader />}
-      <Toaster richColors />
+      <Toaster />
       <ReactQueryDevtools buttonPosition="bottom-left" />
     </QueryClientProvider>
   );
