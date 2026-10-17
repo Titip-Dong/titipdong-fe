@@ -57,7 +57,7 @@ Tokens live in `src/index.css`. Use the semantic utility (`bg-primary`), never t
 Rules:
 
 - **Merah is precious.** One primary button per view, plus small trust signals. Full-red surfaces with white text
-  appear only on the landing hero and the escrow panel of the login and register pages.
+  appear only on the landing hero and the Titi panel of the login and register pages.
 - **Rambu never carries text color** and never fills a large area; it marks something waiting for the user.
 - **Status colors come only from `OrderStatusBadge`** (orders) and the status components in §8.
 - Contrast: body text on Kertas and white on Merah meet WCAG AA. Muted text is for secondary information
@@ -125,25 +125,25 @@ Tailwind's 4 px scale. Common steps:
 
 Design at **360 px** and **1280 px**; everything must work in between without horizontal scroll.
 
-| Breakpoint | Width     | Changes                                                                                             |
-| ---------- | --------- | --------------------------------------------------------------------------------------------------- |
-| base       | 360–639   | One column; bottom navigation for Pembeli and Jastiper; the main action sits in a sticky bottom bar |
-| `sm`       | ≥ 640 px  | Product grids go from 2 to 3 columns                                                                |
-| `md`       | ≥ 768 px  | Top navbar replaces bottom navigation; long lists become tables                                     |
-| `lg`       | ≥ 1024 px | Two-column layouts (receipt left, timeline and actions right); admin sidebar                        |
-| `xl`       | ≥ 1280 px | Content stops growing at its page width                                                             |
+| Breakpoint | Width     | Changes                                                                               |
+| ---------- | --------- | ------------------------------------------------------------------------------------- |
+| base       | 360–639   | One column; main links in the menu sheet; the main action sits in a sticky bottom bar |
+| `sm`       | ≥ 640 px  | Product grids go from 2 to 3 columns                                                  |
+| `md`       | ≥ 768 px  | Main links move into the top bar; long lists become tables                            |
+| `lg`       | ≥ 1024 px | Two-column layouts (receipt left, timeline and actions right); admin sidebar          |
+| `xl`       | ≥ 1280 px | Content stops growing at its page width                                               |
 
 Touch targets are at least 44 × 44 px below `md`.
 
 ### App shell
 
-Built in `src/components/layout/` (`MainLayout`, `Navbar`, `BottomNav`, items in `navigation.ts`).
+Built in `src/components/layout/` (`MainLayout`, `Navbar`, items in `navigation.ts`). It is a website, not an app:
+no bottom tab bar and no footer.
 
 - **Visitor**: top bar with logo, "Cari trip", "Masuk", "Daftar".
-- **Pembeli / Jastiper, phone**: slim top bar (logo, notification bell, account menu with "Keluar") and a bottom
-  navigation with at most 4 items. Pembeli: Beranda, Cari trip, Titipan, Profil. Jastiper: Trip saya, Titipan
-  masuk, Saldo, Profil.
-- **Pembeli / Jastiper, `md` and up**: the same items in the top navbar (Profil lives in the account menu).
+- **Pembeli / Jastiper, `md` and up**: main links inline in the top bar (Pembeli: Beranda, Cari trip, Titipan;
+  Jastiper: Trip saya, Titipan masuk, Saldo), then the notification bell and the account menu (Profil, Keluar).
+- **Pembeli / Jastiper, phone**: logo, bell, account menu, and a menu button that opens a sheet with the same links.
 - **Admin**: notification bell and account menu in the top bar; the admin area has a sidebar from `lg` and a sheet
   menu below it; functional and dense, no Titi.
 - After login, users land on their role home (`roleHome` in `src/lib/roles.ts`) unless they came from a guarded page.
@@ -190,8 +190,8 @@ rounded bottom corners. Colors are derived from tokens with `color-mix`, never h
 
 **Rules**
 
-- At most one Titi per screen. Never in forms, tables, the admin area, or next to a primary action it would
-  compete with.
+- At most one Titi per screen. Never inside forms, tables, or the admin area, or next to a primary action it would
+  compete with. The login and register pages show a large still, inverted Titi on a red panel beside the form.
 - Titi always sits fully inside its container; never half outside an edge.
 - Titi only moves on screens where it is the focus (empty, success, 404). In dialogs, toasts, and inline use it is
   `still`.
@@ -231,7 +231,7 @@ TITIP DONG building blocks (all shown in `/styleguide`):
 | `LoadMore` + `useCursorList` (`src/lib/pagination.ts`)      | Every cursor list: "Muat lagi" under the rows, hidden when there is no next page                                                                                                                                                                                                                           |
 | `ConfirmDialog`                                             | Every destructive or final action: a still Titi inside the dialog above the title (`khawatir` when destructive), extra-bold question, one-sentence consequence, large buttons (stacked on phones, action first). Focus starts on "Kembali". Pass `mutateAsync` so it stays open while pending and on error |
 | `ImageUploadField` (+ `uploadImage` in `src/lib/upload.ts`) | Every photo input: validates type and size, uploads right away, reports the upload ID                                                                                                                                                                                                                      |
-| `ActionBar`                                                 | The page's main action; sticks above the bottom navigation on phones, inline from `md`                                                                                                                                                                                                                     |
+| `ActionBar`                                                 | The page's main action; sticks to the bottom of the screen on phones, inline from `md`                                                                                                                                                                                                                     |
 | `Deadline`                                                  | Payment and request deadlines; Rambu in the last 24 hours                                                                                                                                                                                                                                                  |
 | `EscrowNote`                                                | Next to every amount the user pays or receives                                                                                                                                                                                                                                                             |
 | `NotificationBell` (F07)                                    | Polls the unread count every 30 s while the tab is visible                                                                                                                                                                                                                                                 |
@@ -281,6 +281,9 @@ Motion gives feedback and celebrates; it never decorates a static screen.
 ## 11. Copy
 
 - Casual Indonesian with "kamu", active voice, short sentences. Friendly, never cute at the cost of clarity.
+- No filler: no subtitle under every heading, no slogans repeated on every page, no sentence that only restates the
+  title ("Buat akun dalam satu menit", "Keluar dari akun ini"). Helper text only when it prevents a mistake
+  ("Minimal 8 karakter").
 - Buttons name the action: "Titip barang ini", "Bayar sekarang", "Barang sudah diterima", "Tolak titipan".
 - Errors: what happened + how to fix it ("Fotonya lebih dari 5 MB. Pilih foto yang lebih kecil, ya.").
 - Empty states invite the next step ("Belum ada titipan. Cari trip yang cocok, yuk.").

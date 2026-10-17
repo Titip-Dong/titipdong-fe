@@ -28,12 +28,12 @@ const roles = [
   {
     value: "buyer",
     title: "Pembeli",
-    description: "Aku mau titip barang dari luar kota atau negeri.",
+    description: "Titip barang dari luar negeri",
   },
   {
     value: "jastiper",
     title: "Jastiper",
-    description: "Aku lagi jalan-jalan dan mau buka titipan.",
+    description: "Buka titipan saat bepergian",
   },
 ] as const;
 
@@ -64,7 +64,6 @@ export function Component() {
   return (
     <AuthShell
       title="Daftar"
-      description="Buat akun TITIP DONG dalam satu menit."
       footer={
         <>
           Sudah punya akun?{" "}

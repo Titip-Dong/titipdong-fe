@@ -45,7 +45,6 @@ export function Component() {
   return (
     <AuthShell
       title="Masuk"
-      description="Masuk untuk titip barang atau mengelola trip kamu."
       footer={
         <>
           Belum punya akun?{" "}
