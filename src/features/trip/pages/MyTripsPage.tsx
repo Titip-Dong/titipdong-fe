@@ -1,81 +1,59 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { Link } from "react-router";
-import { toast } from "sonner";
-import {
-  getListMyTripsQueryKey,
-  getListTripsQueryKey,
-  useCloseTrip,
-  useListMyTrips,
-} from "@/api/generated/endpoints/trip/trip";
+import { LoadMore } from "@/components/LoadMore";
+import { EmptyState, ErrorState, ListSkeleton } from "@/components/PageState";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { errorMessage } from "@/lib/api-error";
 import { TripRow } from "../components/TripRow";
+import { TripStatusBadge } from "../components/TripStatusBadge";
+import { useMyTrips } from "../hooks/useTrips";
 
 export function Component() {
-  const queryClient = useQueryClient();
-  const { data, isPending, isError } = useListMyTrips({ limit: 100 });
-  const closeTrip = useCloseTrip({
-    mutation: {
-      onSuccess: () => {
-        toast.success("Trip ditutup. Pembeli tidak bisa titip lagi di trip ini.");
-        void queryClient.invalidateQueries({ queryKey: getListMyTripsQueryKey() });
-        void queryClient.invalidateQueries({ queryKey: getListTripsQueryKey() });
-      },
-      onError: (err) => toast.error(errorMessage(err, { 409: "Trip ini sudah ditutup." })),
-    },
-  });
-  const trips = data?.items ?? [];
+  const trips = useMyTrips();
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-6 px-4 py-10">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="text-4xl font-bold">Trip saya</h1>
+    <div className="mx-auto w-full max-w-5xl space-y-6 px-4 py-6 sm:px-6 sm:py-10">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl sm:text-4xl">Trip saya</h1>
         <Button asChild>
           <Link to="/my-trips/new">
             <PlusIcon data-icon="inline-start" />
             Buka trip baru
           </Link>
         </Button>
-      </header>
+      </div>
 
-      {isPending ? (
-        <Skeleton className="h-48 rounded-2xl" />
-      ) : isError ? (
-        <p className="text-destructive">Trip kamu gagal dimuat. Muat ulang halaman, ya.</p>
-      ) : trips.length === 0 ? (
-        <div className="rounded-2xl border bg-card p-6 text-muted-foreground">
-          Kamu belum punya trip. Mau jalan-jalan ke mana? Buka trip supaya orang bisa titip barang.
-        </div>
+      {trips.isPending ? (
+        <ListSkeleton rows={3} />
+      ) : trips.isError ? (
+        <ErrorState onRetry={() => void trips.refetch()} />
+      ) : trips.items.length === 0 ? (
+        <EmptyState
+          title="Belum ada trip"
+          description="Buka trip saat kamu mau bepergian, lalu isi katalog barang yang bisa dititip."
+          action={{ label: "Buka trip baru", to: "/my-trips/new" }}
+        />
       ) : (
-        <ul className="divide-y overflow-hidden rounded-2xl border bg-card">
-          {trips.map((t) => (
-            <li key={t.id} className="sm:flex sm:items-center">
-              <div className="min-w-0 flex-1">
-                <TripRow trip={t} to={`/my-trips/${t.id}/requests`} />
-              </div>
-              {t.status === "open" && (
-                <div className="px-4 pb-4 sm:p-5 sm:pl-0">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={closeTrip.isPending}
-                    onClick={() => {
-                      if (
-                        window.confirm(`Tutup trip "${t.title}"? Pembeli tidak bisa titip lagi.`)
-                      ) {
-                        closeTrip.mutate({ id: t.id });
-                      }
-                    }}
-                  >
-                    Tutup trip
-                  </Button>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-4">
+          <ul className="divide-y rounded-xl border bg-card">
+            {trips.items.map((t) => (
+              <li key={t.id}>
+                <TripRow
+                  trip={t}
+                  to={`/my-trips/${t.slug}`}
+                  status={
+                    <span className="flex flex-wrap items-center gap-2">
+                      <TripStatusBadge value={t.status} />
+                      <span className="text-muted-foreground">
+                        {t.capacity - t.remainingCapacity} dari {t.capacity} barang terpesan
+                      </span>
+                    </span>
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+          <LoadMore {...trips} />
+        </div>
       )}
     </div>
   );
