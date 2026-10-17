@@ -63,3 +63,49 @@ export async function setUserStatus(userId: string, status: "active" | "suspende
     adminToken,
   );
 }
+
+export interface TestTrip {
+  id: string;
+  slug: string;
+  title: string;
+  destinationCity: string;
+}
+
+const day = 24 * 60 * 60 * 1000;
+const isoDate = (offsetDays: number) =>
+  new Date(Date.now() + offsetDays * day).toISOString().slice(0, 10);
+
+/** An open trip that departs tomorrow; the city gets a unique suffix so list filters find only this trip. */
+export async function createTrip(token: string, overrides: Partial<Record<string, unknown>> = {}) {
+  const suffix = randomUUID().slice(0, 6);
+  return call<TestTrip>(
+    "/trips",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        title: `Jastip QA ${suffix}`,
+        destinationCity: `Qacity${suffix}`,
+        destinationCountry: "JP",
+        departsOn: isoDate(1),
+        returnsOn: isoDate(10),
+        requestDeadline: new Date(Date.now() + 3 * day).toISOString(),
+        capacity: 10,
+        ...overrides,
+      }),
+    },
+    token,
+  );
+}
+
+export async function addItem(
+  token: string,
+  tripId: string,
+  name: string,
+  referencePrice?: number,
+) {
+  await call(
+    `/trips/${tripId}/items`,
+    { method: "POST", body: JSON.stringify({ name, referencePrice }) },
+    token,
+  );
+}
