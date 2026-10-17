@@ -8,7 +8,8 @@ import { ProductTile } from "@/components/ProductTile";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { Titi, type TitiPose } from "./TitiSketch";
+import { EmptyState, ErrorState, ListSkeleton } from "@/components/PageState";
+import { Titi, type TitiPose } from "@/components/Titi";
 
 // Visual reference for the team. Only registered in the router during development.
 // Explanations are in English; example UI copy stays in Indonesian like the real app.
@@ -192,25 +193,13 @@ const titiPoses: { pose: TitiPose; label: string; use: string }[] = [
   { pose: "tidur", label: "Tidur", use: "Trip yang sudah ditutup atau selesai" },
 ];
 
-function TitiEmptyState({ layout }: { layout: "mobile" | "desktop" }) {
+function SampleEmptyState() {
   return (
-    <div
-      className={cn(
-        "flex gap-4 rounded-lg border bg-card p-5",
-        layout === "mobile"
-          ? "flex-col items-center text-center"
-          : "items-center gap-8 p-8 text-left",
-      )}
-    >
-      <Titi pose="bingung" className={layout === "mobile" ? "size-24" : "size-36 shrink-0"} />
-      <div className={cn("space-y-3", layout === "mobile" && "flex flex-col items-center")}>
-        <p className="font-heading text-xl font-bold">Belum ada titipan</p>
-        <p className="max-w-sm text-sm text-muted-foreground">
-          Cari jastiper yang lagi ke kota tujuan barang incaranmu, lalu titip dari halaman trip-nya.
-        </p>
-        <Button className={layout === "mobile" ? "w-full" : undefined}>Cari trip</Button>
-      </div>
-    </div>
+    <EmptyState
+      title="Belum ada titipan"
+      description="Cari jastiper yang lagi ke kota tujuan barang incaranmu, lalu titip dari halaman trip-nya."
+      action={{ label: "Cari trip", to: "#" }}
+    />
   );
 }
 
@@ -321,17 +310,27 @@ export function Component() {
             <p className="text-sm text-muted-foreground">Di atas latar merah, misalnya hero</p>
           </li>
         </ul>
+      </Section>
+
+      <Section
+        title="Page states"
+        note="PageState adapts to its container: stacked when narrow, side by side when wide. Titi is decorative here."
+      >
         <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
           <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">Mobile (360 px)</p>
+            <p className="text-sm font-medium text-muted-foreground">Narrow (360 px)</p>
             <div className="w-full max-w-[360px]">
-              <TitiEmptyState layout="mobile" />
+              <SampleEmptyState />
             </div>
           </div>
-          <div className="hidden space-y-2 lg:block">
-            <p className="text-sm font-medium text-muted-foreground">Desktop</p>
-            <TitiEmptyState layout="desktop" />
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Wide</p>
+            <SampleEmptyState />
           </div>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ErrorState onRetry={() => undefined} />
+          <ListSkeleton />
         </div>
       </Section>
 

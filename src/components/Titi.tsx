@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { cn } from "@/lib/utils";
 
-// Mascot sketch; moves to src/components/ once the design is agreed.
+// Mascot; poses and usage rules are in DESIGN.md §7.
 
 export type TitiPose = "menyapa" | "senang" | "bingung" | "menunggu" | "khawatir" | "tidur";
 
@@ -106,11 +106,14 @@ function RestingArms({ angle, className }: { angle: number; className: string })
 export function Titi({
   pose,
   inverted = false,
+  decorative = false,
   className,
 }: {
   pose: TitiPose;
   /** White body for red surfaces. */
   inverted?: boolean;
+  /** Hide from screen readers when the text next to Titi says it all. */
+  decorative?: boolean;
   className?: string;
 }) {
   const clipId = useId();
@@ -122,8 +125,9 @@ export function Titi({
     <svg
       viewBox="0 0 140 160"
       className={cn("overflow-visible", className)}
-      role="img"
-      aria-label={`Titi, pose ${pose}`}
+      {...(decorative
+        ? { "aria-hidden": true }
+        : { role: "img", "aria-label": `Titi, pose ${pose}` })}
     >
       <style>{animations}</style>
       <clipPath id={clipId}>
