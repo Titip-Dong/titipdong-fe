@@ -11,11 +11,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { roleLabel } from "@/lib/roles";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
+import type { NavItem } from "./navigation";
 
-export function Navbar() {
+const linkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "rounded-md py-1 text-sm whitespace-nowrap outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+    isActive
+      ? "font-semibold text-foreground underline decoration-primary decoration-2 underline-offset-8"
+      : "text-muted-foreground hover:text-foreground",
+  );
+
+/** Top bar. With `items` (Pembeli, Jastiper) the main links show from `md`; phones use BottomNav. */
+export function Navbar({ items }: { items?: NavItem[] }) {
   const user = useAuthStore((s) => s.user);
-  const hasRole = useAuthStore((s) => s.hasRole);
   const clear = useAuthStore((s) => s.clear);
   const navigate = useNavigate();
 
@@ -28,7 +39,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b bg-card">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:gap-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4 sm:px-6">
         <Link to="/" className="shrink-0 rounded-sm">
           <img
             src="/titipdong-logo-navbar.png"
@@ -38,17 +49,26 @@ export function Navbar() {
             className="h-8 w-auto"
           />
         </Link>
-        <nav className="flex items-center gap-4 text-sm whitespace-nowrap">
-          <NavLink
-            to="/trips"
-            className={({ isActive }) =>
-              isActive
-                ? "font-medium text-foreground underline decoration-2 underline-offset-8"
-                : "text-muted-foreground hover:text-foreground"
-            }
-          >
-            Cari trip
-          </NavLink>
+
+        <nav aria-label="Navigasi utama" className="flex items-center gap-5">
+          {items ? (
+            items
+              .filter((item) => item.to !== "/profile")
+              .map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={(state) => cn(linkClass(state), "hidden md:inline")}
+                >
+                  {item.label}
+                </NavLink>
+              ))
+          ) : (
+            <NavLink to="/trips" className={linkClass}>
+              Cari trip
+            </NavLink>
+          )}
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
@@ -57,39 +77,32 @@ export function Navbar() {
               <NotificationBell />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full"
+                    aria-label="Menu akun"
+                  >
                     <Avatar>
                       <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel className="truncate">{user.name}</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuLabel>
+                    <span className="block truncate">{user.name}</span>
+                    <span className="block text-xs font-normal text-muted-foreground">
+                      {roleLabel[user.role]}
+                    </span>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile">Profil</Link>
-                  </DropdownMenuItem>
-                  {hasRole("buyer") && (
+                  {user.role === "admin" ? (
                     <DropdownMenuItem asChild>
-                      <Link to="/orders">Titipan Saya</Link>
+                      <Link to="/admin">Dashboard admin</Link>
                     </DropdownMenuItem>
-                  )}
-                  {hasRole("jastiper") && (
-                    <>
-                      <DropdownMenuItem asChild>
-                        <Link to="/my-trips">Trip Saya</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/orders">Titipan Masuk</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/wallet">Saldo</Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                  {hasRole("admin") && (
+                  ) : (
                     <DropdownMenuItem asChild>
-                      <Link to="/admin">Dashboard Admin</Link>
+                      <Link to="/profile">Profil</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
