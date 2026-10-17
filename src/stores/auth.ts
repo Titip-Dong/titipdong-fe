@@ -10,6 +10,8 @@ interface AuthState {
   /** True once the initial session restore (refresh) attempt has finished. */
   initialized: boolean;
   setSession: (token: string, user: AuthUser) => void;
+  /** Keeps the session user in sync after the user edits their own profile. */
+  setUser: (user: AuthUser) => void;
   clear: () => void;
   setInitialized: () => void;
   hasRole: (role: Role) => boolean;
@@ -21,6 +23,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   initialized: false,
   setSession: (accessToken, user) => set({ accessToken, user }),
+  setUser: (user) => set({ user }),
   clear: () => set({ accessToken: null, user: null }),
   setInitialized: () => set({ initialized: true }),
   hasRole: (role) => get().user?.role === role,
