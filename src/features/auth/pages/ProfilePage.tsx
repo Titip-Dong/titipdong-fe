@@ -90,9 +90,7 @@ function ProfileDetails({ user }: { user: UserResponse }) {
             aria-invalid={!!errors.phone}
             {...form.register("phone")}
           />
-          <FieldDescription>
-            Hanya angka, boleh diawali +. Kosongkan untuk menghapus.
-          </FieldDescription>
+          <FieldDescription>Angka saja, boleh diawali +.</FieldDescription>
           <FieldError errors={[errors.phone]} />
         </Field>
         <Button
@@ -235,7 +233,6 @@ export function Component() {
           </Section>
 
           <Section title="Keluar">
-            <p className="text-sm text-muted-foreground">Keluar dari akun ini di perangkat ini.</p>
             <Button variant="outline" className="w-full sm:w-fit" onClick={() => void logout()}>
               Keluar
             </Button>

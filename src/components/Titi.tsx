@@ -40,9 +40,9 @@ const palette = {
   },
   white: {
     body: "fill-(--kertas)",
-    shade: "fill-[color-mix(in_oklch,var(--kertas),var(--tinta)_14%)]",
+    shade: "fill-[color-mix(in_oklch,var(--merah),white_78%)]",
     cheek: "fill-[color-mix(in_oklch,var(--merah),white_60%)]",
-    drop: "fill-[color-mix(in_oklch,var(--kertas),var(--tinta)_14%)]",
+    drop: "fill-[color-mix(in_oklch,var(--merah),white_78%)]",
   },
 };
 
