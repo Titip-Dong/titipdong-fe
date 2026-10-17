@@ -23,6 +23,8 @@ const animations = `
 .titi-breathe { transform-box: fill-box; transform-origin: 50% 100%; animation: titi-breathe 3s ease-in-out infinite; }
 .titi-zz { animation: titi-zz 2.4s ease-out infinite; }
 .titi-zz-late { animation-delay: 1.2s; }
+.titi-still * { animation: none !important; }
+.titi-still .titi-zz { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .titi-wave, .titi-jump, .titi-float, .titi-tap, .titi-tick, .titi-shiver, .titi-breathe { animation: none; }
   .titi-zz { animation: none; opacity: 1; }
@@ -107,6 +109,7 @@ export function Titi({
   pose,
   inverted = false,
   decorative = false,
+  still = false,
   className,
 }: {
   pose: TitiPose;
@@ -114,6 +117,8 @@ export function Titi({
   inverted?: boolean;
   /** Hide from screen readers when the text next to Titi says it all. */
   decorative?: boolean;
+  /** No animation, e.g. inside dialogs. */
+  still?: boolean;
   className?: string;
 }) {
   const clipId = useId();
@@ -124,7 +129,7 @@ export function Titi({
   return (
     <svg
       viewBox="0 0 140 160"
-      className={cn("overflow-visible", className)}
+      className={cn("overflow-visible", still && "titi-still", className)}
       {...(decorative
         ? { "aria-hidden": true }
         : { role: "img", "aria-label": `Titi, pose ${pose}` })}
