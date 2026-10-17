@@ -172,14 +172,14 @@ rounded bottom corners. Colors are derived from tokens with `color-mix`, never h
 
 **Poses**
 
-| Pose       | Use                                                      | Status   |
-| ---------- | -------------------------------------------------------- | -------- |
-| `menyapa`  | Landing, onboarding, first login                         | Sketched |
-| `senang`   | Payment done, item received, funds released, payout paid | Sketched |
-| `bingung`  | Empty states, empty search results, 404                  | Sketched |
-| `menunggu` | Waiting for approval or payment                          | To draw  |
-| `khawatir` | Errors, disputes                                         | To draw  |
-| `tidur`    | Closed or completed trips                                | To draw  |
+| Pose       | Use                                                      | Prop and motion                    |
+| ---------- | -------------------------------------------------------- | ---------------------------------- |
+| `menyapa`  | Landing, onboarding, first login                         | Waves                              |
+| `senang`   | Payment done, item received, funds released, payout paid | Arms up, jumps                     |
+| `bingung`  | Empty states, empty search results, 404                  | Question mark, floats              |
+| `menunggu` | Waiting for approval or payment                          | Ticking clock, taps a foot         |
+| `khawatir` | Errors, disputes                                         | Sweat drop, worried brows, shivers |
+| `tidur`    | Closed or completed trips                                | Closed eyes, rising "z", breathes  |
 
 **Rules**
 
