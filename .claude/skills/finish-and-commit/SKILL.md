@@ -31,12 +31,29 @@ pnpm api:gen && git status --short -- src/api/generated   # must print nothing (
 
 ### Branches
 
-- Cut branches from an up-to-date `main`: `git switch main && git pull --ff-only && git switch -c <branch>`.
+- `main` is production (every push deploys to Azure Static Web Apps through
+  `.github/workflows/deploy-static-web-app.yml`); `dev` is integration.
+- Cut branches from an up-to-date `dev`: `git switch dev && git pull --ff-only && git switch -c <branch>`.
 - Names: `feat/<module>-<description>` or `fix/<module>-<description>` (`feat/order-request-form`); shared work uses
-  the area (`feat/design-system`, `chore/api-sync`). Never commit directly to `main`.
-- Everything reaches `main` through a PR with green CI. Pushing `main` deploys to Azure Static Web Apps
-  (`.github/workflows/deploy-static-web-app.yml`).
-- Push the branch and open the PR only after the user says so in this conversation.
+  the area (`feat/design-system`, `chore/api-sync`). Never commit directly to `dev` or `main`.
+- **Branch → `dev`, no PR.** When every planned item on the branch is committed and the checks pass, summarize the
+  commits and results and **ask the user** whether to merge into `dev`. Only after an explicit yes in this
+  conversation:
+
+  ```sh
+  git push origin <branch>          # remote branch first, so it matches what is merged
+  git switch dev && git pull --ff-only
+  git merge --no-ff <branch> -m "Merge branch '<branch>' into dev"
+  pnpm lint && pnpm build           # dev must stay green
+  git push origin dev
+  git branch -d <branch>
+  ```
+
+  If the merge conflicts or a check fails on `dev`, stop and report; do not push.
+
+- **`dev` → `main` only when the user asks for a release**: the same steps with `dev` merged into `main`
+  (`Merge branch 'dev'`). Pushing `main` deploys, so say that when asking.
+- Remote branches are kept after merging.
 
 ### Granularity
 

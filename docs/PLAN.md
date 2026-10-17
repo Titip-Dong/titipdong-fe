@@ -168,5 +168,5 @@ Run against the local backend after `make seed` (`docs/FLOWS.md` describes each 
   few item photos, or a text-only list. Decide in phase 1 or 4.
 - Where admin orders and the payout queue live in the route map (`/admin/orders`, `/admin/payouts`) and who owns them.
 - Whether `/my-trips/:id` becomes a trip management page (details, catalog, inbox as tabs).
-- Branch flow for the revamp: one branch per phase into `main` through PRs, or an integration branch (`dev`) as in
-  the backend.
+- ~~Branch flow for the revamp~~: decided 2026-10-17. Each branch merges into `dev` without a PR; `dev` goes to
+  `main` for releases.

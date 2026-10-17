@@ -222,12 +222,13 @@ version. The essentials:
 
 ## Git conventions
 
-- Branches: `feat/<module>-<description>` or `fix/<module>-<description>`, e.g. `feat/order-request-form`.
+- Branches: `feat/<module>-<description>` or `fix/<module>-<description>`, e.g. `feat/order-request-form`, cut from
+  `dev`.
 - Commits: Conventional Commits scoped by module, e.g. `feat(order): add request inbox page`, subject line only.
   No AI attribution (`Co-Authored-By`, "Generated with Claude Code"); commits belong to the local git identity.
   Details in `.claude/skills/finish-and-commit/SKILL.md`.
-- Everything reaches `main` through a PR with green CI. Pushes to `main` deploy to Azure Static Web Apps
-  (`.github/workflows/deploy-static-web-app.yml`).
+- Finished branches are merged into `dev` directly (no PR), after local checks pass. `dev` is merged into `main` only
+  for a release; pushes to `main` deploy to Azure Static Web Apps (`.github/workflows/deploy-static-web-app.yml`).
 
 ## Temporary (TODO)
 
