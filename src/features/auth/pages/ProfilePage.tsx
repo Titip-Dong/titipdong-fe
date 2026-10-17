@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
@@ -19,7 +18,7 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/c
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { errorMessage, setFieldErrors } from "@/lib/api-error";
-import { formatDate } from "@/lib/format";
+import { formatDate, initials } from "@/lib/format";
 import { roleLabel } from "@/lib/roles";
 import { useAuthStore } from "@/stores/auth";
 import { useLogout } from "../hooks/useLogout";
@@ -109,7 +108,6 @@ function ProfileDetails({ user }: { user: UserResponse }) {
 }
 
 function ChangePassword() {
-  const navigate = useNavigate();
   const clear = useAuthStore((s) => s.clear);
   const queryClient = useQueryClient();
   const update = useUpdateCurrentUser();
@@ -125,12 +123,11 @@ function ChangePassword() {
       {
         // The backend signs out every device after a password change, this one included.
         onSuccess: () => {
-          clear();
-          queryClient.clear();
-          navigate("/login", {
-            replace: true,
+          clear({
+            to: "/login",
             state: { notice: "Password sudah diganti. Masuk lagi pakai password baru, ya." },
           });
+          queryClient.clear();
         },
         onError: (err) => {
           if (err.status === 401) {
@@ -215,9 +212,7 @@ export function Component() {
         <>
           <div className="flex items-center gap-4">
             <Avatar className="size-16">
-              <AvatarFallback className="text-xl">
-                {user.name.slice(0, 2).toUpperCase()}
-              </AvatarFallback>
+              <AvatarFallback className="text-xl">{initials(user.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 space-y-1">
               <div className="flex flex-wrap items-center gap-2">
