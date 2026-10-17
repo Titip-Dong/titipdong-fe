@@ -12,6 +12,7 @@ pnpm format
 pnpm lint            # ESLint, including the cross-module import rule
 pnpm build           # tsc -b + vite build
 pnpm api:gen && git status --short -- src/api/generated   # must print nothing (CI checks this)
+pnpm e2e             # when a user journey changed; needs the local backend (make db-up + make seed)
 ```
 
 - UI changes: run the page against the local backend (`make db-up` + `make seed` in `../titipdong-be`, then
