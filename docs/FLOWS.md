@@ -229,7 +229,7 @@ Suspension takes effect at the next refresh: an access token already issued work
   `ImageUploadField` or `uploadImage()` from `src/lib/upload.ts`. Read URLs in responses expire after one hour: do
   not store them.
 - **Pagination**: every list returns `{ items, nextCursor }`; use `useCursorList(getXQueryKey(params), (cursor) =>
-listX({ ...params, cursor }))` from `src/lib/pagination.ts` with `LoadMore`.
+listX({ ...params, cursor }))` from `src/lib/pagination.ts` with `LoadMore` (infinite scroll).
 - **Errors**: 401 session, 403 role, 404 missing or not yours, 409 state changed (refetch and explain), 422 input.
   On 409, always invalidate the order or trip so the screen shows the new state. Show copy with `errorMessage()` and
   mark 422 fields with `setFieldErrors(error, form.setError)` (`src/lib/api-error.ts`).

@@ -18,7 +18,7 @@ export function TripRow({
   return (
     <Link
       to={to}
-      className="grid gap-4 p-4 outline-none hover:bg-muted/60 focus-visible:bg-muted/60 sm:p-5 md:grid-cols-[1fr_auto] md:items-center md:gap-8"
+      className="grid gap-4 rounded-xl border bg-card p-4 transition-colors outline-none hover:border-foreground focus-visible:ring-3 focus-visible:ring-ring/50 sm:p-5 md:grid-cols-[1fr_auto] md:items-center md:gap-8"
     >
       <div className="min-w-0 space-y-1">
         <p className="font-heading text-xl font-extrabold tracking-tight sm:text-2xl">

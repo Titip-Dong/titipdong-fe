@@ -239,8 +239,10 @@ TITIP DONG building blocks (all shown in `/styleguide`):
 
 ## 9. Patterns
 
-- **List → detail.** Lists are rows with the product photo (or the trip's first item) on the left, the key facts in
-  the middle, status or amount on the right. A row is one link.
+- **List → detail.** Lists are separate cards (`rounded-xl border`, `gap-3`), one link each: the key facts first,
+  the product photos (or a trip's first catalog photos) beside them, status or amount at the end.
+- **Search.** Filters apply as the user types (debounced ~400 ms with `useDebouncedValue`) and live in the URL; no
+  "Cari" button on list pages.
 - **Order detail.** `Receipt` first; below the tear line exactly the actions for the current status and role
   (`docs/FLOWS.md` §4); the timeline after it. Two columns from `lg`.
 - **Money and trust.** Next to every amount the user pays or receives, a one-line escrow note in `secondary`

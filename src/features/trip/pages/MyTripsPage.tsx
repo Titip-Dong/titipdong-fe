@@ -34,7 +34,7 @@ export function Component() {
         />
       ) : (
         <div className="space-y-4">
-          <ul className="divide-y rounded-xl border bg-card">
+          <ul className="grid gap-3">
             {trips.items.map((t) => (
               <li key={t.id}>
                 <TripRow

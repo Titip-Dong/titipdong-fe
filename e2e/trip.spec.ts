@@ -115,3 +115,30 @@ test("another jastiper cannot manage someone else's trip", async ({ page }) => {
   await page.goto(`/my-trips/${trip.slug}`);
   await expect(page.getByRole("heading", { name: "Trip ini nggak ketemu" })).toBeVisible();
 });
+
+test("typing a city filters the list without pressing a button", async ({ page }) => {
+  const jastiper = await createAccount("jastiper");
+  const trip = await createTrip(jastiper.token);
+  await page.goto("/trips");
+  await page.getByLabel("Kota tujuan").fill(trip.destinationCity);
+  await expect(page).toHaveURL(new RegExp(`city=${trip.destinationCity}`));
+  await expect(
+    page.getByRole("heading", { name: `Trip ke ${trip.destinationCity}` }),
+  ).toBeVisible();
+  await expect(page.getByText(trip.title)).toBeVisible();
+});
+
+test("scrolling to the end loads the next page of trips", async ({ page }) => {
+  const jastiper = await createAccount("jastiper");
+  const city = `Qascroll${Date.now().toString(36)}`;
+  await Promise.all(
+    Array.from({ length: 22 }, () => createTrip(jastiper.token, { destinationCity: city })),
+  );
+
+  await page.goto(`/trips?city=${city}`);
+  const cards = page.getByRole("main").getByRole("listitem");
+  await expect(cards).toHaveCount(20);
+  await cards.last().scrollIntoViewIfNeeded();
+  await page.mouse.wheel(0, 4000);
+  await expect(cards).toHaveCount(22);
+});

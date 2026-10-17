@@ -81,7 +81,7 @@ export function Component() {
             action={isJastiper ? { label: "Buka trip", to: "/my-trips/new" } : undefined}
           />
         ) : (
-          <ul className="divide-y rounded-xl border bg-card">
+          <ul className="grid gap-3">
             {trips.items.map((t) => (
               <li key={t.id}>
                 <TripRow trip={t} to={`/trip/${t.slug}`} />

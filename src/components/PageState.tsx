@@ -77,12 +77,12 @@ export function ErrorState({
   );
 }
 
-/** Loading placeholder for row lists; matches the height of a list row with a photo. */
+/** Loading placeholder for card lists; matches the height of a card with a photo. */
 export function ListSkeleton({ rows = 3, className }: { rows?: number; className?: string }) {
   return (
-    <div className={cn("divide-y rounded-xl border bg-card", className)} aria-busy>
+    <div className={cn("grid gap-3", className)} aria-busy>
       {Array.from({ length: rows }, (_, i) => (
-        <div key={i} className="flex items-center gap-4 p-4">
+        <div key={i} className="flex items-center gap-4 rounded-xl border bg-card p-4">
           <Skeleton className="size-14 shrink-0 rounded-lg" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-4 w-2/3" />
