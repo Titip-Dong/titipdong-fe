@@ -135,11 +135,16 @@ Touch targets are at least 44 × 44 px below `md`.
 
 ### App shell
 
+Built in `src/components/layout/` (`MainLayout`, `Navbar`, `BottomNav`, items in `navigation.ts`).
+
 - **Visitor**: top bar with logo, "Cari trip", "Masuk", "Daftar".
-- **Pembeli / Jastiper, phone**: slim top bar (logo, notification bell) and a bottom navigation with at most 4 items.
-  Pembeli: Beranda, Cari trip, Titipan, Profil. Jastiper: Trip saya, Titipan masuk, Saldo, Profil.
-- **Pembeli / Jastiper, `md` and up**: the same items in the top navbar.
-- **Admin**: sidebar from `lg`, a sheet menu below it; functional and dense, no Titi.
+- **Pembeli / Jastiper, phone**: slim top bar (logo, notification bell, account menu with "Keluar") and a bottom
+  navigation with at most 4 items. Pembeli: Beranda, Cari trip, Titipan, Profil. Jastiper: Trip saya, Titipan
+  masuk, Saldo, Profil.
+- **Pembeli / Jastiper, `md` and up**: the same items in the top navbar (Profil lives in the account menu).
+- **Admin**: notification bell and account menu in the top bar; the admin area has a sidebar from `lg` and a sheet
+  menu below it; functional and dense, no Titi.
+- After login, users land on their role home (`roleHome` in `src/lib/roles.ts`) unless they came from a guarded page.
 
 ## 6. Icons and imagery
 
@@ -153,8 +158,8 @@ Touch targets are at least 44 × 44 px below `md`.
 
 ## 7. Titi (mascot)
 
-A shopping bag with a face. Sketch: `src/components/styleguide/TitiSketch.tsx`; it moves to `src/components/` when
-the first page uses it.
+A shopping bag with a face: `<Titi pose="..." />` from `src/components/Titi.tsx` (`inverted` for red surfaces,
+`decorative` to hide it from screen readers).
 
 **Look** (flat, no outline, no highlight, no shadow):
 
@@ -210,8 +215,19 @@ building anything new.
 | `Skeleton`                             | Loading; shaped like the content it replaces                                                                                                                                                                                                                                                                  |
 | `Sonner` (toast)                       | Short feedback after an action ("Titipan disetujui."); never for errors the user must fix in a form                                                                                                                                                                                                           |
 
-To build in phase 2 (`docs/PLAN.md`): page states (loading, empty, error, not found), confirmation dialog, upload
-field, load-more list, sticky action bar, countdown, escrow note, notification badge.
+TITIP DONG building blocks (all shown in `/styleguide`):
+
+| Component                                                   | Rules                                                                                                                |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `EmptyState`, `ErrorState`, `PageState`                     | Empty (Titi `bingung`), error (Titi `khawatir`, "Coba lagi"), and not-found blocks; adapt to their container's width |
+| `ListSkeleton`                                              | Loading state for row lists                                                                                          |
+| `LoadMore` + `useCursorList` (`src/lib/pagination.ts`)      | Every cursor list: "Muat lagi" under the rows, hidden when there is no next page                                     |
+| `ConfirmDialog`                                             | Every destructive or final action; pass `mutateAsync` so it stays open while pending and on error                    |
+| `ImageUploadField` (+ `uploadImage` in `src/lib/upload.ts`) | Every photo input: validates type and size, uploads right away, reports the upload ID                                |
+| `ActionBar`                                                 | The page's main action; sticks above the bottom navigation on phones, inline from `md`                               |
+| `Deadline`                                                  | Payment and request deadlines; Rambu in the last 24 hours                                                            |
+| `EscrowNote`                                                | Next to every amount the user pays or receives                                                                       |
+| `NotificationBell` (F07)                                    | Polls the unread count every 30 s while the tab is visible                                                           |
 
 ## 9. Patterns
 
