@@ -103,6 +103,10 @@ Exit: every row of `docs/FLOWS.md` §2 works.
 
 ### Phase 4: Trips and catalog (F02)
 
+Status (2026-10-17): done. Backend added `catalogPreview` to the trip lists (titipdong-be `feat/trip-catalog-preview`).
+Covered by `e2e/trip.spec.ts` (create trip, catalog with photo upload, list photos and fallback, detail per role,
+edit, close, cancel, ownership).
+
 - Landing and browse with real trips, filters (city, dates) in the URL, load more.
 - Trip detail with catalog items (photos, reference price), remaining capacity, and the request entry point.
 - Jastiper: my trips, create and edit trip, catalog management with photos, close and cancel (409 explained).
@@ -173,9 +177,9 @@ Run against the local backend after `make seed` (`docs/FLOWS.md` describes each 
 
 ## 6. Open questions
 
-- Trip lists should show item thumbnails, but `listTrips` returns no items. Options: a backend field with the first
-  few item photos, or a text-only list. Decide in phase 1 or 4.
+- ~~Trip list thumbnails~~: decided. The backend returns `catalogPreview` (first 3 items and the count) on the lists.
 - Where admin orders and the payout queue live in the route map (`/admin/orders`, `/admin/payouts`) and who owns them.
-- Whether `/my-trips/:id` becomes a trip management page (details, catalog, inbox as tabs).
+- ~~Trip management page~~: decided. `/my-trips/:slug` (actions and catalog) and `/my-trips/:slug/edit`; the inbox
+  stays at `/my-trips/:id/requests`.
 - ~~Branch flow for the revamp~~: decided 2026-10-17. Each branch merges into `dev` without a PR; `dev` goes to
   `main` for releases.

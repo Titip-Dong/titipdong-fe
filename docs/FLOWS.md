@@ -65,15 +65,16 @@ Use that field; do not recompute it. Capacity is counted in **items**: an order 
 
 ### Screens
 
-| Who      | Screen                            | Hooks                                                                             |
-| -------- | --------------------------------- | --------------------------------------------------------------------------------- |
-| Anyone   | Browse trips (filter city, dates) | `useListTrips` (cursor: `city`, `from`, `to`, `limit`, `cursor`)                  |
-| Anyone   | Trip detail + catalog             | `useGetTrip(slug)` (includes `items` and `remainingCapacity`)                     |
-| Jastiper | My trips                          | `useListMyTrips`                                                                  |
-| Jastiper | Create trip                       | `useCreateTrip`                                                                   |
-| Jastiper | Edit trip (only while `open`)     | `useUpdateTrip`; `capacity` cannot drop below what is reserved                    |
-| Jastiper | Catalog (while `open`/`closed`)   | `useListTripItems`, `useCreateTripItem`, `useUpdateTripItem`, `useDeleteTripItem` |
-| Jastiper | Close / cancel trip               | `useCloseTrip`, `useCancelTrip`                                                   |
+| Who      | Screen                                               | Hooks                                                                                                                        |
+| -------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Anyone   | Browse trips (filter city, dates)                    | `useListTrips` (cursor: `city`, `from`, `to`, `limit`, `cursor`); each trip has `catalogPreview` (first 3 items, item count) |
+| Anyone   | Trip detail + catalog                                | `useGetTrip(slug)` (includes `items` and `remainingCapacity`)                                                                |
+| Jastiper | My trips                                             | `useListMyTrips` (all statuses, with `catalogPreview`)                                                                       |
+| Jastiper | Manage trip `/my-trips/:slug`                        | `useGetTrip(slug)` (owner only; others see not found): actions, catalog                                                      |
+| Jastiper | Create trip                                          | `useCreateTrip`                                                                                                              |
+| Jastiper | Edit trip `/my-trips/:slug/edit` (only while `open`) | `useUpdateTrip`; `capacity` cannot drop below what is reserved                                                               |
+| Jastiper | Catalog (while `open`/`closed`)                      | `useListTripItems`, `useCreateTripItem`, `useUpdateTripItem`, `useDeleteTripItem`                                            |
+| Jastiper | Close / cancel trip                                  | `useCloseTrip`, `useCancelTrip`                                                                                              |
 
 Trip rules worth showing in forms: `returnsOn >= departsOn`; `requestDeadline` in the future and no later than the
 end of `returnsOn`; the slug is generated and never changes. Catalog `referencePrice` is only indicative: the final
