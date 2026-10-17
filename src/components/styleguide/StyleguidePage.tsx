@@ -8,6 +8,8 @@ import { ProductTile } from "@/components/ProductTile";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ImageUploadField } from "@/components/ImageUploadField";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/PageState";
 import { Titi, type TitiPose } from "@/components/Titi";
 
@@ -409,6 +411,25 @@ export function Component() {
             <p className="text-sm text-destructive">Jumlah minimal 1.</p>
           </div>
         </div>
+      </Section>
+
+      <Section
+        title="Confirmation and uploads"
+        note="Destructive or final actions confirm in a dialog that names the consequence. The photo field uploads right away (log in as a buyer to try it against the local backend)."
+      >
+        <ConfirmDialog
+          trigger={<Button variant="destructive">Batalkan titipan</Button>}
+          title="Batalkan titipan ini?"
+          description="Titipan yang dibatalkan tidak bisa dilanjutkan lagi. Kamu perlu membuat titipan baru."
+          confirmLabel="Batalkan titipan"
+          destructive
+          onConfirm={() => new Promise((resolve) => setTimeout(resolve, 600))}
+        />
+        <ImageUploadField
+          label="Foto barang (opsional)"
+          purpose="order_photo"
+          onChange={(id) => console.info("[styleguide] upload id", id)}
+        />
       </Section>
 
       <Section
