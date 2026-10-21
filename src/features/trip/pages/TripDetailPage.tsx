@@ -5,6 +5,7 @@ import { useGetTrip } from "@/api/generated/endpoints/trip/trip";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, formatDateTime } from "@/lib/format";
+import { formatRupiah } from "@/lib/format";
 import { useAuthStore } from "@/stores/auth";
 import { countryName } from "../countries";
 
@@ -96,6 +97,41 @@ export function Component() {
       </dl>
 
       {trip.description && <p className="max-w-prose whitespace-pre-line">{trip.description}</p>}
+
+      {trip.items.length > 0 && (
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold">Barang populer di trip ini</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Harga referensi bisa berubah. Harga final ditentukan jastiper saat menyetujui titipan.
+            </p>
+          </div>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {trip.items.map((item) => (
+              <li key={item.id} className="overflow-hidden rounded-xl border bg-card">
+                {item.photoUrl && (
+                  <img
+                    src={item.photoUrl}
+                    alt={item.name}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
+                )}
+                <div className="space-y-1 p-4">
+                  <h3 className="font-semibold">{item.name}</h3>
+                  {item.description && (
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                  )}
+                  {item.referencePrice !== undefined && (
+                    <p className="pt-1 font-medium tabular-nums">
+                      Mulai {formatRupiah(item.referencePrice)}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="flex flex-col gap-4 rounded-2xl bg-secondary/60 p-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="flex max-w-sm items-start gap-2 text-sm text-secondary-foreground">

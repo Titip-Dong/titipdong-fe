@@ -55,7 +55,7 @@ export const getHealthUrl = () => {
 }
 
 /**
- * @summary Liveness and readiness probe
+ * @summary Liveness probe
  */
 export const health = async ( options?: Parameters<typeof apiFetch>[1]): Promise<HealthStatus> => {
 
@@ -126,7 +126,7 @@ export function useHealth<TData = Awaited<ReturnType<typeof health>>, TError = E
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Liveness and readiness probe
+ * @summary Liveness probe
  */
 
 export function useHealth<TData = Awaited<ReturnType<typeof health>>, TError = ErrorModel>(
@@ -135,6 +135,106 @@ export function useHealth<TData = Awaited<ReturnType<typeof health>>, TError = E
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getHealthQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getReadyUrl = () => {
+
+
+
+
+  return `/health/ready`
+}
+
+/**
+ * @summary Readiness probe: the API can reach its database
+ */
+export const ready = async ( options?: Parameters<typeof apiFetch>[1]): Promise<HealthStatus> => {
+
+  return apiFetch<HealthStatus>(getReadyUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadyQueryKey = () => {
+    return [
+    `/health/ready`
+    ] as const;
+    }
+
+
+export const getReadyQueryOptions = <TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadyQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof ready>>> = ({ signal }) => ready({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ReadyQueryResult = NonNullable<Awaited<ReturnType<typeof ready>>>
+export type ReadyQueryError = ErrorModel
+
+
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ready>>,
+          TError,
+          Awaited<ReturnType<typeof ready>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ready>>,
+          TError,
+          Awaited<ReturnType<typeof ready>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Readiness probe: the API can reach its database
+ */
+
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getReadyQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

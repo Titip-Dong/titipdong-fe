@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
@@ -14,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { errorMessage } from "@/lib/api-error";
 import { formatDateTime } from "@/lib/format";
+import { uploadImage } from "@/features/upload";
 
 // An empty product link is allowed in the form and dropped before sending.
 const RequestForm = CreateOrderBody.extend({
@@ -27,24 +29,31 @@ export function Component() {
   const queryClient = useQueryClient();
   const trip = useGetTrip(slug);
   const createOrder = useCreateOrder();
+  const [photo, setPhoto] = useState<File>();
+  const [uploading, setUploading] = useState(false);
   const form = useForm<RequestFormValues>({
     resolver: zodResolver(RequestForm),
     defaultValues: { productName: "", productUrl: "", quantity: 1, notes: "" },
   });
   const errors = form.formState.errors;
 
-  const onSubmit = form.handleSubmit(({ productUrl, ...values }) =>
-    createOrder.mutate(
-      { slug, data: { ...values, productUrl: productUrl || undefined } },
-      {
-        onSuccess: (order) => {
-          void queryClient.invalidateQueries({ queryKey: getListOrdersQueryKey() });
-          toast.success("Titipan terkirim. Tunggu jastiper menentukan harganya, ya.");
-          navigate(`/orders/${order.id}`);
-        },
-      },
-    ),
-  );
+  const onSubmit = form.handleSubmit(async ({ productUrl, ...values }) => {
+    setUploading(true);
+    try {
+      const photoUploadId = photo ? await uploadImage(photo, "order_photo") : undefined;
+      const order = await createOrder.mutateAsync({
+        slug,
+        data: { ...values, productUrl: productUrl || undefined, photoUploadId },
+      });
+      await queryClient.invalidateQueries({ queryKey: getListOrdersQueryKey() });
+      toast.success("Titipan terkirim. Tunggu jastiper menentukan harganya, ya.");
+      navigate(`/orders/${order.id}`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : errorMessage(error));
+    } finally {
+      setUploading(false);
+    }
+  });
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6 px-4 py-10">
@@ -100,6 +109,17 @@ export function Component() {
             />
             <FieldError errors={[errors.quantity]} />
           </Field>
+          <Field>
+            <FieldLabel htmlFor="productPhoto">Foto barang (opsional)</FieldLabel>
+            <Input
+              id="productPhoto"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(e) => setPhoto(e.target.files?.[0])}
+            />
+            <FieldDescription>JPG, PNG, atau WebP · maksimal 5 MB.</FieldDescription>
+            {photo && <p className="text-sm text-muted-foreground">{photo.name}</p>}
+          </Field>
           <Field data-invalid={!!errors.notes}>
             <FieldLabel htmlFor="notes">Catatan (opsional)</FieldLabel>
             <Textarea
@@ -121,8 +141,12 @@ export function Component() {
               })}
             </FieldError>
           )}
-          <Button type="submit" size="lg" disabled={createOrder.isPending}>
-            {createOrder.isPending ? "Mengirim..." : "Kirim titipan"}
+          <Button type="submit" size="lg" disabled={createOrder.isPending || uploading}>
+            {uploading
+              ? "Mengunggah foto..."
+              : createOrder.isPending
+                ? "Mengirim..."
+                : "Kirim titipan"}
           </Button>
         </FieldGroup>
       </form>

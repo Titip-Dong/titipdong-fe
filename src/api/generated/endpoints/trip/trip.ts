@@ -26,10 +26,15 @@ import type {
 import type {
   CreateTripRequest,
   ErrorModel,
+  ItemRequest,
+  ItemResponse,
   ListMyTripsParams,
+  ListTripItemsResponse,
   ListTripsParams,
+  TripDetailResponse,
   TripPage,
-  TripResponse
+  TripResponse,
+  UpdateTripRequest
 } from '../../model';
 
 import { apiFetch } from '../../../client';
@@ -355,6 +360,167 @@ export const useCreateTrip = <TError = ErrorModel,
       > => {
       return useMutation(getCreateTripMutationOptions(options), queryClient);
     }
+    export const getUpdateTripUrl = (id: string,) => {
+
+
+
+
+  return `/trips/${id}`
+}
+
+/**
+ * @summary Edit an open trip
+ */
+export const updateTrip = async (id: string,
+    updateTripRequest: UpdateTripRequest, options?: Parameters<typeof apiFetch>[1]): Promise<TripResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<TripResponse>(getUpdateTripUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateTripRequest)
+  }
+);}
+
+
+
+
+
+export const getUpdateTripMutationKey = () => ['updateTrip'] as const;
+
+export const getUpdateTripMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTrip>>, TError,UpdateTripMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTrip>>, TError,UpdateTripMutationVariables, TContext> => {
+
+const mutationKey = getUpdateTripMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTrip>>, UpdateTripMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTrip(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTripMutationResult = NonNullable<Awaited<ReturnType<typeof updateTrip>>>
+    export type UpdateTripMutationBody = UpdateTripRequest
+    export type UpdateTripMutationError = ErrorModel
+    export type UpdateTripMutationVariables = {id: string;data: UpdateTripRequest}
+
+    /**
+ * @summary Edit an open trip
+ */
+export const useUpdateTrip = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTrip>>, TError,UpdateTripMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTrip>>,
+        TError,
+        UpdateTripMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateTripMutationOptions(options), queryClient);
+    }
+    export const getCancelTripUrl = (id: string,) => {
+
+
+
+
+  return `/trips/${id}/cancel`
+}
+
+/**
+ * @summary Cancel a trip that has no active orders
+ */
+export const cancelTrip = async (id: string, options?: Parameters<typeof apiFetch>[1]): Promise<TripResponse> => {
+
+  return apiFetch<TripResponse>(getCancelTripUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getCancelTripMutationKey = () => ['cancelTrip'] as const;
+
+export const getCancelTripMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelTrip>>, TError,CancelTripMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof cancelTrip>>, TError,CancelTripMutationVariables, TContext> => {
+
+const mutationKey = getCancelTripMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof cancelTrip>>, CancelTripMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  cancelTrip(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CancelTripMutationResult = NonNullable<Awaited<ReturnType<typeof cancelTrip>>>
+
+    export type CancelTripMutationError = ErrorModel
+    export type CancelTripMutationVariables = {id: string}
+
+    /**
+ * @summary Cancel a trip that has no active orders
+ */
+export const useCancelTrip = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelTrip>>, TError,CancelTripMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof cancelTrip>>,
+        TError,
+        CancelTripMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCancelTripMutationOptions(options), queryClient);
+    }
     export const getCloseTripUrl = (id: string,) => {
 
 
@@ -428,6 +594,359 @@ export const useCloseTrip = <TError = ErrorModel,
       > => {
       return useMutation(getCloseTripMutationOptions(options), queryClient);
     }
+    export const getListTripItemsUrl = (id: string,) => {
+
+
+
+
+  return `/trips/${id}/items`
+}
+
+/**
+ * @summary List a trip's catalog in display order
+ */
+export const listTripItems = async (id: string, options?: Parameters<typeof apiFetch>[1]): Promise<ListTripItemsResponse> => {
+
+  return apiFetch<ListTripItemsResponse>(getListTripItemsUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListTripItemsQueryKey = (id: string,) => {
+    return [
+    `/trips/${id}/items`
+    ] as const;
+    }
+
+
+export const getListTripItemsQueryOptions = <TData = Awaited<ReturnType<typeof listTripItems>>, TError = ErrorModel>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripItems>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListTripItemsQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTripItems>>> = ({ signal }) => listTripItems(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTripItems>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListTripItemsQueryResult = NonNullable<Awaited<ReturnType<typeof listTripItems>>>
+export type ListTripItemsQueryError = ErrorModel
+
+
+export function useListTripItems<TData = Awaited<ReturnType<typeof listTripItems>>, TError = ErrorModel>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripItems>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listTripItems>>,
+          TError,
+          Awaited<ReturnType<typeof listTripItems>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListTripItems<TData = Awaited<ReturnType<typeof listTripItems>>, TError = ErrorModel>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripItems>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listTripItems>>,
+          TError,
+          Awaited<ReturnType<typeof listTripItems>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListTripItems<TData = Awaited<ReturnType<typeof listTripItems>>, TError = ErrorModel>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripItems>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List a trip's catalog in display order
+ */
+
+export function useListTripItems<TData = Awaited<ReturnType<typeof listTripItems>>, TError = ErrorModel>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripItems>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListTripItemsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getCreateTripItemUrl = (id: string,) => {
+
+
+
+
+  return `/trips/${id}/items`
+}
+
+/**
+ * @summary Add an item to the trip's catalog
+ */
+export const createTripItem = async (id: string,
+    itemRequest: ItemRequest, options?: Parameters<typeof apiFetch>[1]): Promise<ItemResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<ItemResponse>(getCreateTripItemUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(itemRequest)
+  }
+);}
+
+
+
+
+
+export const getCreateTripItemMutationKey = () => ['createTripItem'] as const;
+
+export const getCreateTripItemMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTripItem>>, TError,CreateTripItemMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createTripItem>>, TError,CreateTripItemMutationVariables, TContext> => {
+
+const mutationKey = getCreateTripItemMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTripItem>>, CreateTripItemMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  createTripItem(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateTripItemMutationResult = NonNullable<Awaited<ReturnType<typeof createTripItem>>>
+    export type CreateTripItemMutationBody = ItemRequest
+    export type CreateTripItemMutationError = ErrorModel
+    export type CreateTripItemMutationVariables = {id: string;data: ItemRequest}
+
+    /**
+ * @summary Add an item to the trip's catalog
+ */
+export const useCreateTripItem = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTripItem>>, TError,CreateTripItemMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createTripItem>>,
+        TError,
+        CreateTripItemMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateTripItemMutationOptions(options), queryClient);
+    }
+    export const getDeleteTripItemUrl = (id: string,
+    itemId: string,) => {
+
+
+
+
+  return `/trips/${id}/items/${itemId}`
+}
+
+/**
+ * @summary Remove a catalog item
+ */
+export const deleteTripItem = async (id: string,
+    itemId: string, options?: Parameters<typeof apiFetch>[1]): Promise<void> => {
+
+  return apiFetch<void>(getDeleteTripItemUrl(id,itemId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteTripItemMutationKey = () => ['deleteTripItem'] as const;
+
+export const getDeleteTripItemMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTripItem>>, TError,DeleteTripItemMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTripItem>>, TError,DeleteTripItemMutationVariables, TContext> => {
+
+const mutationKey = getDeleteTripItemMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTripItem>>, DeleteTripItemMutationVariables> = (props) => {
+          const {id,itemId} = props ?? {};
+
+          return  deleteTripItem(id,itemId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTripItemMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTripItem>>>
+
+    export type DeleteTripItemMutationError = ErrorModel
+    export type DeleteTripItemMutationVariables = {id: string;itemId: string}
+
+    /**
+ * @summary Remove a catalog item
+ */
+export const useDeleteTripItem = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTripItem>>, TError,DeleteTripItemMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTripItem>>,
+        TError,
+        DeleteTripItemMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteTripItemMutationOptions(options), queryClient);
+    }
+    export const getUpdateTripItemUrl = (id: string,
+    itemId: string,) => {
+
+
+
+
+  return `/trips/${id}/items/${itemId}`
+}
+
+/**
+ * @summary Edit a catalog item
+ */
+export const updateTripItem = async (id: string,
+    itemId: string,
+    itemRequest: ItemRequest, options?: Parameters<typeof apiFetch>[1]): Promise<ItemResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<ItemResponse>(getUpdateTripItemUrl(id,itemId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(itemRequest)
+  }
+);}
+
+
+
+
+
+export const getUpdateTripItemMutationKey = () => ['updateTripItem'] as const;
+
+export const getUpdateTripItemMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTripItem>>, TError,UpdateTripItemMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTripItem>>, TError,UpdateTripItemMutationVariables, TContext> => {
+
+const mutationKey = getUpdateTripItemMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTripItem>>, UpdateTripItemMutationVariables> = (props) => {
+          const {id,itemId,data} = props ?? {};
+
+          return  updateTripItem(id,itemId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTripItemMutationResult = NonNullable<Awaited<ReturnType<typeof updateTripItem>>>
+    export type UpdateTripItemMutationBody = ItemRequest
+    export type UpdateTripItemMutationError = ErrorModel
+    export type UpdateTripItemMutationVariables = {id: string;itemId: string;data: ItemRequest}
+
+    /**
+ * @summary Edit a catalog item
+ */
+export const useUpdateTripItem = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTripItem>>, TError,UpdateTripItemMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTripItem>>,
+        TError,
+        UpdateTripItemMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateTripItemMutationOptions(options), queryClient);
+    }
     export const getGetTripUrl = (slug: string,) => {
 
 
@@ -439,9 +958,9 @@ export const useCloseTrip = <TError = ErrorModel,
 /**
  * @summary Get a trip by slug
  */
-export const getTrip = async (slug: string, options?: Parameters<typeof apiFetch>[1]): Promise<TripResponse> => {
+export const getTrip = async (slug: string, options?: Parameters<typeof apiFetch>[1]): Promise<TripDetailResponse> => {
 
-  return apiFetch<TripResponse>(getGetTripUrl(slug),
+  return apiFetch<TripDetailResponse>(getGetTripUrl(slug),
   {
     ...options,
     method: 'GET'

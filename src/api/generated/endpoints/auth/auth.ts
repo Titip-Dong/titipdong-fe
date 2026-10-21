@@ -28,6 +28,7 @@ import type {
   ErrorModel,
   LoginRequest,
   RegisterRequest,
+  UpdateUserRequest,
   UserResponse
 } from '../../model';
 
@@ -473,3 +474,90 @@ export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUs
 
 
 
+export const getUpdateCurrentUserUrl = () => {
+
+
+
+
+  return `/me`
+}
+
+/**
+ * @summary Update the caller's name, phone, or password
+ */
+export const updateCurrentUser = async (updateUserRequest: UpdateUserRequest, options?: Parameters<typeof apiFetch>[1]): Promise<UserResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<UserResponse>(getUpdateCurrentUserUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateUserRequest)
+  }
+);}
+
+
+
+
+
+export const getUpdateCurrentUserMutationKey = () => ['updateCurrentUser'] as const;
+
+export const getUpdateCurrentUserMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUser>>, TError,UpdateCurrentUserMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUser>>, TError,UpdateCurrentUserMutationVariables, TContext> => {
+
+const mutationKey = getUpdateCurrentUserMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCurrentUser>>, UpdateCurrentUserMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateCurrentUser(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCurrentUserMutationResult = NonNullable<Awaited<ReturnType<typeof updateCurrentUser>>>
+    export type UpdateCurrentUserMutationBody = UpdateUserRequest
+    export type UpdateCurrentUserMutationError = ErrorModel
+    export type UpdateCurrentUserMutationVariables = {data: UpdateUserRequest}
+
+    /**
+ * @summary Update the caller's name, phone, or password
+ */
+export const useUpdateCurrentUser = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUser>>, TError,UpdateCurrentUserMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCurrentUser>>,
+        TError,
+        UpdateCurrentUserMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateCurrentUserMutationOptions(options), queryClient);
+    }

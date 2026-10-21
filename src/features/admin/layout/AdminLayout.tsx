@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 const menu = [
   { to: "/admin", label: "Dashboard", end: true },
   { to: "/admin/transactions", label: "Transaksi" },
+  { to: "/admin/payouts", label: "Payout" },
   { to: "/admin/users", label: "User" },
   { to: "/admin/disputes", label: "Sengketa" },
   { to: "/admin/audit", label: "Audit log" },

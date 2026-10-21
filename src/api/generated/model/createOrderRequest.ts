@@ -8,6 +8,8 @@
 export interface CreateOrderRequest {
   /** @maxLength 1000 */
   notes?: string;
+  /** Upload with purpose order_photo */
+  photoUploadId?: string;
   /**
      * @minLength 1
      * @maxLength 200

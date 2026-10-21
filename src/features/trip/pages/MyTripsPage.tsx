@@ -6,6 +6,7 @@ import {
   getListMyTripsQueryKey,
   getListTripsQueryKey,
   useCloseTrip,
+  useCancelTrip,
   useListMyTrips,
 } from "@/api/generated/endpoints/trip/trip";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,16 @@ export function Component() {
         void queryClient.invalidateQueries({ queryKey: getListTripsQueryKey() });
       },
       onError: (err) => toast.error(errorMessage(err, { 409: "Trip ini sudah ditutup." })),
+    },
+  });
+  const cancelTrip = useCancelTrip({
+    mutation: {
+      onSuccess: async () => {
+        toast.success("Trip dibatalkan.");
+        await queryClient.invalidateQueries();
+      },
+      onError: () =>
+        toast.error("Trip gagal dibatalkan. Selesaikan dulu titipan aktif di trip ini."),
     },
   });
   const trips = data?.items ?? [];
@@ -73,6 +84,31 @@ export function Component() {
                   </Button>
                 </div>
               )}
+              <div className="flex flex-wrap gap-2 px-4 pb-4 sm:pb-5">
+                {t.status === "open" && (
+                  <Button asChild variant="outline" size="sm">
+                    <Link to={`/my-trips/${t.id}/edit`}>Edit trip</Link>
+                  </Button>
+                )}
+                {(t.status === "open" || t.status === "closed") && (
+                  <Button asChild variant="outline" size="sm">
+                    <Link to={`/my-trips/${t.id}/catalog`}>Kelola katalog</Link>
+                  </Button>
+                )}
+                {(t.status === "open" || t.status === "closed") && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={cancelTrip.isPending}
+                    onClick={() => {
+                      if (window.confirm(`Batalkan trip "${t.title}"?`))
+                        cancelTrip.mutate({ id: t.id });
+                    }}
+                  >
+                    Batalkan trip
+                  </Button>
+                )}
+              </div>
             </li>
           ))}
         </ul>

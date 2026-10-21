@@ -45,6 +45,7 @@ export function Component() {
       departsOn: "",
       returnsOn: "",
       requestDeadline: "",
+      capacity: 20,
     },
   });
   const errors = form.formState.errors;
@@ -148,6 +149,22 @@ export function Component() {
             />
             <FieldDescription>Setelah waktu ini, pembeli tidak bisa titip lagi.</FieldDescription>
             <FieldError errors={[errors.requestDeadline]} />
+          </Field>
+
+          <Field data-invalid={!!errors.capacity} className="max-w-48">
+            <FieldLabel htmlFor="capacity">Kapasitas barang</FieldLabel>
+            <Input
+              id="capacity"
+              type="number"
+              min={1}
+              max={1000}
+              aria-invalid={!!errors.capacity}
+              {...form.register("capacity", { valueAsNumber: true })}
+            />
+            <FieldDescription>
+              Berapa barang yang bisa kamu bawa untuk seluruh titipan.
+            </FieldDescription>
+            <FieldError errors={[errors.capacity]} />
           </Field>
 
           <Field data-invalid={!!errors.description}>

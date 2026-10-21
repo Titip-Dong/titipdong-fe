@@ -12,6 +12,14 @@ export type ListTripsParams = {
  */
 city?: string;
 /**
+ * Earliest departure date, inclusive
+ */
+from?: string;
+/**
+ * Latest departure date, inclusive
+ */
+to?: string;
+/**
  * @minimum 1
  * @maximum 100
  */

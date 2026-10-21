@@ -24,8 +24,18 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CancelPaidOrderRequest,
   ErrorModel,
+  ListMyPayoutsParams,
+  ListWalletTransactionsParams,
   PaymentResponse,
+  PayoutAccountBody,
+  PayoutAccountResponse,
+  PayoutPage,
+  PayoutResponse,
+  RefundResponse,
+  RequestPayoutRequest,
+  WalletEntryPage,
   WalletResponse
 } from '../../model';
 
@@ -51,7 +61,282 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export const getCheckoutOrderUrl = (id: string,) => {
+export const getGetPayoutAccountUrl = () => {
+
+
+
+
+  return `/me/payout-account`
+}
+
+/**
+ * @summary Return the jastiper's saved bank account
+ */
+export const getPayoutAccount = async ( options?: Parameters<typeof apiFetch>[1]): Promise<PayoutAccountResponse> => {
+
+  return apiFetch<PayoutAccountResponse>(getGetPayoutAccountUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPayoutAccountQueryKey = () => {
+    return [
+    `/me/payout-account`
+    ] as const;
+    }
+
+
+export const getGetPayoutAccountQueryOptions = <TData = Awaited<ReturnType<typeof getPayoutAccount>>, TError = ErrorModel>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPayoutAccount>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPayoutAccountQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPayoutAccount>>> = ({ signal }) => getPayoutAccount({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPayoutAccount>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetPayoutAccountQueryResult = NonNullable<Awaited<ReturnType<typeof getPayoutAccount>>>
+export type GetPayoutAccountQueryError = ErrorModel
+
+
+export function useGetPayoutAccount<TData = Awaited<ReturnType<typeof getPayoutAccount>>, TError = ErrorModel>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPayoutAccount>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPayoutAccount>>,
+          TError,
+          Awaited<ReturnType<typeof getPayoutAccount>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPayoutAccount<TData = Awaited<ReturnType<typeof getPayoutAccount>>, TError = ErrorModel>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPayoutAccount>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPayoutAccount>>,
+          TError,
+          Awaited<ReturnType<typeof getPayoutAccount>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPayoutAccount<TData = Awaited<ReturnType<typeof getPayoutAccount>>, TError = ErrorModel>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPayoutAccount>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Return the jastiper's saved bank account
+ */
+
+export function useGetPayoutAccount<TData = Awaited<ReturnType<typeof getPayoutAccount>>, TError = ErrorModel>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPayoutAccount>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetPayoutAccountQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getSavePayoutAccountUrl = () => {
+
+
+
+
+  return `/me/payout-account`
+}
+
+/**
+ * @summary Save the jastiper's bank account for payouts
+ */
+export const savePayoutAccount = async (payoutAccountBody: PayoutAccountBody, options?: Parameters<typeof apiFetch>[1]): Promise<PayoutAccountResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<PayoutAccountResponse>(getSavePayoutAccountUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(payoutAccountBody)
+  }
+);}
+
+
+
+
+
+export const getSavePayoutAccountMutationKey = () => ['savePayoutAccount'] as const;
+
+export const getSavePayoutAccountMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof savePayoutAccount>>, TError,SavePayoutAccountMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof savePayoutAccount>>, TError,SavePayoutAccountMutationVariables, TContext> => {
+
+const mutationKey = getSavePayoutAccountMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof savePayoutAccount>>, SavePayoutAccountMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  savePayoutAccount(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SavePayoutAccountMutationResult = NonNullable<Awaited<ReturnType<typeof savePayoutAccount>>>
+    export type SavePayoutAccountMutationBody = PayoutAccountBody
+    export type SavePayoutAccountMutationError = ErrorModel
+    export type SavePayoutAccountMutationVariables = {data: PayoutAccountBody}
+
+    /**
+ * @summary Save the jastiper's bank account for payouts
+ */
+export const useSavePayoutAccount = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof savePayoutAccount>>, TError,SavePayoutAccountMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof savePayoutAccount>>,
+        TError,
+        SavePayoutAccountMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSavePayoutAccountMutationOptions(options), queryClient);
+    }
+    export const getCancelPaidOrderUrl = (id: string,) => {
+
+
+
+
+  return `/orders/${id}/cancel-paid`
+}
+
+/**
+ * @summary Cancel a paid order and refund the buyer
+ */
+export const cancelPaidOrder = async (id: string,
+    cancelPaidOrderRequest: CancelPaidOrderRequest, options?: Parameters<typeof apiFetch>[1]): Promise<RefundResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<RefundResponse>(getCancelPaidOrderUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(cancelPaidOrderRequest)
+  }
+);}
+
+
+
+
+
+export const getCancelPaidOrderMutationKey = () => ['cancelPaidOrder'] as const;
+
+export const getCancelPaidOrderMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelPaidOrder>>, TError,CancelPaidOrderMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof cancelPaidOrder>>, TError,CancelPaidOrderMutationVariables, TContext> => {
+
+const mutationKey = getCancelPaidOrderMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof cancelPaidOrder>>, CancelPaidOrderMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  cancelPaidOrder(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CancelPaidOrderMutationResult = NonNullable<Awaited<ReturnType<typeof cancelPaidOrder>>>
+    export type CancelPaidOrderMutationBody = CancelPaidOrderRequest
+    export type CancelPaidOrderMutationError = ErrorModel
+    export type CancelPaidOrderMutationVariables = {id: string;data: CancelPaidOrderRequest}
+
+    /**
+ * @summary Cancel a paid order and refund the buyer
+ */
+export const useCancelPaidOrder = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelPaidOrder>>, TError,CancelPaidOrderMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof cancelPaidOrder>>,
+        TError,
+        CancelPaidOrderMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCancelPaidOrderMutationOptions(options), queryClient);
+    }
+    export const getCheckoutOrderUrl = (id: string,) => {
 
 
 
@@ -197,6 +482,200 @@ export const useSimulatePayment = <TError = ErrorModel,
       > => {
       return useMutation(getSimulatePaymentMutationOptions(options), queryClient);
     }
+    export const getListMyPayoutsUrl = (params?: ListMyPayoutsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/payouts?${stringifiedParams}` : `/payouts`
+}
+
+/**
+ * @summary List the jastiper's payout requests, newest first
+ */
+export const listMyPayouts = async (params?: ListMyPayoutsParams, options?: Parameters<typeof apiFetch>[1]): Promise<PayoutPage> => {
+
+  return apiFetch<PayoutPage>(getListMyPayoutsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListMyPayoutsQueryKey = (params?: ListMyPayoutsParams,) => {
+    return [
+    `/payouts`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListMyPayoutsQueryOptions = <TData = Awaited<ReturnType<typeof listMyPayouts>>, TError = ErrorModel>(params?: ListMyPayoutsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayouts>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListMyPayoutsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyPayouts>>> = ({ signal }) => listMyPayouts(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMyPayouts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListMyPayoutsQueryResult = NonNullable<Awaited<ReturnType<typeof listMyPayouts>>>
+export type ListMyPayoutsQueryError = ErrorModel
+
+
+export function useListMyPayouts<TData = Awaited<ReturnType<typeof listMyPayouts>>, TError = ErrorModel>(
+ params: undefined |  ListMyPayoutsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayouts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPayouts>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPayouts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListMyPayouts<TData = Awaited<ReturnType<typeof listMyPayouts>>, TError = ErrorModel>(
+ params?: ListMyPayoutsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayouts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listMyPayouts>>,
+          TError,
+          Awaited<ReturnType<typeof listMyPayouts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListMyPayouts<TData = Awaited<ReturnType<typeof listMyPayouts>>, TError = ErrorModel>(
+ params?: ListMyPayoutsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayouts>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List the jastiper's payout requests, newest first
+ */
+
+export function useListMyPayouts<TData = Awaited<ReturnType<typeof listMyPayouts>>, TError = ErrorModel>(
+ params?: ListMyPayoutsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listMyPayouts>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListMyPayoutsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getRequestPayoutUrl = () => {
+
+
+
+
+  return `/payouts`
+}
+
+/**
+ * @summary Request a payout of available earnings
+ */
+export const requestPayout = async (requestPayoutRequest: RequestPayoutRequest, options?: Parameters<typeof apiFetch>[1]): Promise<PayoutResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<PayoutResponse>(getRequestPayoutUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(requestPayoutRequest)
+  }
+);}
+
+
+
+
+
+export const getRequestPayoutMutationKey = () => ['requestPayout'] as const;
+
+export const getRequestPayoutMutationOptions = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestPayout>>, TError,RequestPayoutMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestPayout>>, TError,RequestPayoutMutationVariables, TContext> => {
+
+const mutationKey = getRequestPayoutMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestPayout>>, RequestPayoutMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  requestPayout(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestPayoutMutationResult = NonNullable<Awaited<ReturnType<typeof requestPayout>>>
+    export type RequestPayoutMutationBody = RequestPayoutRequest
+    export type RequestPayoutMutationError = ErrorModel
+    export type RequestPayoutMutationVariables = {data: RequestPayoutRequest}
+
+    /**
+ * @summary Request a payout of available earnings
+ */
+export const useRequestPayout = <TError = ErrorModel,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestPayout>>, TError,RequestPayoutMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof requestPayout>>,
+        TError,
+        RequestPayoutMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRequestPayoutMutationOptions(options), queryClient);
+    }
     export const getGetWalletUrl = () => {
 
 
@@ -206,7 +685,7 @@ export const useSimulatePayment = <TError = ErrorModel,
 }
 
 /**
- * @summary Return the jastiper's released earnings not yet paid out
+ * @summary Return the jastiper's balance, available amount, money in escrow, and pending payouts
  */
 export const getWallet = async ( options?: Parameters<typeof apiFetch>[1]): Promise<WalletResponse> => {
 
@@ -277,7 +756,7 @@ export function useGetWallet<TData = Awaited<ReturnType<typeof getWallet>>, TErr
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Return the jastiper's released earnings not yet paid out
+ * @summary Return the jastiper's balance, available amount, money in escrow, and pending payouts
  */
 
 export function useGetWallet<TData = Awaited<ReturnType<typeof getWallet>>, TError = ErrorModel>(
@@ -286,6 +765,113 @@ export function useGetWallet<TData = Awaited<ReturnType<typeof getWallet>>, TErr
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetWalletQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getListWalletTransactionsUrl = (params?: ListWalletTransactionsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/wallet/transactions?${stringifiedParams}` : `/wallet/transactions`
+}
+
+/**
+ * @summary List the postings on the jastiper's balance, newest first
+ */
+export const listWalletTransactions = async (params?: ListWalletTransactionsParams, options?: Parameters<typeof apiFetch>[1]): Promise<WalletEntryPage> => {
+
+  return apiFetch<WalletEntryPage>(getListWalletTransactionsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListWalletTransactionsQueryKey = (params?: ListWalletTransactionsParams,) => {
+    return [
+    `/wallet/transactions`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListWalletTransactionsQueryOptions = <TData = Awaited<ReturnType<typeof listWalletTransactions>>, TError = ErrorModel>(params?: ListWalletTransactionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listWalletTransactions>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListWalletTransactionsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listWalletTransactions>>> = ({ signal }) => listWalletTransactions(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listWalletTransactions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListWalletTransactionsQueryResult = NonNullable<Awaited<ReturnType<typeof listWalletTransactions>>>
+export type ListWalletTransactionsQueryError = ErrorModel
+
+
+export function useListWalletTransactions<TData = Awaited<ReturnType<typeof listWalletTransactions>>, TError = ErrorModel>(
+ params: undefined |  ListWalletTransactionsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listWalletTransactions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listWalletTransactions>>,
+          TError,
+          Awaited<ReturnType<typeof listWalletTransactions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListWalletTransactions<TData = Awaited<ReturnType<typeof listWalletTransactions>>, TError = ErrorModel>(
+ params?: ListWalletTransactionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listWalletTransactions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listWalletTransactions>>,
+          TError,
+          Awaited<ReturnType<typeof listWalletTransactions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListWalletTransactions<TData = Awaited<ReturnType<typeof listWalletTransactions>>, TError = ErrorModel>(
+ params?: ListWalletTransactionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listWalletTransactions>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List the postings on the jastiper's balance, newest first
+ */
+
+export function useListWalletTransactions<TData = Awaited<ReturnType<typeof listWalletTransactions>>, TError = ErrorModel>(
+ params?: ListWalletTransactionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listWalletTransactions>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListWalletTransactionsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
