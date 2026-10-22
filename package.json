@@ -9,7 +9,6 @@
   },
   "scripts": {
     "dev": "vite",
-    "test:e2e": "playwright test",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -43,7 +42,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.64.1",
     "@tanstack/react-query-devtools": "^5.104.0",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",

@@ -23,7 +23,6 @@ export const ListMyTripsQueryParams = zod.object({
 export const ListMyTripsResponse = zod.object({
   "items": zod.array(zod.object({
   "acceptsRequests": zod.boolean(),
-  "capacity": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "departsOn": zod.iso.date(),
   "description": zod.string(),
@@ -34,7 +33,6 @@ export const ListMyTripsResponse = zod.object({
   "id": zod.string(),
   "name": zod.string()
 }),
-  "remainingCapacity": zod.int(),
   "requestDeadline": zod.iso.datetime({"offset":true}),
   "returnsOn": zod.iso.date(),
   "slug": zod.string(),
@@ -56,8 +54,6 @@ export const listTripsQueryLimitMax = 100;
 
 export const ListTripsQueryParams = zod.object({
   "city": zod.string().max(listTripsQueryCityMax).optional().describe('Destination city prefix, case-insensitive'),
-  "from": zod.iso.date().optional().describe('Earliest departure date, inclusive'),
-  "to": zod.iso.date().optional().describe('Latest departure date, inclusive'),
   "limit": zod.int().min(1).max(listTripsQueryLimitMax).default(listTripsQueryLimitDefault),
   "cursor": zod.string().optional()
 })
@@ -65,7 +61,6 @@ export const ListTripsQueryParams = zod.object({
 export const ListTripsResponse = zod.object({
   "items": zod.array(zod.object({
   "acceptsRequests": zod.boolean(),
-  "capacity": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "departsOn": zod.iso.date(),
   "description": zod.string(),
@@ -76,7 +71,6 @@ export const ListTripsResponse = zod.object({
   "id": zod.string(),
   "name": zod.string()
 }),
-  "remainingCapacity": zod.int(),
   "requestDeadline": zod.iso.datetime({"offset":true}),
   "returnsOn": zod.iso.date(),
   "slug": zod.string(),
@@ -89,8 +83,6 @@ export const ListTripsResponse = zod.object({
 /**
  * @summary Open a trip
  */
-export const createTripBodyCapacityMax = 1000;
-
 export const createTripBodyDescriptionMax = 2000;
 
 export const createTripBodyDestinationCityMax = 100;
@@ -101,7 +93,6 @@ export const createTripBodyTitleMax = 120;
 
 
 export const CreateTripBody = zod.object({
-  "capacity": zod.int().min(1).max(createTripBodyCapacityMax).describe('Items the jastiper can carry'),
   "departsOn": zod.iso.date(),
   "description": zod.string().max(createTripBodyDescriptionMax).optional(),
   "destinationCity": zod.string().min(1).max(createTripBodyDestinationCityMax),
@@ -113,7 +104,6 @@ export const CreateTripBody = zod.object({
 
 export const CreateTripResponse = zod.object({
   "acceptsRequests": zod.boolean(),
-  "capacity": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "departsOn": zod.iso.date(),
   "description": zod.string(),
@@ -124,85 +114,6 @@ export const CreateTripResponse = zod.object({
   "id": zod.string(),
   "name": zod.string()
 }),
-  "remainingCapacity": zod.int(),
-  "requestDeadline": zod.iso.datetime({"offset":true}),
-  "returnsOn": zod.iso.date(),
-  "slug": zod.string(),
-  "status": zod.enum(['open', 'closed', 'completed', 'cancelled']),
-  "title": zod.string()
-})
-
-/**
- * @summary Edit an open trip
- */
-export const UpdateTripParams = zod.object({
-  "id": zod.string()
-})
-
-export const updateTripBodyCapacityMax = 1000;
-
-export const updateTripBodyDescriptionMax = 2000;
-
-export const updateTripBodyDestinationCityMax = 100;
-
-export const updateTripBodyDestinationCountryRegExp = new RegExp('^[A-Za-z]{2}$');
-export const updateTripBodyTitleMax = 120;
-
-
-
-export const UpdateTripBody = zod.object({
-  "capacity": zod.int().min(1).max(updateTripBodyCapacityMax).optional(),
-  "departsOn": zod.iso.date().optional(),
-  "description": zod.string().max(updateTripBodyDescriptionMax).optional(),
-  "destinationCity": zod.string().min(1).max(updateTripBodyDestinationCityMax).optional(),
-  "destinationCountry": zod.string().regex(updateTripBodyDestinationCountryRegExp).optional().describe('ISO 3166-1 alpha-2'),
-  "requestDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "returnsOn": zod.iso.date().optional(),
-  "title": zod.string().min(1).max(updateTripBodyTitleMax).optional()
-})
-
-export const UpdateTripResponse = zod.object({
-  "acceptsRequests": zod.boolean(),
-  "capacity": zod.int(),
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "departsOn": zod.iso.date(),
-  "description": zod.string(),
-  "destinationCity": zod.string(),
-  "destinationCountry": zod.string(),
-  "id": zod.string(),
-  "jastiper": zod.object({
-  "id": zod.string(),
-  "name": zod.string()
-}),
-  "remainingCapacity": zod.int(),
-  "requestDeadline": zod.iso.datetime({"offset":true}),
-  "returnsOn": zod.iso.date(),
-  "slug": zod.string(),
-  "status": zod.enum(['open', 'closed', 'completed', 'cancelled']),
-  "title": zod.string()
-})
-
-/**
- * @summary Cancel a trip that has no active orders
- */
-export const CancelTripParams = zod.object({
-  "id": zod.string()
-})
-
-export const CancelTripResponse = zod.object({
-  "acceptsRequests": zod.boolean(),
-  "capacity": zod.int(),
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "departsOn": zod.iso.date(),
-  "description": zod.string(),
-  "destinationCity": zod.string(),
-  "destinationCountry": zod.string(),
-  "id": zod.string(),
-  "jastiper": zod.object({
-  "id": zod.string(),
-  "name": zod.string()
-}),
-  "remainingCapacity": zod.int(),
   "requestDeadline": zod.iso.datetime({"offset":true}),
   "returnsOn": zod.iso.date(),
   "slug": zod.string(),
@@ -219,7 +130,6 @@ export const CloseTripParams = zod.object({
 
 export const CloseTripResponse = zod.object({
   "acceptsRequests": zod.boolean(),
-  "capacity": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "departsOn": zod.iso.date(),
   "description": zod.string(),
@@ -230,113 +140,11 @@ export const CloseTripResponse = zod.object({
   "id": zod.string(),
   "name": zod.string()
 }),
-  "remainingCapacity": zod.int(),
   "requestDeadline": zod.iso.datetime({"offset":true}),
   "returnsOn": zod.iso.date(),
   "slug": zod.string(),
   "status": zod.enum(['open', 'closed', 'completed', 'cancelled']),
   "title": zod.string()
-})
-
-/**
- * @summary List a trip's catalog in display order
- */
-export const ListTripItemsParams = zod.object({
-  "id": zod.string()
-})
-
-export const ListTripItemsResponse = zod.object({
-  "items": zod.array(zod.object({
-  "description": zod.string().optional(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "photoUrl": zod.string().optional(),
-  "position": zod.int(),
-  "referencePrice": zod.int().optional()
-}))
-})
-
-/**
- * @summary Add an item to the trip's catalog
- */
-export const CreateTripItemParams = zod.object({
-  "id": zod.string()
-})
-
-export const createTripItemBodyDescriptionMax = 1000;
-
-export const createTripItemBodyNameMax = 120;
-
-export const createTripItemBodyPositionMin = 0;
-export const createTripItemBodyPositionMax = 1000;
-
-export const createTripItemBodyReferencePriceMin = 0;
-export const createTripItemBodyReferencePriceMax = 1000000000;
-
-
-
-export const CreateTripItemBody = zod.object({
-  "description": zod.string().max(createTripItemBodyDescriptionMax).optional(),
-  "name": zod.string().min(1).max(createTripItemBodyNameMax).optional(),
-  "photoUploadId": zod.string().optional().describe('Upload with purpose trip_item_photo; replaces the photo'),
-  "position": zod.int().min(createTripItemBodyPositionMin).max(createTripItemBodyPositionMax).optional().describe('Display order; defaults to last'),
-  "referencePrice": zod.int().min(createTripItemBodyReferencePriceMin).max(createTripItemBodyReferencePriceMax).optional().describe('Indicative, whole rupiah')
-})
-
-export const CreateTripItemResponse = zod.object({
-  "description": zod.string().optional(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "photoUrl": zod.string().optional(),
-  "position": zod.int(),
-  "referencePrice": zod.int().optional()
-})
-
-/**
- * @summary Remove a catalog item
- */
-export const DeleteTripItemParams = zod.object({
-  "id": zod.string(),
-  "itemId": zod.string()
-})
-
-export const DeleteTripItemResponse = zod.void()
-
-/**
- * @summary Edit a catalog item
- */
-export const UpdateTripItemParams = zod.object({
-  "id": zod.string(),
-  "itemId": zod.string()
-})
-
-export const updateTripItemBodyDescriptionMax = 1000;
-
-export const updateTripItemBodyNameMax = 120;
-
-export const updateTripItemBodyPositionMin = 0;
-export const updateTripItemBodyPositionMax = 1000;
-
-export const updateTripItemBodyReferencePriceMin = 0;
-export const updateTripItemBodyReferencePriceMax = 1000000000;
-
-
-
-export const UpdateTripItemBody = zod.object({
-  "description": zod.string().max(updateTripItemBodyDescriptionMax).optional(),
-  "name": zod.string().min(1).max(updateTripItemBodyNameMax).optional(),
-  "photoUploadId": zod.string().optional().describe('Upload with purpose trip_item_photo; replaces the photo'),
-  "position": zod.int().min(updateTripItemBodyPositionMin).max(updateTripItemBodyPositionMax).optional().describe('Display order; defaults to last'),
-  "referencePrice": zod.int().min(updateTripItemBodyReferencePriceMin).max(updateTripItemBodyReferencePriceMax).optional().describe('Indicative, whole rupiah')
-})
-
-export const UpdateTripItemResponse = zod.object({
-  "description": zod.string().optional(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "photoUrl": zod.string().optional(),
-  "position": zod.int(),
-  "referencePrice": zod.int().optional()
 })
 
 /**
@@ -348,26 +156,16 @@ export const GetTripParams = zod.object({
 
 export const GetTripResponse = zod.object({
   "acceptsRequests": zod.boolean(),
-  "capacity": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "departsOn": zod.iso.date(),
   "description": zod.string(),
   "destinationCity": zod.string(),
   "destinationCountry": zod.string(),
   "id": zod.string(),
-  "items": zod.array(zod.object({
-  "description": zod.string().optional(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "photoUrl": zod.string().optional(),
-  "position": zod.int(),
-  "referencePrice": zod.int().optional()
-})),
   "jastiper": zod.object({
   "id": zod.string(),
   "name": zod.string()
 }),
-  "remainingCapacity": zod.int(),
   "requestDeadline": zod.iso.datetime({"offset":true}),
   "returnsOn": zod.iso.date(),
   "slug": zod.string(),

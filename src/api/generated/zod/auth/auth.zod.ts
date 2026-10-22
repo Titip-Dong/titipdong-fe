@@ -28,9 +28,7 @@ export const LoginResponse = zod.object({
   "email": zod.email(),
   "id": zod.string(),
   "name": zod.string(),
-  "phone": zod.string().optional(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin']),
-  "status": zod.enum(['active', 'suspended'])
+  "role": zod.enum(['buyer', 'jastiper', 'admin'])
 })
 })
 
@@ -49,9 +47,7 @@ export const RefreshSessionResponse = zod.object({
   "email": zod.email(),
   "id": zod.string(),
   "name": zod.string(),
-  "phone": zod.string().optional(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin']),
-  "status": zod.enum(['active', 'suspended'])
+  "role": zod.enum(['buyer', 'jastiper', 'admin'])
 })
 })
 
@@ -81,9 +77,7 @@ export const RegisterResponse = zod.object({
   "email": zod.email(),
   "id": zod.string(),
   "name": zod.string(),
-  "phone": zod.string().optional(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin']),
-  "status": zod.enum(['active', 'suspended'])
+  "role": zod.enum(['buyer', 'jastiper', 'admin'])
 })
 })
 
@@ -95,41 +89,6 @@ export const GetCurrentUserResponse = zod.object({
   "email": zod.email(),
   "id": zod.string(),
   "name": zod.string(),
-  "phone": zod.string().optional(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin']),
-  "status": zod.enum(['active', 'suspended'])
-})
-
-/**
- * @summary Update the caller's name, phone, or password
- */
-export const updateCurrentUserBodyCurrentPasswordMax = 128;
-
-export const updateCurrentUserBodyNameMax = 100;
-
-export const updateCurrentUserBodyNewPasswordMin = 8;
-export const updateCurrentUserBodyNewPasswordMax = 128;
-
-export const updateCurrentUserBodyPhoneMax = 20;
-
-
-export const updateCurrentUserBodyPhoneRegExp = new RegExp('^\\+?[0-9]*$');
-
-
-export const UpdateCurrentUserBody = zod.object({
-  "currentPassword": zod.string().max(updateCurrentUserBodyCurrentPasswordMax).optional(),
-  "name": zod.string().min(1).max(updateCurrentUserBodyNameMax).optional(),
-  "newPassword": zod.string().min(updateCurrentUserBodyNewPasswordMin).max(updateCurrentUserBodyNewPasswordMax).optional(),
-  "phone": zod.string().max(updateCurrentUserBodyPhoneMax).regex(updateCurrentUserBodyPhoneRegExp).optional().describe('Empty clears it')
-})
-
-export const UpdateCurrentUserResponse = zod.object({
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "email": zod.email(),
-  "id": zod.string(),
-  "name": zod.string(),
-  "phone": zod.string().optional(),
-  "role": zod.enum(['buyer', 'jastiper', 'admin']),
-  "status": zod.enum(['active', 'suspended'])
+  "role": zod.enum(['buyer', 'jastiper', 'admin'])
 })
 

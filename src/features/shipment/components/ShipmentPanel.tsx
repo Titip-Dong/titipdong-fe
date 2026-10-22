@@ -2,8 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { PackageCheckIcon, TruckIcon } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
-import { useState } from "react";
-import { Link } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 import { getGetOrderQueryKey, getListOrdersQueryKey } from "@/api/generated/endpoints/order/order";
@@ -23,7 +21,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { errorMessage } from "@/lib/api-error";
 import { formatDateTime } from "@/lib/format";
 import { useAuthStore } from "@/stores/auth";
-import { uploadImage } from "@/features/upload";
 
 const couriers: Record<string, string> = {
   jne: "JNE",
@@ -79,8 +76,6 @@ function useInvalidateOrder(orderId: string) {
 }
 
 function ShipOrderForm({ orderId }: { orderId: string }) {
-  const [proof, setProof] = useState<File>();
-  const [uploading, setUploading] = useState(false);
   const invalidate = useInvalidateOrder(orderId);
   const ship = useShipOrder({
     mutation: {
@@ -97,23 +92,12 @@ function ShipOrderForm({ orderId }: { orderId: string }) {
   const method = useWatch({ control: form.control, name: "method" });
   const errors = form.formState.errors;
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    setUploading(true);
-    try {
-      const proofUploadId = proof ? await uploadImage(proof, "shipment_proof") : undefined;
-      await ship.mutateAsync({
-        id: orderId,
-        data:
-          values.method === "cod"
-            ? { method: "cod", handoverNote: values.handoverNote, proofUploadId }
-            : { ...values, proofUploadId },
-      });
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Pengiriman gagal dicatat.");
-    } finally {
-      setUploading(false);
-    }
-  });
+  const onSubmit = form.handleSubmit((values) =>
+    ship.mutate({
+      id: orderId,
+      data: values.method === "cod" ? { method: "cod", handoverNote: values.handoverNote } : values,
+    }),
+  );
 
   return (
     <form onSubmit={onSubmit} noValidate className="w-full space-y-4">
@@ -125,16 +109,6 @@ function ShipOrderForm({ orderId }: { orderId: string }) {
             <option value="courier">Kirim lewat kurir</option>
             <option value="cod">Ketemuan langsung (COD)</option>
           </select>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="shipmentProof">Foto bukti serah terima (opsional)</FieldLabel>
-          <Input
-            id="shipmentProof"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={(e) => setProof(e.target.files?.[0])}
-          />
-          <p className="text-xs text-muted-foreground">JPG, PNG, atau WebP · maksimal 5 MB.</p>
         </Field>
         {method === "courier" && (
           <div className="grid gap-5 sm:grid-cols-2">
@@ -176,12 +150,8 @@ function ShipOrderForm({ orderId }: { orderId: string }) {
             {errorMessage(ship.error, { 409: "Titipan ini sudah dikirim atau belum dibayar." })}
           </FieldError>
         )}
-        <Button type="submit" disabled={ship.isPending || uploading} className="w-fit">
-          {uploading
-            ? "Mengunggah bukti..."
-            : ship.isPending
-              ? "Menyimpan..."
-              : "Tandai sudah dikirim"}
+        <Button type="submit" disabled={ship.isPending} className="w-fit">
+          {ship.isPending ? "Menyimpan..." : "Tandai sudah dikirim"}
         </Button>
       </FieldGroup>
     </form>
@@ -221,39 +191,24 @@ function ShipmentDetails({ order, canConfirm }: { order: OrderResponse; canConfi
             <p className="text-muted-foreground">Diterima {formatDateTime(shipment.deliveredAt)}</p>
           )}
           {shipment.handoverNote && <p>{shipment.handoverNote}</p>}
-          {shipment.proofUrl && (
-            <a
-              href={shipment.proofUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="block text-primary hover:underline"
-            >
-              Lihat foto bukti serah terima
-            </a>
-          )}
         </div>
       </div>
       {canConfirm && (
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            disabled={confirm.isPending}
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Barang sudah kamu terima dan sesuai? Dana akan langsung diteruskan ke jastiper.",
-                )
-              ) {
-                confirm.mutate({ id: order.id });
-              }
-            }}
-          >
-            <PackageCheckIcon data-icon="inline-start" />
-            Barang sudah diterima
-          </Button>
-          <Button variant="outline" asChild>
-            <Link to={`/orders/${order.id}/dispute`}>Ajukan sengketa</Link>
-          </Button>
-        </div>
+        <Button
+          disabled={confirm.isPending}
+          onClick={() => {
+            if (
+              window.confirm(
+                "Barang sudah kamu terima dan sesuai? Dana akan langsung diteruskan ke jastiper.",
+              )
+            ) {
+              confirm.mutate({ id: order.id });
+            }
+          }}
+        >
+          <PackageCheckIcon data-icon="inline-start" />
+          Barang sudah diterima
+        </Button>
       )}
     </div>
   );

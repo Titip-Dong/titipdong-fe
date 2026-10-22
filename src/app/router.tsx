@@ -49,14 +49,6 @@ export const router = createBrowserRouter([
               { path: "/my-trips", lazy: () => import("@/features/trip/pages/MyTripsPage") },
               { path: "/my-trips/new", lazy: () => import("@/features/trip/pages/TripFormPage") },
               {
-                path: "/my-trips/:id/edit",
-                lazy: () => import("@/features/trip/pages/TripEditPage"),
-              },
-              {
-                path: "/my-trips/:id/catalog",
-                lazy: () => import("@/features/trip/pages/TripCatalogPage"),
-              },
-              {
                 path: "/my-trips/:id/requests",
                 lazy: () => import("@/features/order/pages/RequestInboxPage"),
               },
@@ -91,7 +83,6 @@ export const router = createBrowserRouter([
         children: [
           { index: true, lazy: () => import("@/features/admin/pages/DashboardPage") },
           { path: "transactions", lazy: () => import("@/features/admin/pages/TransactionsPage") },
-          { path: "payouts", lazy: () => import("@/features/admin/pages/PayoutsPage") },
           { path: "users", lazy: () => import("@/features/admin/pages/UsersPage") },
           { path: "audit", lazy: () => import("@/features/admin/pages/AuditLogPage") },
           {

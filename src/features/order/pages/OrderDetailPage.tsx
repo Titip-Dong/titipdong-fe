@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { ExternalLinkIcon } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { toast } from "sonner";
@@ -10,12 +9,10 @@ import {
   useCancelOrder,
   useGetOrder,
 } from "@/api/generated/endpoints/order/order";
-import { useCancelPaidOrder } from "@/api/generated/endpoints/payment/payment";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { ProductImage } from "@/components/ProductImage";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PaymentStatusCard } from "@/features/payment";
 import { ShipmentPanel } from "@/features/shipment";
@@ -29,7 +26,6 @@ export function Component() {
   const { id = "" } = useParams();
   const queryClient = useQueryClient();
   const userId = useAuthStore((s) => s.user?.id);
-  const [cancelReason, setCancelReason] = useState("");
   const { data, isPending, error } = useGetOrder(id);
 
   const refresh = () => {
@@ -46,16 +42,6 @@ export function Component() {
         toast.error(
           errorMessage(err, { 409: "Titipan yang sudah dibayar tidak bisa dibatalkan." }),
         ),
-    },
-  });
-  const cancelPaid = useCancelPaidOrder({
-    mutation: {
-      onSuccess: () => {
-        toast.success("Titipan dibatalkan dan refund diproses.");
-        refresh();
-      },
-      onError: (err) =>
-        toast.error(errorMessage(err, { 409: "Titipan ini tidak bisa dibatalkan sekarang." })),
     },
   });
 
@@ -101,28 +87,6 @@ export function Component() {
       )}
       <PaymentStatusCard order={order} />
       <ShipmentPanel order={order} />
-      {isJastiper && order.status === "paid" && (
-        <section className="space-y-3 rounded-lg border border-destructive/30 p-4">
-          <h3 className="font-semibold">Batalkan setelah dibayar</h3>
-          <p className="text-sm text-muted-foreground">Pembeli akan menerima refund penuh.</p>
-          <Textarea
-            maxLength={500}
-            value={cancelReason}
-            onChange={(e) => setCancelReason(e.target.value)}
-            placeholder="Alasan pembatalan"
-          />
-          <Button
-            variant="destructive"
-            disabled={!cancelReason.trim() || cancelPaid.isPending}
-            onClick={() => {
-              if (window.confirm("Batalkan titipan dan proses refund penuh ke pembeli?"))
-                cancelPaid.mutate({ id: order.id, data: { reason: cancelReason.trim() } });
-            }}
-          >
-            {cancelPaid.isPending ? "Memproses refund..." : "Batalkan & refund"}
-          </Button>
-        </section>
-      )}
       {canCancel && (
         <Button
           variant="ghost"
@@ -151,12 +115,7 @@ export function Component() {
       <Receipt>
         <ReceiptSection className="space-y-5">
           <div className="flex items-start gap-4">
-            <ProductImage
-              src={order.photoUrl}
-              name={order.productName}
-              tone="rambu"
-              className="size-20 shrink-0"
-            />
+            <ProductImage name={order.productName} tone="rambu" className="size-20 shrink-0" />
             <div className="min-w-0 flex-1 space-y-1">
               <p className="font-medium">{order.productName}</p>
               <p className="text-sm text-muted-foreground">

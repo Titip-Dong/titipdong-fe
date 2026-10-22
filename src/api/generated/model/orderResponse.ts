@@ -18,8 +18,6 @@ export interface OrderResponse {
   jastiper: Party;
   notes: string;
   paymentDeadline?: string;
-  /** Short-lived signed URL of the product photo */
-  photoUrl?: string;
   productName: string;
   productUrl: string;
   quantity: number;

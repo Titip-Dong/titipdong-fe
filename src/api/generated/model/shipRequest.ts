@@ -15,8 +15,6 @@ export interface ShipRequest {
   /** @maxLength 1000 */
   handoverNote?: string;
   method: ShipRequestMethod;
-  /** Upload with purpose shipment_proof */
-  proofUploadId?: string;
   /**
      * Required for courier
      * @maxLength 50

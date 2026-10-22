@@ -8,16 +8,9 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Liveness probe
+ * @summary Liveness and readiness probe
  */
 export const HealthResponse = zod.object({
-  "status": zod.string()
-})
-
-/**
- * @summary Readiness probe: the API can reach its database
- */
-export const ReadyResponse = zod.object({
   "status": zod.string()
 })
 

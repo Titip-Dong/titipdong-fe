@@ -8,63 +8,6 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Return the jastiper's saved bank account
- */
-export const GetPayoutAccountResponse = zod.object({
-  "accountName": zod.string(),
-  "accountNumber": zod.string(),
-  "bankName": zod.string(),
-  "updatedAt": zod.iso.datetime({"offset":true})
-})
-
-/**
- * @summary Save the jastiper's bank account for payouts
- */
-export const savePayoutAccountBodyAccountNameMax = 100;
-
-export const savePayoutAccountBodyAccountNumberRegExp = new RegExp('^[0-9]{5,30}$');
-export const savePayoutAccountBodyBankNameMax = 100;
-
-
-
-export const SavePayoutAccountBody = zod.object({
-  "accountName": zod.string().min(1).max(savePayoutAccountBodyAccountNameMax),
-  "accountNumber": zod.string().regex(savePayoutAccountBodyAccountNumberRegExp),
-  "bankName": zod.string().min(1).max(savePayoutAccountBodyBankNameMax)
-})
-
-export const SavePayoutAccountResponse = zod.object({
-  "accountName": zod.string(),
-  "accountNumber": zod.string(),
-  "bankName": zod.string(),
-  "updatedAt": zod.iso.datetime({"offset":true})
-})
-
-/**
- * @summary Cancel a paid order and refund the buyer
- */
-export const CancelPaidOrderParams = zod.object({
-  "id": zod.string()
-})
-
-export const cancelPaidOrderBodyReasonMax = 500;
-
-
-
-export const CancelPaidOrderBody = zod.object({
-  "reason": zod.string().min(1).max(cancelPaidOrderBodyReasonMax)
-})
-
-export const CancelPaidOrderResponse = zod.object({
-  "amount": zod.int(),
-  "completedAt": zod.iso.datetime({"offset":true}).optional(),
-  "id": zod.string(),
-  "orderId": zod.string(),
-  "reason": zod.enum(['jastiper_cancelled', 'dispute_refund']),
-  "status": zod.enum(['pending', 'succeeded', 'failed'])
-})
-
-/**
  * @summary Start or resume payment for an approved order
  */
 export const CheckoutOrderParams = zod.object({
@@ -103,99 +46,9 @@ export const SimulatePaymentResponse = zod.object({
 })
 
 /**
- * @summary List the jastiper's payout requests, newest first
- */
-export const listMyPayoutsQueryLimitDefault = 20;
-export const listMyPayoutsQueryLimitMax = 100;
-
-
-
-export const ListMyPayoutsQueryParams = zod.object({
-  "limit": zod.int().min(1).max(listMyPayoutsQueryLimitMax).default(listMyPayoutsQueryLimitDefault),
-  "cursor": zod.string().optional()
-})
-
-export const ListMyPayoutsResponse = zod.object({
-  "items": zod.array(zod.object({
-  "accountName": zod.string(),
-  "accountNumber": zod.string(),
-  "amount": zod.int(),
-  "bankName": zod.string(),
-  "decidedAt": zod.iso.datetime({"offset":true}).optional(),
-  "id": zod.string(),
-  "jastiper": zod.object({
-  "id": zod.string(),
-  "name": zod.string()
-}),
-  "reference": zod.string().optional(),
-  "rejectionReason": zod.string().optional(),
-  "requestedAt": zod.iso.datetime({"offset":true}),
-  "status": zod.enum(['requested', 'paid', 'rejected'])
-})),
-  "nextCursor": zod.string().optional()
-})
-
-/**
- * @summary Request a payout of available earnings
- */
-
-
-
-export const RequestPayoutBody = zod.object({
-  "amount": zod.int().min(1).describe('Whole rupiah')
-})
-
-export const RequestPayoutResponse = zod.object({
-  "accountName": zod.string(),
-  "accountNumber": zod.string(),
-  "amount": zod.int(),
-  "bankName": zod.string(),
-  "decidedAt": zod.iso.datetime({"offset":true}).optional(),
-  "id": zod.string(),
-  "jastiper": zod.object({
-  "id": zod.string(),
-  "name": zod.string()
-}),
-  "reference": zod.string().optional(),
-  "rejectionReason": zod.string().optional(),
-  "requestedAt": zod.iso.datetime({"offset":true}),
-  "status": zod.enum(['requested', 'paid', 'rejected'])
-})
-
-/**
- * @summary Return the jastiper's balance, available amount, money in escrow, and pending payouts
+ * @summary Return the jastiper's released earnings not yet paid out
  */
 export const GetWalletResponse = zod.object({
-  "available": zod.int().describe('Balance minus requested payouts: what can be requested now'),
-  "balance": zod.int().describe('Released earnings not paid out, whole rupiah'),
-  "inEscrow": zod.int().describe('Totals of the jastiper\'s orders still held in escrow, before the 5% fee'),
-  "pendingPayout": zod.int().describe('Payouts requested and not yet decided')
-})
-
-/**
- * @summary List the postings on the jastiper's balance, newest first
- */
-export const listWalletTransactionsQueryLimitDefault = 20;
-export const listWalletTransactionsQueryLimitMax = 100;
-
-
-
-export const ListWalletTransactionsQueryParams = zod.object({
-  "limit": zod.int().min(1).max(listWalletTransactionsQueryLimitMax).default(listWalletTransactionsQueryLimitDefault),
-  "cursor": zod.string().optional()
-})
-
-export const ListWalletTransactionsResponse = zod.object({
-  "items": zod.array(zod.object({
-  "amount": zod.int(),
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "direction": zod.enum(['credit', 'debit']).describe('credit adds to the balance, debit takes from it'),
-  "id": zod.int(),
-  "kind": zod.enum(['release', 'payout']),
-  "orderCode": zod.string().optional(),
-  "orderId": zod.string().optional(),
-  "payoutId": zod.string().optional()
-})),
-  "nextCursor": zod.string().optional()
+  "balance": zod.int().describe('Whole rupiah')
 })
 

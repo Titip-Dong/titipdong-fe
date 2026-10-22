@@ -6,12 +6,6 @@
  */
 
 export interface CreateTripRequest {
-  /**
-     * Items the jastiper can carry
-     * @minimum 1
-     * @maximum 1000
-     */
-  capacity: number;
   departsOn: string;
   /** @maxLength 2000 */
   description?: string;

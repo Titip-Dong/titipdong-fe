@@ -9,7 +9,6 @@ import type { TripResponseStatus } from './tripResponseStatus';
 
 export interface TripResponse {
   acceptsRequests: boolean;
-  capacity: number;
   createdAt: string;
   departsOn: string;
   description: string;
@@ -17,7 +16,6 @@ export interface TripResponse {
   destinationCountry: string;
   id: string;
   jastiper: Jastiper;
-  remainingCapacity: number;
   requestDeadline: string;
   returnsOn: string;
   slug: string;

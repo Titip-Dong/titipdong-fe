@@ -15,14 +15,12 @@ export const ConfirmReceiptParams = zod.object({
 })
 
 export const ConfirmReceiptResponse = zod.object({
-  "autoReleaseAt": zod.iso.datetime({"offset":true}).optional().describe('While shipped: when funds release unless the buyer confirms or disputes'),
   "courierCode": zod.string(),
   "deliveredAt": zod.iso.datetime({"offset":true}).optional(),
   "handoverNote": zod.string(),
   "method": zod.enum(['cod', 'courier']),
   "orderId": zod.string(),
   "orderStatus": zod.enum(['requested', 'approved', 'rejected', 'cancelled', 'paid', 'shipped', 'delivered', 'disputed', 'released', 'refunded']),
-  "proofUrl": zod.string().optional().describe('Short-lived signed URL of the handover proof'),
   "shippedAt": zod.iso.datetime({"offset":true}),
   "trackingNumber": zod.string()
 })
@@ -35,14 +33,12 @@ export const GetShipmentParams = zod.object({
 })
 
 export const GetShipmentResponse = zod.object({
-  "autoReleaseAt": zod.iso.datetime({"offset":true}).optional().describe('While shipped: when funds release unless the buyer confirms or disputes'),
   "courierCode": zod.string(),
   "deliveredAt": zod.iso.datetime({"offset":true}).optional(),
   "handoverNote": zod.string(),
   "method": zod.enum(['cod', 'courier']),
   "orderId": zod.string(),
   "orderStatus": zod.enum(['requested', 'approved', 'rejected', 'cancelled', 'paid', 'shipped', 'delivered', 'disputed', 'released', 'refunded']),
-  "proofUrl": zod.string().optional().describe('Short-lived signed URL of the handover proof'),
   "shippedAt": zod.iso.datetime({"offset":true}),
   "trackingNumber": zod.string()
 })
@@ -66,19 +62,16 @@ export const ShipOrderBody = zod.object({
   "courierCode": zod.string().max(shipOrderBodyCourierCodeMax).optional().describe('Required for courier, e.g. jne, jnt, sicepat'),
   "handoverNote": zod.string().max(shipOrderBodyHandoverNoteMax).optional(),
   "method": zod.enum(['cod', 'courier']),
-  "proofUploadId": zod.string().optional().describe('Upload with purpose shipment_proof'),
   "trackingNumber": zod.string().max(shipOrderBodyTrackingNumberMax).optional().describe('Required for courier')
 })
 
 export const ShipOrderResponse = zod.object({
-  "autoReleaseAt": zod.iso.datetime({"offset":true}).optional().describe('While shipped: when funds release unless the buyer confirms or disputes'),
   "courierCode": zod.string(),
   "deliveredAt": zod.iso.datetime({"offset":true}).optional(),
   "handoverNote": zod.string(),
   "method": zod.enum(['cod', 'courier']),
   "orderId": zod.string(),
   "orderStatus": zod.enum(['requested', 'approved', 'rejected', 'cancelled', 'paid', 'shipped', 'delivered', 'disputed', 'released', 'refunded']),
-  "proofUrl": zod.string().optional().describe('Short-lived signed URL of the handover proof'),
   "shippedAt": zod.iso.datetime({"offset":true}),
   "trackingNumber": zod.string()
 })

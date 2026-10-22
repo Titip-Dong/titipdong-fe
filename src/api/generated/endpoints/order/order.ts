@@ -28,7 +28,6 @@ import type {
   CreateOrderRequest,
   ErrorModel,
   ListOrdersParams,
-  ListTripOrdersParams,
   OrderDetailResponse,
   OrderPage,
   OrderResponse,
@@ -56,121 +55,6 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
-
-export const getListTripOrdersUrl = (id: string,
-    params?: ListTripOrdersParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : String(value))
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/me/trips/${id}/orders?${stringifiedParams}` : `/me/trips/${id}/orders`
-}
-
-/**
- * @summary List the orders on one of the jastiper's trips, newest first
- */
-export const listTripOrders = async (id: string,
-    params?: ListTripOrdersParams, options?: Parameters<typeof apiFetch>[1]): Promise<OrderPage> => {
-
-  return apiFetch<OrderPage>(getListTripOrdersUrl(id,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getListTripOrdersQueryKey = (id: string,
-    params?: ListTripOrdersParams,) => {
-    return [
-    `/me/trips/${id}/orders`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getListTripOrdersQueryOptions = <TData = Awaited<ReturnType<typeof listTripOrders>>, TError = ErrorModel>(id: string,
-    params?: ListTripOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripOrders>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
-) => {
-
-const {query: queryOptions, request: requestOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getListTripOrdersQueryKey(id,params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTripOrders>>> = ({ signal }) => listTripOrders(id,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTripOrders>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ListTripOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof listTripOrders>>>
-export type ListTripOrdersQueryError = ErrorModel
-
-
-export function useListTripOrders<TData = Awaited<ReturnType<typeof listTripOrders>>, TError = ErrorModel>(
- id: string,
-    params: undefined |  ListTripOrdersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripOrders>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof listTripOrders>>,
-          TError,
-          Awaited<ReturnType<typeof listTripOrders>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListTripOrders<TData = Awaited<ReturnType<typeof listTripOrders>>, TError = ErrorModel>(
- id: string,
-    params?: ListTripOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripOrders>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof listTripOrders>>,
-          TError,
-          Awaited<ReturnType<typeof listTripOrders>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListTripOrders<TData = Awaited<ReturnType<typeof listTripOrders>>, TError = ErrorModel>(
- id: string,
-    params?: ListTripOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripOrders>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary List the orders on one of the jastiper's trips, newest first
- */
-
-export function useListTripOrders<TData = Awaited<ReturnType<typeof listTripOrders>>, TError = ErrorModel>(
- id: string,
-    params?: ListTripOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTripOrders>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getListTripOrdersQueryOptions(id,params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
 
 export const getListOrdersUrl = (params?: ListOrdersParams,) => {
   const normalizedParams = new URLSearchParams();

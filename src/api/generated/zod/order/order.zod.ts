@@ -8,57 +8,6 @@ import * as zod from 'zod';
 
 
 /**
- * @summary List the orders on one of the jastiper's trips, newest first
- */
-export const ListTripOrdersParams = zod.object({
-  "id": zod.string()
-})
-
-export const listTripOrdersQueryLimitDefault = 20;
-export const listTripOrdersQueryLimitMax = 100;
-
-
-
-export const ListTripOrdersQueryParams = zod.object({
-  "status": zod.enum(['requested', 'approved', 'rejected', 'cancelled', 'paid', 'shipped', 'delivered', 'disputed', 'released', 'refunded']).optional(),
-  "limit": zod.int().min(1).max(listTripOrdersQueryLimitMax).default(listTripOrdersQueryLimitDefault),
-  "cursor": zod.string().optional()
-})
-
-export const ListTripOrdersResponse = zod.object({
-  "items": zod.array(zod.object({
-  "buyer": zod.object({
-  "id": zod.string(),
-  "name": zod.string()
-}),
-  "code": zod.string(),
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "id": zod.string(),
-  "itemPrice": zod.int().optional(),
-  "jastipFee": zod.int().optional(),
-  "jastiper": zod.object({
-  "id": zod.string(),
-  "name": zod.string()
-}),
-  "notes": zod.string(),
-  "paymentDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "photoUrl": zod.string().optional().describe('Short-lived signed URL of the product photo'),
-  "productName": zod.string(),
-  "productUrl": zod.string(),
-  "quantity": zod.int(),
-  "status": zod.enum(['requested', 'approved', 'rejected', 'cancelled', 'paid', 'shipped', 'delivered', 'disputed', 'released', 'refunded']),
-  "statusReason": zod.string(),
-  "total": zod.int().optional(),
-  "trip": zod.object({
-  "id": zod.string(),
-  "slug": zod.string(),
-  "title": zod.string()
-})
-})),
-  "nextCursor": zod.string().optional()
-})
-
-/**
  * @summary List the caller's orders as buyer or jastiper
  */
 export const listOrdersQueryLimitDefault = 20;
@@ -90,7 +39,6 @@ export const ListOrdersResponse = zod.object({
 }),
   "notes": zod.string(),
   "paymentDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "photoUrl": zod.string().optional().describe('Short-lived signed URL of the product photo'),
   "productName": zod.string(),
   "productUrl": zod.string(),
   "quantity": zod.int(),
@@ -138,7 +86,6 @@ export const GetOrderResponse = zod.object({
 }),
   "notes": zod.string(),
   "paymentDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "photoUrl": zod.string().optional().describe('Short-lived signed URL of the product photo'),
   "productName": zod.string(),
   "productUrl": zod.string(),
   "quantity": zod.int(),
@@ -188,7 +135,6 @@ export const ApproveOrderResponse = zod.object({
 }),
   "notes": zod.string(),
   "paymentDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "photoUrl": zod.string().optional().describe('Short-lived signed URL of the product photo'),
   "productName": zod.string(),
   "productUrl": zod.string(),
   "quantity": zod.int(),
@@ -233,7 +179,6 @@ export const CancelOrderResponse = zod.object({
 }),
   "notes": zod.string(),
   "paymentDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "photoUrl": zod.string().optional().describe('Short-lived signed URL of the product photo'),
   "productName": zod.string(),
   "productUrl": zod.string(),
   "quantity": zod.int(),
@@ -278,7 +223,6 @@ export const RejectOrderResponse = zod.object({
 }),
   "notes": zod.string(),
   "paymentDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "photoUrl": zod.string().optional().describe('Short-lived signed URL of the product photo'),
   "productName": zod.string(),
   "productUrl": zod.string(),
   "quantity": zod.int(),
@@ -311,7 +255,6 @@ export const createOrderBodyQuantityMax = 100;
 
 export const CreateOrderBody = zod.object({
   "notes": zod.string().max(createOrderBodyNotesMax).optional(),
-  "photoUploadId": zod.string().optional().describe('Upload with purpose order_photo'),
   "productName": zod.string().min(1).max(createOrderBodyProductNameMax),
   "productUrl": zod.url().max(createOrderBodyProductUrlMax).optional(),
   "quantity": zod.int().min(1).max(createOrderBodyQuantityMax)
@@ -333,7 +276,6 @@ export const CreateOrderResponse = zod.object({
 }),
   "notes": zod.string(),
   "paymentDeadline": zod.iso.datetime({"offset":true}).optional(),
-  "photoUrl": zod.string().optional().describe('Short-lived signed URL of the product photo'),
   "productName": zod.string(),
   "productUrl": zod.string(),
   "quantity": zod.int(),
