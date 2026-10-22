@@ -13,9 +13,14 @@ const filters: { value: ListOrdersStatus | ""; label: string }[] = [
   { value: "", label: "Semua" },
   { value: "requested", label: "Perlu persetujuan" },
   { value: "approved", label: "Menunggu bayar" },
+  { value: "rejected", label: "Ditolak" },
+  { value: "cancelled", label: "Dibatalkan" },
   { value: "paid", label: "Perlu dikirim" },
   { value: "shipped", label: "Dikirim" },
+  { value: "disputed", label: "Dalam sengketa" },
+  { value: "delivered", label: "Diterima" },
   { value: "released", label: "Selesai" },
+  { value: "refunded", label: "Refund" },
 ];
 
 /** Orders of the signed-in user with status filters; optionally limited to one trip. */
@@ -74,6 +79,7 @@ export function OrderList({
                     className="flex items-center gap-4 p-4 outline-none hover:bg-muted/50 focus-visible:bg-muted/50 sm:p-5"
                   >
                     <ProductImage
+                      src={o.photoUrl}
                       name={o.productName}
                       tone="paspor"
                       className="size-14 shrink-0 rounded-lg"

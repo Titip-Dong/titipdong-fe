@@ -6,6 +6,7 @@ import type { z } from "zod";
 import { useApproveOrder, useRejectOrder } from "@/api/generated/endpoints/order/order";
 import { ApproveOrderBody } from "@/api/generated/zod/order/order.zod";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,13 +50,7 @@ export function DecisionPanel({
 
   if (rejecting) {
     return (
-      <form
-        className="w-full space-y-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (reason.trim()) reject.mutate({ id: orderId, data: { reason: reason.trim() } });
-        }}
-      >
+      <form className="w-full space-y-3">
         <Field>
           <FieldLabel htmlFor="reason">Alasan menolak</FieldLabel>
           <Textarea
@@ -69,9 +64,22 @@ export function DecisionPanel({
           <FieldDescription>Alasan ini ditampilkan ke pembeli.</FieldDescription>
         </Field>
         <div className="flex flex-wrap gap-2">
-          <Button type="submit" variant="destructive" disabled={!reason.trim() || reject.isPending}>
-            Tolak titipan
-          </Button>
+          <ConfirmDialog
+            trigger={
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={!reason.trim() || reject.isPending}
+              >
+                Tolak titipan
+              </Button>
+            }
+            title="Tolak permintaan titipan?"
+            description="Pembeli akan menerima alasan penolakan ini dan order tidak bisa dipulihkan."
+            confirmLabel="Ya, tolak titipan"
+            destructive
+            onConfirm={() => reject.mutateAsync({ id: orderId, data: { reason: reason.trim() } })}
+          />
           <Button type="button" variant="ghost" onClick={() => setRejecting(false)}>
             Batal
           </Button>

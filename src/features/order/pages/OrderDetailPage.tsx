@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { ExternalLinkIcon } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { toast } from "sonner";
@@ -6,16 +7,23 @@ import { ApiError } from "@/api/client";
 import {
   getGetOrderQueryKey,
   getListOrdersQueryKey,
+  getListTripOrdersQueryKey,
   useCancelOrder,
   useGetOrder,
 } from "@/api/generated/endpoints/order/order";
+import { getGetTripQueryKey } from "@/api/generated/endpoints/trip/trip";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { ProductImage } from "@/components/ProductImage";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import { PaymentStatusCard } from "@/features/payment";
 import { ShipmentPanel } from "@/features/shipment";
+import { DisputeThread } from "@/features/dispute";
+import { useGetOrderDispute } from "@/api/generated/endpoints/dispute/dispute";
+import { useCancelPaidOrder } from "@/api/generated/endpoints/payment/payment";
 import { errorMessage } from "@/lib/api-error";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { useAuthStore } from "@/stores/auth";
@@ -26,11 +34,18 @@ export function Component() {
   const { id = "" } = useParams();
   const queryClient = useQueryClient();
   const userId = useAuthStore((s) => s.user?.id);
+  const [refundReason, setRefundReason] = useState("");
   const { data, isPending, error } = useGetOrder(id);
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: getGetOrderQueryKey(id) });
     void queryClient.invalidateQueries({ queryKey: getListOrdersQueryKey() });
+    if (data?.order) {
+      void queryClient.invalidateQueries({
+        queryKey: getListTripOrdersQueryKey(data.order.trip.id),
+      });
+      void queryClient.invalidateQueries({ queryKey: getGetTripQueryKey(data.order.trip.slug) });
+    }
   };
   const cancel = useCancelOrder({
     mutation: {
@@ -41,6 +56,18 @@ export function Component() {
       onError: (err) =>
         toast.error(
           errorMessage(err, { 409: "Titipan yang sudah dibayar tidak bisa dibatalkan." }),
+        ),
+    },
+  });
+  const cancelPaid = useCancelPaidOrder({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Titipan dibatalkan dan refund diproses.");
+        refresh();
+      },
+      onError: (err) =>
+        toast.error(
+          errorMessage(err, { 409: "Titipan ini sudah berubah dan tidak bisa dibatalkan." }),
         ),
     },
   });
@@ -87,17 +114,52 @@ export function Component() {
       )}
       <PaymentStatusCard order={order} />
       <ShipmentPanel order={order} />
-      {canCancel && (
-        <Button
-          variant="ghost"
-          className="w-fit"
-          disabled={cancel.isPending}
-          onClick={() => {
-            if (window.confirm("Batalkan titipan ini?")) cancel.mutate({ id: order.id });
-          }}
-        >
-          Batalkan titipan
+      {isBuyer && order.status === "shipped" && (
+        <Button variant="outline" asChild>
+          <Link to={`/orders/${order.id}/dispute`}>Ajukan sengketa</Link>
         </Button>
+      )}
+      {order.status === "disputed" && <OrderDispute orderId={order.id} />}
+      {isJastiper && order.status === "paid" && (
+        <section className="space-y-3 rounded-lg border border-destructive/30 p-4">
+          <h2 className="font-semibold">Batalkan dan refund</h2>
+          <p className="text-sm text-muted-foreground">Pembeli akan menerima refund penuh.</p>
+          <Textarea
+            aria-label="Alasan pembatalan dan refund"
+            maxLength={500}
+            value={refundReason}
+            onChange={(event) => setRefundReason(event.target.value)}
+            placeholder="Jelaskan alasan pembatalan."
+          />
+          <ConfirmDialog
+            trigger={
+              <Button variant="destructive" disabled={!refundReason.trim() || cancelPaid.isPending}>
+                Batalkan & refund
+              </Button>
+            }
+            title="Batalkan titipan dan refund?"
+            description="Order akan dibatalkan dan seluruh pembayaran dikembalikan kepada pembeli."
+            confirmLabel="Ya, refund"
+            destructive
+            onConfirm={() =>
+              cancelPaid.mutateAsync({ id: order.id, data: { reason: refundReason.trim() } })
+            }
+          />
+        </section>
+      )}
+      {canCancel && (
+        <ConfirmDialog
+          trigger={
+            <Button variant="ghost" className="w-fit" disabled={cancel.isPending}>
+              Batalkan titipan
+            </Button>
+          }
+          title="Batalkan titipan?"
+          description="Permintaan ini akan ditutup dan jastiper tidak perlu memprosesnya lagi."
+          confirmLabel="Ya, batalkan"
+          destructive
+          onConfirm={() => cancel.mutateAsync({ id: order.id })}
+        />
       )}
     </>
   );
@@ -178,4 +240,16 @@ export function Component() {
       </section>
     </div>
   );
+}
+
+function OrderDispute({ orderId }: { orderId: string }) {
+  const dispute = useGetOrderDispute(orderId);
+  if (dispute.isPending) return <Skeleton className="h-48 rounded-xl" />;
+  if (dispute.isError || !dispute.data)
+    return (
+      <p role="alert" className="text-sm text-destructive">
+        Rincian sengketa gagal dimuat. Coba muat ulang halaman.
+      </p>
+    );
+  return <DisputeThread dispute={dispute.data} />;
 }
