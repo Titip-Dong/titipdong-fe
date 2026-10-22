@@ -5,6 +5,8 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,
+  // The local API, PostgreSQL, and Azurite share one dev machine; six workers overload this stack.
+  workers: 2,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? "github" : "line",
   use: {
