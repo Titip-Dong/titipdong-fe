@@ -134,6 +134,14 @@ export function Component() {
                   imageUrl={item.photoUrl}
                   tone={tones[i % tones.length]}
                 />
+                {trip.acceptsRequests && user?.role === "buyer" && (
+                  <Link
+                    className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
+                    to={`/trip/${trip.slug}/request?item=${encodeURIComponent(item.name)}`}
+                  >
+                    Titip barang ini
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

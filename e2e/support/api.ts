@@ -109,3 +109,62 @@ export async function addItem(
     token,
   );
 }
+
+export async function createOrder(token: string, slug: string, productName = "QA order") {
+  return call<{ id: string; code: string }>(
+    `/trips/${slug}/orders`,
+    { method: "POST", body: JSON.stringify({ productName, quantity: 1 }) },
+    token,
+  );
+}
+
+export async function approveOrder(token: string, orderId: string) {
+  return call(
+    `/orders/${orderId}/approve`,
+    {
+      method: "POST",
+      body: JSON.stringify({ itemPrice: 100_000, jastipFee: 10_000 }),
+    },
+    token,
+  );
+}
+
+export async function payOrder(token: string, orderId: string) {
+  const payment = await call<{ id: string }>(
+    `/orders/${orderId}/payments`,
+    { method: "POST" },
+    token,
+  );
+  await call(`/payments/${payment.id}/simulate`, { method: "POST" }, token);
+}
+
+export async function shipOrder(token: string, orderId: string) {
+  await call(
+    `/orders/${orderId}/shipment`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        method: "courier",
+        courierCode: "jne",
+        trackingNumber: `QA${Date.now()}`,
+      }),
+    },
+    token,
+  );
+}
+
+export async function confirmReceipt(token: string, orderId: string) {
+  await call(`/orders/${orderId}/confirm-receipt`, { method: "POST" }, token);
+}
+
+export async function readWallet(token: string) {
+  return call<{ balance: number; available: number; inEscrow: number; pendingPayout: number }>(
+    "/wallet",
+    {},
+    token,
+  );
+}
+
+export async function readOrderDispute(token: string, orderId: string) {
+  return call<{ id: string }>(`/orders/${orderId}/dispute`, {}, token);
+}

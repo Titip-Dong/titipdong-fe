@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { PackageCheckIcon, TruckIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -15,6 +16,8 @@ import {
 import type { OrderResponse } from "@/api/generated/model";
 import { ShipOrderBody } from "@/api/generated/zod/shipment/shipment.zod";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ImageUploadField } from "@/components/ImageUploadField";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -76,6 +79,8 @@ function useInvalidateOrder(orderId: string) {
 }
 
 function ShipOrderForm({ orderId }: { orderId: string }) {
+  const [proofUploadId, setProofUploadId] = useState<string>();
+  const [uploading, setUploading] = useState(false);
   const invalidate = useInvalidateOrder(orderId);
   const ship = useShipOrder({
     mutation: {
@@ -95,7 +100,10 @@ function ShipOrderForm({ orderId }: { orderId: string }) {
   const onSubmit = form.handleSubmit((values) =>
     ship.mutate({
       id: orderId,
-      data: values.method === "cod" ? { method: "cod", handoverNote: values.handoverNote } : values,
+      data:
+        values.method === "cod"
+          ? { method: "cod", handoverNote: values.handoverNote, proofUploadId }
+          : { ...values, proofUploadId },
     }),
   );
 
@@ -110,6 +118,12 @@ function ShipOrderForm({ orderId }: { orderId: string }) {
             <option value="cod">Ketemuan langsung (COD)</option>
           </select>
         </Field>
+        <ImageUploadField
+          label="Foto bukti serah terima (opsional)"
+          purpose="shipment_proof"
+          onChange={setProofUploadId}
+          onBusyChange={setUploading}
+        />
         {method === "courier" && (
           <div className="grid gap-5 sm:grid-cols-2">
             <Field>
@@ -150,8 +164,12 @@ function ShipOrderForm({ orderId }: { orderId: string }) {
             {errorMessage(ship.error, { 409: "Titipan ini sudah dikirim atau belum dibayar." })}
           </FieldError>
         )}
-        <Button type="submit" disabled={ship.isPending} className="w-fit">
-          {ship.isPending ? "Menyimpan..." : "Tandai sudah dikirim"}
+        <Button type="submit" disabled={ship.isPending || uploading} className="w-fit">
+          {uploading
+            ? "Mengunggah bukti..."
+            : ship.isPending
+              ? "Menyimpan..."
+              : "Tandai sudah dikirim"}
         </Button>
       </FieldGroup>
     </form>
@@ -191,24 +209,31 @@ function ShipmentDetails({ order, canConfirm }: { order: OrderResponse; canConfi
             <p className="text-muted-foreground">Diterima {formatDateTime(shipment.deliveredAt)}</p>
           )}
           {shipment.handoverNote && <p>{shipment.handoverNote}</p>}
+          {shipment.proofUrl && (
+            <a
+              href={shipment.proofUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block text-primary hover:underline"
+            >
+              Lihat foto bukti serah terima
+            </a>
+          )}
         </div>
       </div>
       {canConfirm && (
-        <Button
-          disabled={confirm.isPending}
-          onClick={() => {
-            if (
-              window.confirm(
-                "Barang sudah kamu terima dan sesuai? Dana akan langsung diteruskan ke jastiper.",
-              )
-            ) {
-              confirm.mutate({ id: order.id });
-            }
-          }}
-        >
-          <PackageCheckIcon data-icon="inline-start" />
-          Barang sudah diterima
-        </Button>
+        <ConfirmDialog
+          trigger={
+            <Button disabled={confirm.isPending}>
+              <PackageCheckIcon data-icon="inline-start" />
+              Barang sudah diterima
+            </Button>
+          }
+          title="Konfirmasi barang diterima?"
+          description="Pastikan barang sudah kamu terima dan sesuai. Setelah dikonfirmasi, dana langsung diteruskan ke jastiper dan tindakan ini tidak bisa dibatalkan."
+          confirmLabel="Ya, barang diterima"
+          onConfirm={() => confirm.mutateAsync({ id: order.id })}
+        />
       )}
     </div>
   );
