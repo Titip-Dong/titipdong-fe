@@ -239,14 +239,10 @@ version. The essentials:
 - Finished branches are merged into `dev` directly (no PR), after local checks pass. `dev` is merged into `main` only
   for a release; pushes to `main` deploy to Azure Static Web Apps (`.github/workflows/deploy-static-web-app.yml`).
 
-## Temporary (TODO)
+## Release readiness
 
-- These pages are still a `PlaceholderPage`: `/notifications` (F07), `/orders/:id/dispute` and `/admin/disputes`
-  (F06), and `/admin`, `/admin/transactions`, `/admin/users`, `/admin/audit` (F08). The backend endpoints for all of
-  them exist.
-- `window.confirm` is still used in `OrderDetailPage`, `MyTripsPage`, and `ShipmentPanel`; switch them to
-  `ConfirmDialog` when those pages are rebuilt.
-- The deploy workflow builds with a placeholder `VITE_API_URL` (`https://api.titipdong.invalid`) until the backend has
-  a public HTTPS Ingress. The frontend and API must then share one parent domain (for example `app.<domain>` and
-  `api.<domain>`), because the `SameSite=Lax` refresh cookie is not sent cross-site; otherwise users are signed out
-  on every reload.
+- Planned F01–F08 frontend pages and their main user flows are implemented. See `docs/PLAN.md` and
+  `e2e/REQUIREMENTS.md` for the current implementation and test coverage.
+- Production deployment still needs a public HTTPS API and the real `VITE_API_URL` and `CORS_ORIGINS` values.
+  The frontend and API must share one parent domain (for example `app.<domain>` and `api.<domain>`), because the
+  `SameSite=Lax` refresh cookie is not sent cross-site.

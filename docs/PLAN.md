@@ -3,7 +3,7 @@
 Plan for rebuilding the TITIP DONG frontend on top of the finished backend (F01–F08 done). The work is split into
 phases that each end in a working, shippable app, so every phase can be reviewed and merged on its own.
 
-Last updated: 2026-10-17.
+Last updated: 2026-10-22.
 
 ## 1. Why a revamp
 
@@ -115,6 +115,10 @@ Exit: a jastiper can publish a trip with a photo catalog; a visitor can find it 
 
 ### Phase 5: Orders and shipment (F03, F05)
 
+Status (2026-10-22): implemented from the `dev` baseline. Request, status lists, order decisions,
+photo uploads, shipment proof, receipt confirmation, and paid-order cancellation are in place. Covered
+by the desktop and mobile E2E suite.
+
 - Request form with optional photo and catalog prefill.
 - Order lists for Pembeli and Jastiper, the per-trip inbox with status filters.
 - Order detail per `docs/FLOWS.md` §4 status table: approve/reject, cancel, ship with proof photo, confirm receipt,
@@ -124,12 +128,18 @@ Exit: the full happy path from request to released works end to end with the dem
 
 ### Phase 6: Payment, wallet, payouts (F04)
 
+Status (2026-10-22): implemented from the `dev` baseline. Checkout, wallet ledger and payout history,
+account management, payout request, and admin payout queue are in place. Covered by E2E.
+
 - Pay page: checkout, deadline countdown, mock "Bayar sekarang", result.
 - Wallet: balance figures, transaction history, payout account, payout request and history.
 
 Exit: a jastiper can withdraw the earnings from phase 5, and an admin can see the request (phase 8).
 
 ### Phase 7: Disputes (F06)
+
+Status (2026-10-22): implemented from the `dev` baseline. Dispute evidence upload, thread, admin
+queue/detail, and refund/release decisions are in place. Both outcomes and evidence upload are covered by E2E.
 
 - Open dispute with category, description, and evidence photos.
 - Dispute thread on the order page: messages and added evidence, for buyer and jastiper.
@@ -139,6 +149,9 @@ Exit: both decisions work and the order ends in the right status.
 
 ### Phase 8: Notifications and admin (F07, F08)
 
+Status (2026-10-22): implemented from the `dev` baseline. Notifications and all planned admin routes,
+including orders and payouts, are implemented. User suspend/reactivate is covered by E2E.
+
 - Notification list with copy and links per type (`docs/FLOWS.md` §6), mark read, mark all read.
 - Admin layout per `DESIGN.md` §5 (sidebar from `lg`, sheet menu below), with menu entries for orders and payouts.
 - Admin dashboard, orders, transactions, users (suspend/reactivate), audit log, payout queue.
@@ -146,6 +159,10 @@ Exit: both decisions work and the order ends in the right status.
 Exit: an admin can run the platform without the database shell.
 
 ### Phase 9: Polish and release readiness
+
+Status: remaining. Release still depends on team review of the design and a deployed HTTPS API with
+production `VITE_API_URL` and matching `CORS_ORIGINS`; those environment and release steps are outside
+this frontend implementation branch.
 
 - Walk every journey on a phone width and with the keyboard only; fix contrast and focus issues.
 - Consistency pass against `DESIGN.md` across all pages.
