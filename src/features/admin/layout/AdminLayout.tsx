@@ -1,9 +1,12 @@
 import { Link, NavLink, Outlet } from "react-router";
 import { cn } from "@/lib/utils";
+import { NotificationBell } from "@/features/notification";
 
 const menu = [
   { to: "/admin", label: "Dashboard", end: true },
+  { to: "/admin/orders", label: "Order" },
   { to: "/admin/transactions", label: "Transaksi" },
+  { to: "/admin/payouts", label: "Payout" },
   { to: "/admin/users", label: "User" },
   { to: "/admin/disputes", label: "Sengketa" },
   { to: "/admin/audit", label: "Audit log" },
@@ -36,10 +39,13 @@ const brand = (
 
 export function Component() {
   return (
-    <div className="flex min-h-svh flex-col md:flex-row">
+    <div className="flex min-h-svh flex-col lg:flex-row">
       {/* Desktop: sidebar */}
-      <aside className="hidden w-60 shrink-0 border-r bg-sidebar md:block">
-        <div className="flex h-14 items-center border-b px-4">{brand}</div>
+      <aside className="hidden w-60 shrink-0 border-r bg-sidebar lg:block">
+        <div className="flex h-14 items-center justify-between border-b px-4">
+          {brand}
+          <NotificationBell />
+        </div>
         <nav className="flex flex-col gap-1 p-2">
           {menu.map((item) => (
             <MenuLink key={item.to} item={item} />
@@ -48,8 +54,11 @@ export function Component() {
       </aside>
 
       {/* Mobile: header + horizontally scrollable menu */}
-      <header className="border-b bg-sidebar md:hidden">
-        <div className="flex h-14 items-center px-4">{brand}</div>
+      <header className="border-b bg-sidebar lg:hidden">
+        <div className="flex h-14 items-center justify-between px-4">
+          {brand}
+          <NotificationBell />
+        </div>
         <nav className="flex gap-1 overflow-x-auto px-2 pb-2">
           {menu.map((item) => (
             <MenuLink key={item.to} item={item} />
