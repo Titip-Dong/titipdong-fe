@@ -4,9 +4,7 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -16,27 +14,21 @@ import type {
   QueryKey,
   UndefinedInitialDataOptions,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import type {
-  ErrorModel,
-  HealthStatus
-} from '../../model';
+import type { ErrorModel, HealthStatus } from "../../model";
 
-import { apiFetch } from '../../../client';
-
+import { apiFetch } from "../../../client";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-
 
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
   const result = { queryKey } as T & { queryKey: K };
   for (const key of Object.keys(query)) {
     // The explicit queryKey always wins, matching the previous
     // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
+    if (key === "queryKey") continue;
     Object.defineProperty(result, key, {
       enumerable: true,
       configurable: true,
@@ -47,102 +39,199 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
 };
 
 export const getHealthUrl = () => {
-
-
-
-
-  return `/health`
-}
+  return `/health`;
+};
 
 /**
- * @summary Liveness and readiness probe
+ * @summary Liveness probe
  */
-export const health = async ( options?: Parameters<typeof apiFetch>[1]): Promise<HealthStatus> => {
-
-  return apiFetch<HealthStatus>(getHealthUrl(),
-  {
+export const health = async (options?: Parameters<typeof apiFetch>[1]): Promise<HealthStatus> => {
+  return apiFetch<HealthStatus>(getHealthUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
+    method: "GET",
+  });
+};
 
 export const getHealthQueryKey = () => {
-    return [
-    `/health`
-    ] as const;
-    }
+  return [`/health`] as const;
+};
 
+export const getHealthQueryOptions = <
+  TData = Awaited<ReturnType<typeof health>>,
+  TError = ErrorModel,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-export const getHealthQueryOptions = <TData = Awaited<ReturnType<typeof health>>, TError = ErrorModel>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
-) => {
+  const queryKey = queryOptions?.queryKey ?? getHealthQueryKey();
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof health>>> = ({ signal }) =>
+    health({ signal, ...requestOptions });
 
-  const queryKey =  queryOptions?.queryKey ?? getHealthQueryKey();
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof health>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof health>>> = ({ signal }) => health({ signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type HealthQueryResult = NonNullable<Awaited<ReturnType<typeof health>>>
-export type HealthQueryError = ErrorModel
-
+export type HealthQueryResult = NonNullable<Awaited<ReturnType<typeof health>>>;
+export type HealthQueryError = ErrorModel;
 
 export function useHealth<TData = Awaited<ReturnType<typeof health>>, TError = ErrorModel>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>> & Pick<
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>> &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof health>>,
           TError,
           Awaited<ReturnType<typeof health>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useHealth<TData = Awaited<ReturnType<typeof health>>, TError = ErrorModel>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>> & Pick<
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>> &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof health>>,
           TError,
           Awaited<ReturnType<typeof health>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useHealth<TData = Awaited<ReturnType<typeof health>>, TError = ErrorModel>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Liveness and readiness probe
+ * @summary Liveness probe
  */
 
 export function useHealth<TData = Awaited<ReturnType<typeof health>>, TError = ErrorModel>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getHealthQueryOptions(options);
 
-  const queryOptions = getHealthQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
 
+export const getReadyUrl = () => {
+  return `/health/ready`;
+};
 
+/**
+ * @summary Readiness probe: the API can reach its database
+ */
+export const ready = async (options?: Parameters<typeof apiFetch>[1]): Promise<HealthStatus> => {
+  return apiFetch<HealthStatus>(getReadyUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
 
+export const getReadyQueryKey = () => {
+  return [`/health/ready`] as const;
+};
 
+export const getReadyQueryOptions = <
+  TData = Awaited<ReturnType<typeof ready>>,
+  TError = ErrorModel,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
+  const queryKey = queryOptions?.queryKey ?? getReadyQueryKey();
 
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof ready>>> = ({ signal }) =>
+    ready({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof ready>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ReadyQueryResult = NonNullable<Awaited<ReturnType<typeof ready>>>;
+export type ReadyQueryError = ErrorModel;
+
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ready>>,
+          TError,
+          Awaited<ReturnType<typeof ready>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof ready>>,
+          TError,
+          Awaited<ReturnType<typeof ready>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Readiness probe: the API can reach its database
+ */
+
+export function useReady<TData = Awaited<ReturnType<typeof ready>>, TError = ErrorModel>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof ready>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getReadyQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}

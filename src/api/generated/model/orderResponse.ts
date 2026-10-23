@@ -4,9 +4,9 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { OrderResponseStatus } from './orderResponseStatus';
-import type { Party } from './party';
-import type { TripRef } from './tripRef';
+import type { OrderResponseStatus } from "./orderResponseStatus";
+import type { Party } from "./party";
+import type { TripRef } from "./tripRef";
 
 export interface OrderResponse {
   buyer: Party;
@@ -18,6 +18,8 @@ export interface OrderResponse {
   jastiper: Party;
   notes: string;
   paymentDeadline?: string;
+  /** Short-lived signed URL of the product photo */
+  photoUrl?: string;
   productName: string;
   productUrl: string;
   quantity: number;

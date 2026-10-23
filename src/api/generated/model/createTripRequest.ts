@@ -6,24 +6,30 @@
  */
 
 export interface CreateTripRequest {
+  /**
+   * Items the jastiper can carry
+   * @minimum 1
+   * @maximum 1000
+   */
+  capacity: number;
   departsOn: string;
   /** @maxLength 2000 */
   description?: string;
   /**
-     * @minLength 1
-     * @maxLength 100
-     */
+   * @minLength 1
+   * @maxLength 100
+   */
   destinationCity: string;
   /**
-     * ISO 3166-1 alpha-2
-     * @pattern ^[A-Za-z]{2}$
-     */
+   * ISO 3166-1 alpha-2
+   * @pattern ^[A-Za-z]{2}$
+   */
   destinationCountry: string;
   requestDeadline: string;
   returnsOn: string;
   /**
-     * @minLength 1
-     * @maxLength 120
-     */
+   * @minLength 1
+   * @maxLength 120
+   */
   title: string;
 }

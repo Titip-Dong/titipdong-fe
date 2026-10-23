@@ -28,7 +28,7 @@ export function ProductTile({
     <Wrapper
       href={href}
       className={cn(
-        "group flex flex-col gap-2 rounded-2xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+        "group flex flex-col gap-2 rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
         className,
       )}
     >

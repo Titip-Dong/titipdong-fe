@@ -5,18 +5,17 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ListOrdersStatus = typeof ListOrdersStatus[keyof typeof ListOrdersStatus];
-
+export type ListOrdersStatus = (typeof ListOrdersStatus)[keyof typeof ListOrdersStatus];
 
 export const ListOrdersStatus = {
-  requested: 'requested',
-  approved: 'approved',
-  rejected: 'rejected',
-  cancelled: 'cancelled',
-  paid: 'paid',
-  shipped: 'shipped',
-  delivered: 'delivered',
-  disputed: 'disputed',
-  released: 'released',
-  refunded: 'refunded',
+  requested: "requested",
+  approved: "approved",
+  rejected: "rejected",
+  cancelled: "cancelled",
+  paid: "paid",
+  shipped: "shipped",
+  delivered: "delivered",
+  disputed: "disputed",
+  released: "released",
+  refunded: "refunded",
 } as const;

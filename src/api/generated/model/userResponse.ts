@@ -4,12 +4,15 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { UserResponseRole } from './userResponseRole';
+import type { UserResponseRole } from "./userResponseRole";
+import type { UserResponseStatus } from "./userResponseStatus";
 
 export interface UserResponse {
   createdAt: string;
   email: string;
   id: string;
   name: string;
+  phone?: string;
   role: UserResponseRole;
+  status: UserResponseStatus;
 }

@@ -4,11 +4,15 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { Jastiper } from './jastiper';
-import type { TripResponseStatus } from './tripResponseStatus';
+import type { CatalogPreview } from "./catalogPreview";
+import type { Jastiper } from "./jastiper";
+import type { TripResponseStatus } from "./tripResponseStatus";
 
 export interface TripResponse {
   acceptsRequests: boolean;
+  capacity: number;
+  /** Only in trip lists: the first catalog items and the item count */
+  catalogPreview?: CatalogPreview;
   createdAt: string;
   departsOn: string;
   description: string;
@@ -16,6 +20,7 @@ export interface TripResponse {
   destinationCountry: string;
   id: string;
   jastiper: Jastiper;
+  remainingCapacity: number;
   requestDeadline: string;
   returnsOn: string;
   slug: string;

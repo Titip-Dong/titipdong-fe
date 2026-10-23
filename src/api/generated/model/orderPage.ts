@@ -4,7 +4,7 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { OrderResponse } from './orderResponse';
+import type { OrderResponse } from "./orderResponse";
 
 export interface OrderPage {
   items: OrderResponse[];

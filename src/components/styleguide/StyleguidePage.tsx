@@ -8,6 +8,14 @@ import { ProductTile } from "@/components/ProductTile";
 import { Receipt, ReceiptPerforation, ReceiptSection } from "@/components/Receipt";
 import { formatDate, formatRupiah } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { ActionBar } from "@/components/ActionBar";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Deadline } from "@/components/Deadline";
+import { EscrowNote } from "@/components/EscrowNote";
+import { ImageUploadField } from "@/components/ImageUploadField";
+import { EmptyState, ErrorState, ListSkeleton } from "@/components/PageState";
+import { Titi, type TitiPose } from "@/components/Titi";
+import { PrimitivesShowcase } from "./PrimitivesShowcase";
 
 // Visual reference for the team. Only registered in the router during development.
 // Explanations are in English; example UI copy stays in Indonesian like the real app.
@@ -20,9 +28,26 @@ const palette = [
     role: "Brand color from the logo, primary actions, trust signals",
     swatch: "bg-primary",
   },
-  { name: "Tinta", hex: "#161616", role: "Body text", swatch: "bg-foreground" },
-  { name: "Kertas", hex: "#F7F6F4", role: "Page background", swatch: "bg-background" },
-  { name: "Garis", hex: "#E2DFDB", role: "Borders and dividers", swatch: "bg-border" },
+  { name: "Tinta", hex: "#161616", role: "Text, icons, Titi's face", swatch: "bg-foreground" },
+  {
+    name: "Kertas",
+    hex: "#FFFFFF",
+    role: "Page, cards, receipts, dialogs",
+    swatch: "bg-background",
+  },
+  { name: "Garis", hex: "#E6E6E6", role: "Borders and dividers", swatch: "bg-border" },
+  {
+    name: "Merah muda",
+    hex: "#FDECED",
+    role: "Soft brand surfaces: escrow notes, selected chips",
+    swatch: "bg-secondary",
+  },
+  {
+    name: "Abu",
+    hex: "#F4F4F4",
+    role: "Neutral quiet surfaces, final statuses",
+    swatch: "bg-muted",
+  },
   {
     name: "Rambu",
     hex: "#F5C400",
@@ -58,7 +83,7 @@ const trips = [
     jastiper: "Rina",
     depart: "2026-10-12",
     close: "2026-10-08",
-    leftKg: 6,
+    remaining: 6,
     items: ["Snail Mucin", "Masker Mediheal", "Tteokbokki instan"],
     more: 5,
   },
@@ -67,7 +92,7 @@ const trips = [
     jastiper: "Dimas",
     depart: "2026-10-20",
     close: "2026-10-15",
-    leftKg: 12,
+    remaining: 12,
     items: ["Tokyo Banana", "Onitsuka Tiger", "Pocky Matcha"],
     more: 9,
   },
@@ -76,13 +101,68 @@ const trips = [
     jastiper: "Sekar",
     depart: "2026-11-02",
     close: "2026-10-28",
-    leftKg: 1,
+    remaining: 1,
     items: ["Thai Tea Cha Tra Mue", "Balsem Tiger"],
     more: 0,
   },
 ];
 
 const tones = ["rambu", "paspor", "netral"] as const;
+
+const hoursFromNow = (hours: number) => new Date(Date.now() + hours * 3_600_000).toISOString();
+
+const typeScale = [
+  {
+    role: "Display",
+    classes: "text-4xl sm:text-5xl",
+    className: "font-heading text-4xl font-extrabold tracking-tight sm:text-5xl",
+    sample: "Mau nitip apa?",
+  },
+  {
+    role: "Page title",
+    classes: "h1",
+    className: "font-heading text-3xl font-extrabold tracking-tight sm:text-4xl",
+    sample: "Titipan dari Tokyo",
+  },
+  {
+    role: "Section",
+    classes: "h2",
+    className: "font-heading text-xl font-extrabold tracking-tight sm:text-2xl",
+    sample: "Barang populer minggu ini",
+  },
+  {
+    role: "Subsection",
+    classes: "h3",
+    className: "font-heading text-lg font-extrabold tracking-tight",
+    sample: "Rincian harga",
+  },
+  {
+    role: "Body",
+    classes: "text-base",
+    className: "max-w-prose",
+    sample: "Rina berangkat ke Seoul tanggal 12 Oktober dan masih bisa bawa 6 barang lagi.",
+  },
+  {
+    role: "Small",
+    classes: "text-sm",
+    className: "text-sm text-muted-foreground",
+    sample: "Titip sebelum 8 Oktober, ya.",
+  },
+  {
+    role: "Caption",
+    classes: "text-xs",
+    className: "text-xs text-muted-foreground",
+    sample: "Diperbarui 2 jam lalu",
+  },
+];
+
+const radii = [
+  { className: "rounded-md", use: "Buttons, chips" },
+  { className: "rounded-lg", use: "Inputs, list photos" },
+  { className: "rounded-xl", use: "Cards, receipts, dialogs" },
+  { className: "rounded-2xl", use: "Landing hero only" },
+  { className: "rounded-full", use: "Status badge, avatar" },
+];
 
 const heroItems = [
   { name: "Snail Mucin 96", city: "Seoul", price: 210_000, className: "-rotate-3" },
@@ -121,9 +201,28 @@ function Section({
   );
 }
 
+const titiPoses: { pose: TitiPose; label: string; use: string }[] = [
+  { pose: "menyapa", label: "Menyapa", use: "Landing, onboarding" },
+  { pose: "senang", label: "Senang", use: "Bayar sukses, barang diterima, dana cair" },
+  { pose: "bingung", label: "Bingung", use: "Empty state, pencarian kosong, 404" },
+  { pose: "menunggu", label: "Menunggu", use: "Menunggu persetujuan atau pembayaran" },
+  { pose: "khawatir", label: "Khawatir", use: "Error, sengketa" },
+  { pose: "tidur", label: "Tidur", use: "Trip yang sudah ditutup atau selesai" },
+];
+
+function SampleEmptyState() {
+  return (
+    <EmptyState
+      title="Belum ada titipan"
+      description="Cari jastiper yang lagi ke kota tujuan barang incaranmu, lalu titip dari halaman trip-nya."
+      action={{ label: "Cari trip", to: "#" }}
+    />
+  );
+}
+
 function Hero() {
   return (
-    <div className="overflow-hidden rounded-3xl bg-primary text-primary-foreground">
+    <div className="overflow-hidden rounded-2xl bg-primary text-primary-foreground">
       <div className="grid items-center gap-8 p-6 sm:p-10 md:grid-cols-[1.2fr_1fr]">
         <div className="space-y-5">
           <h3 className="text-4xl leading-[1.05] font-extrabold sm:text-5xl">
@@ -172,7 +271,7 @@ function Hero() {
             <div
               key={item.name}
               className={cn(
-                "space-y-2 rounded-2xl bg-card p-2.5 pb-3 text-foreground shadow-[0_1px_0_rgb(0_0_0/0.08)]",
+                "space-y-2 rounded-xl bg-card p-2.5 pb-3 text-foreground",
                 item.className,
               )}
             >
@@ -195,25 +294,68 @@ export function Component() {
       <header className="max-w-prose space-y-2">
         <h1 className="text-5xl font-extrabold">Visual guide</h1>
         <p className="text-muted-foreground">
-          Safe shopping through jastip: products are the star, trust signals are always visible.
-          Tokens live in <code>src/index.css</code>, shared components in{" "}
-          <code>src/components/</code>. Discuss changes with the team first, since they affect every
-          module.
+          Fun but simple, and flat. This page is the living version of <code>DESIGN.md</code>;
+          change both together, after the team agrees. Tokens live in <code>src/index.css</code>,
+          shared components in <code>src/components/</code>.
         </p>
       </header>
 
       <Section
         title="Hero landing page"
-        note="The only full-yellow surface. Do not repeat it on other pages."
+        note="The only full-red surface with white text and the only rounded-2xl container. Do not repeat it on other pages."
       >
         <Hero />
+      </Section>
+
+      <Section
+        title="Titi (mascot)"
+        note="Flat, at most one per screen, never in forms, tables, or admin. Animations stop when the device asks for reduced motion."
+      >
+        <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+          {titiPoses.map((p) => (
+            <li key={p.pose} className="flex flex-col items-center gap-2 text-center">
+              <Titi pose={p.pose} className="size-28 lg:size-36" />
+              <p className="font-medium">{p.label}</p>
+              <p className="text-sm text-muted-foreground">{p.use}</p>
+            </li>
+          ))}
+          <li className="flex flex-col items-center gap-2 text-center">
+            <div className="flex w-full justify-center rounded-lg bg-primary py-4">
+              <Titi pose="menyapa" inverted className="size-24 lg:size-28" />
+            </div>
+            <p className="font-medium">Varian terbalik</p>
+            <p className="text-sm text-muted-foreground">Di atas latar merah, misalnya hero</p>
+          </li>
+        </ul>
+      </Section>
+
+      <Section
+        title="Page states"
+        note="PageState adapts to its container: stacked when narrow, side by side when wide. Titi is decorative here."
+      >
+        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Narrow (360 px)</p>
+            <div className="w-full max-w-[360px]">
+              <SampleEmptyState />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Wide</p>
+            <SampleEmptyState />
+          </div>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ErrorState onRetry={() => undefined} />
+          <ListSkeleton />
+        </div>
       </Section>
 
       <Section title="Color">
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {palette.map((c) => (
             <li key={c.name} className="flex items-center gap-3">
-              <span className={`${c.swatch} size-12 shrink-0 rounded-xl border`} />
+              <span className={`${c.swatch} size-12 shrink-0 rounded-lg border`} />
               <div className="text-sm">
                 <p className="font-medium">
                   {c.name} <span className="text-muted-foreground tabular-nums">{c.hex}</span>
@@ -229,19 +371,37 @@ export function Component() {
         title="Typography"
         note="Plus Jakarta Sans throughout; headings extra-bold like the logo. Prices always use tabular-nums."
       >
-        <div className="space-y-3">
-          <p className="font-heading text-5xl font-extrabold tracking-tight">Titipan dari Tokyo</p>
-          <p className="font-heading text-3xl font-bold tracking-tight">
-            Barang populer minggu ini
-          </p>
-          <p className="font-heading text-xl font-semibold tracking-tight">Rincian harga</p>
-          <p className="max-w-prose">
-            Rina berangkat ke Seoul tanggal 12 Oktober dan masih punya sisa bagasi 6 kg. Titip
-            sebelum 8 Oktober, ya.
-          </p>
-          <p className="text-sm text-muted-foreground">Teks pendukung dan keterangan kecil.</p>
-          <p className="text-2xl font-semibold tabular-nums">{formatRupiah(1_250_000)}</p>
-        </div>
+        <dl className="space-y-4">
+          {typeScale.map((t) => (
+            <div key={t.role} className="grid gap-1 sm:grid-cols-[10rem_1fr] sm:items-baseline">
+              <dt className="text-sm text-muted-foreground">
+                {t.role} <code className="text-xs">{t.classes}</code>
+              </dt>
+              <dd className={t.className}>{t.sample}</dd>
+            </div>
+          ))}
+          <div className="grid gap-1 sm:grid-cols-[10rem_1fr] sm:items-baseline">
+            <dt className="text-sm text-muted-foreground">Money</dt>
+            <dd className="text-2xl font-semibold tabular-nums">{formatRupiah(1_250_000)}</dd>
+          </div>
+        </dl>
+      </Section>
+
+      <Section
+        title="Radius and surfaces"
+        note="Flat: borders and white on Kertas separate surfaces, no shadows except floating layers."
+      >
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+          {radii.map((r) => (
+            <li key={r.className} className="space-y-2 text-sm">
+              <div className={cn("h-16 border bg-card", r.className)} />
+              <p className="font-medium">
+                <code>{r.className}</code>
+              </p>
+              <p className="text-muted-foreground">{r.use}</p>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <Section
@@ -269,6 +429,49 @@ export function Component() {
       </Section>
 
       <Section
+        title="Primitives"
+        note="Every shadcn primitive in its TITIP DONG style. None of them may keep the library's stock look."
+      >
+        <PrimitivesShowcase />
+      </Section>
+
+      <Section
+        title="Confirmation and uploads"
+        note="Destructive or final actions confirm in a dialog that names the consequence. The photo field uploads right away (log in as a buyer to try it against the local backend)."
+      >
+        <ConfirmDialog
+          trigger={<Button variant="destructive">Batalkan titipan</Button>}
+          title="Batalkan titipan ini?"
+          description="Titipan yang dibatalkan tidak bisa dilanjutkan lagi. Kamu perlu membuat titipan baru."
+          confirmLabel="Batalkan titipan"
+          destructive
+          onConfirm={() => new Promise((resolve) => setTimeout(resolve, 600))}
+        />
+        <ImageUploadField
+          label="Foto barang (opsional)"
+          purpose="order_photo"
+          onChange={(id) => console.info("[styleguide] upload id", id)}
+        />
+      </Section>
+
+      <Section
+        title="Money, deadlines, and the action bar"
+        note="Every amount the user pays or receives gets an escrow note. Deadlines turn Rambu in the last 24 hours. On phones the main action sticks above the bottom navigation."
+      >
+        <div className="grid max-w-md gap-3">
+          <EscrowNote>
+            Uangmu ditahan TITIP DONG dan baru diteruskan ke Rina setelah barang kamu terima.
+          </EscrowNote>
+          <Deadline label="Bayar sebelum" at={hoursFromNow(5)} />
+          <Deadline label="Titip sebelum" at={hoursFromNow(24 * 4)} />
+        </div>
+        <ActionBar>
+          <Button variant="outline">Batalkan</Button>
+          <Button>Bayar sekarang</Button>
+        </ActionBar>
+      </Section>
+
+      <Section
         title="Product catalog"
         note="Product photo first. Catalog prices are estimates; the jastiper sets the final price."
       >
@@ -283,7 +486,7 @@ export function Component() {
         title="Trip list"
         note="Each trip shows what you can order from it, not just the schedule."
       >
-        <ul className="divide-y overflow-hidden rounded-2xl border bg-card">
+        <ul className="divide-y overflow-hidden rounded-xl border bg-card">
           {trips.map((t) => (
             <li key={t.city}>
               <a
@@ -317,12 +520,12 @@ export function Component() {
                 </div>
 
                 <div className="text-sm sm:w-28 sm:text-right">
-                  {t.leftKg <= 2 ? (
-                    <span className="rounded-full bg-highlight px-2 py-0.5 font-medium text-highlight-foreground">
-                      Sisa {t.leftKg} kg lagi
+                  {t.remaining <= 2 ? (
+                    <span className="rounded-md bg-highlight px-2 py-0.5 font-medium text-highlight-foreground">
+                      Tinggal {t.remaining} barang lagi
                     </span>
                   ) : (
-                    <span className="text-muted-foreground">Sisa bagasi {t.leftKg} kg</span>
+                    <span className="text-muted-foreground">Sisa {t.remaining} barang</span>
                   )}
                 </div>
               </a>

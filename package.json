@@ -17,7 +17,8 @@
     "typecheck": "tsc -b --noEmit",
     "api:pull": "curl -sf ${API_URL:-http://localhost:8080}/openapi.json -o openapi/openapi.json",
     "api:gen": "orval",
-    "api": "pnpm api:pull && pnpm api:gen"
+    "api": "pnpm api:pull && pnpm api:gen",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@tanstack/react-query-devtools": "^5.104.0",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",

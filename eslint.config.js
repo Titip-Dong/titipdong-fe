@@ -21,6 +21,11 @@ export default defineConfig([
     },
   },
   {
+    // Playwright fixtures call `use()`, which is not a React hook.
+    files: ["e2e/**/*.ts"],
+    rules: { "react-hooks/rules-of-hooks": "off" },
+  },
+  {
     // Cross-module rule: other modules may only be imported through their index.ts.
     // Inside a module's own folder, use relative imports (./components/...).
     files: ["src/**/*.{ts,tsx}"],

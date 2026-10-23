@@ -53,11 +53,11 @@ export async function apiFetch<T>(url: string, init: RequestInit = {}): Promise<
   };
 
   let res = await send();
-  if (res.status === 401 && (await refreshAccessToken())) {
-    res = await send();
-  }
   if (res.status === 401) {
-    useAuthStore.getState().clear();
+    // Only a failed refresh ends the session. A 401 after a successful refresh is a regular error
+    // (e.g. a wrong current password on PATCH /me) and goes to the caller.
+    if (await refreshAccessToken()) res = await send();
+    else useAuthStore.getState().clear();
   }
 
   const body = [204, 205, 304].includes(res.status)

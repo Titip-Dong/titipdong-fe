@@ -4,7 +4,7 @@
  * TITIP DONG API
  * OpenAPI spec version: 1.0.0
  */
-import type { TripResponse } from './tripResponse';
+import type { TripResponse } from "./tripResponse";
 
 export interface TripPage {
   items: TripResponse[];

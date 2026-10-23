@@ -5,10 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type RegisterRequestRole = typeof RegisterRequestRole[keyof typeof RegisterRequestRole];
-
+export type RegisterRequestRole = (typeof RegisterRequestRole)[keyof typeof RegisterRequestRole];
 
 export const RegisterRequestRole = {
-  buyer: 'buyer',
-  jastiper: 'jastiper',
+  buyer: "buyer",
+  jastiper: "jastiper",
 } as const;

@@ -5,12 +5,12 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type EventResponseActorType = typeof EventResponseActorType[keyof typeof EventResponseActorType];
-
+export type EventResponseActorType =
+  (typeof EventResponseActorType)[keyof typeof EventResponseActorType];
 
 export const EventResponseActorType = {
-  buyer: 'buyer',
-  jastiper: 'jastiper',
-  admin: 'admin',
-  system: 'system',
+  buyer: "buyer",
+  jastiper: "jastiper",
+  admin: "admin",
+  system: "system",
 } as const;

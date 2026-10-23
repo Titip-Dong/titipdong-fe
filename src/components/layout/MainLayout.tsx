@@ -1,15 +1,17 @@
 import { Outlet } from "react-router";
-import { Footer } from "./Footer";
+import { useAuthStore } from "@/stores/auth";
 import { Navbar } from "./Navbar";
+import { navItems } from "./navigation";
 
 export function MainLayout() {
+  const role = useAuthStore((s) => s.user?.role);
+
   return (
     <div className="flex min-h-svh flex-col">
-      <Navbar />
+      <Navbar items={role ? navItems[role] : undefined} />
       <main className="flex-1">
         <Outlet />
       </main>
-      <Footer />
     </div>
   );
 }

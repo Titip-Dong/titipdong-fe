@@ -6,6 +6,12 @@
  */
 
 export interface WalletResponse {
-  /** Whole rupiah */
+  /** Balance minus requested payouts: what can be requested now */
+  available: number;
+  /** Released earnings not paid out, whole rupiah */
   balance: number;
+  /** Totals of the jastiper's orders still held in escrow, before the 5% fee */
+  inEscrow: number;
+  /** Payouts requested and not yet decided */
+  pendingPayout: number;
 }

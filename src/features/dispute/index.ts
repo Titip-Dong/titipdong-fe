@@ -1,2 +1,2 @@
 // Public exports of this module. Other modules may only import from "@/features/dispute".
-export {};
+export { DisputeThread } from "./components/DisputeThread";

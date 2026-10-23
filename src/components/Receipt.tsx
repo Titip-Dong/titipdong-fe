@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
  */
 export function Receipt({ className, ...props }: React.ComponentProps<"section">) {
   return (
-    <section className={cn("overflow-hidden rounded-2xl border bg-card", className)} {...props} />
+    <section className={cn("overflow-hidden rounded-xl border bg-card", className)} {...props} />
   );
 }
 

@@ -49,6 +49,14 @@ export const router = createBrowserRouter([
               { path: "/my-trips", lazy: () => import("@/features/trip/pages/MyTripsPage") },
               { path: "/my-trips/new", lazy: () => import("@/features/trip/pages/TripFormPage") },
               {
+                path: "/my-trips/:slug",
+                lazy: () => import("@/features/trip/pages/ManageTripPage"),
+              },
+              {
+                path: "/my-trips/:slug/edit",
+                lazy: () => import("@/features/trip/pages/TripFormPage"),
+              },
+              {
                 path: "/my-trips/:id/requests",
                 lazy: () => import("@/features/order/pages/RequestInboxPage"),
               },
@@ -82,12 +90,18 @@ export const router = createBrowserRouter([
         lazy: () => import("@/features/admin/layout/AdminLayout"),
         children: [
           { index: true, lazy: () => import("@/features/admin/pages/DashboardPage") },
+          { path: "orders", lazy: () => import("@/features/admin/pages/OrdersPage") },
           { path: "transactions", lazy: () => import("@/features/admin/pages/TransactionsPage") },
+          { path: "payouts", lazy: () => import("@/features/admin/pages/PayoutsPage") },
           { path: "users", lazy: () => import("@/features/admin/pages/UsersPage") },
           { path: "audit", lazy: () => import("@/features/admin/pages/AuditLogPage") },
           {
             path: "disputes",
             lazy: () => import("@/features/dispute/pages/admin/DisputeListPage"),
+          },
+          {
+            path: "disputes/:id",
+            lazy: () => import("@/features/dispute/pages/admin/DisputeDetailPage"),
           },
         ],
       },

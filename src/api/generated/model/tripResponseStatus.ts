@@ -5,12 +5,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type TripResponseStatus = typeof TripResponseStatus[keyof typeof TripResponseStatus];
-
+export type TripResponseStatus = (typeof TripResponseStatus)[keyof typeof TripResponseStatus];
 
 export const TripResponseStatus = {
-  open: 'open',
-  closed: 'closed',
-  completed: 'completed',
-  cancelled: 'cancelled',
+  open: "open",
+  closed: "closed",
+  completed: "completed",
+  cancelled: "cancelled",
 } as const;

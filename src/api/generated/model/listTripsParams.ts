@@ -6,15 +6,23 @@
  */
 
 export type ListTripsParams = {
-/**
- * Destination city prefix, case-insensitive
- * @maxLength 100
- */
-city?: string;
-/**
- * @minimum 1
- * @maximum 100
- */
-limit?: number;
-cursor?: string;
+  /**
+   * Destination city prefix, case-insensitive
+   * @maxLength 100
+   */
+  city?: string;
+  /**
+   * Earliest departure date, inclusive
+   */
+  from?: string;
+  /**
+   * Latest departure date, inclusive
+   */
+  to?: string;
+  /**
+   * @minimum 1
+   * @maximum 100
+   */
+  limit?: number;
+  cursor?: string;
 };
