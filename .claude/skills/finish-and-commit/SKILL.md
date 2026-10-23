@@ -32,8 +32,8 @@ pnpm e2e             # when a user journey changed; needs the local backend (mak
 
 ### Branches
 
-- `main` is production (every push deploys to Azure Static Web Apps through
-  `.github/workflows/deploy-static-web-app.yml`); `dev` is integration.
+- `main` is production (every push deploys to the Azure Storage static website through
+  `.github/workflows/deploy-storage.yml`); `dev` is integration.
 - Cut branches from an up-to-date `dev`: `git switch dev && git pull --ff-only && git switch -c <branch>`.
 - Names: `feat/<module>-<description>` or `fix/<module>-<description>` (`feat/order-request-form`); shared work uses
   the area (`feat/design-system`, `chore/api-sync`). Never commit directly to `dev` or `main`.

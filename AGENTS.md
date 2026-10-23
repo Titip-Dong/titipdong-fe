@@ -39,7 +39,7 @@ Only the backend (Go, modular monolith) changes order status; background jobs in
 - TanStack Query v5 (server data), Zustand (client state only)
 - React Hook Form + **Zod v4** (`z.url()`, not `z.string().url()`)
 - orval: TanStack Query hooks, types, and Zod schemas generated from the backend OpenAPI spec
-- Internal mock payment flow for the prototype; hosting is Azure Static Web Apps (the backend runs on AKS)
+- Internal mock payment flow for the prototype; hosting is an Azure Storage static website (the backend runs on AKS)
 
 ## Commands
 
@@ -237,7 +237,7 @@ version. The essentials:
   No AI attribution (`Co-Authored-By`, "Generated with Claude Code"); commits belong to the local git identity.
   Details in `.claude/skills/finish-and-commit/SKILL.md`.
 - Finished branches are merged into `dev` directly (no PR), after local checks pass. `dev` is merged into `main` only
-  for a release; pushes to `main` deploy to Azure Static Web Apps (`.github/workflows/deploy-static-web-app.yml`).
+  for a release; pushes to `main` deploy to the Azure Storage static website (`.github/workflows/deploy-storage.yml`).
 
 ## Release readiness
 

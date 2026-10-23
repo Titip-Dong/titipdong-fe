@@ -1,0 +1,49 @@
+name: Deploy to Azure Storage static website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: titipdong-web-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm api:gen
+      - run: pnpm build
+
+      - name: Authenticate to Azure using OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Hashed assets first, then index.html with no-cache so browsers pick up new builds right away.
+      - name: Upload to the $web container
+        run: |
+          az storage blob upload-batch --auth-mode login --account-name "${{ vars.STORAGE_ACCOUNT }}" \
+            --destination '$web' --source dist --overwrite --pattern 'assets/*' \
+            --content-cache-control 'public, max-age=31536000, immutable' --only-show-errors
+          az storage blob upload-batch --auth-mode login --account-name "${{ vars.STORAGE_ACCOUNT }}" \
+            --destination '$web' --source dist --overwrite \
+            --content-cache-control 'no-cache' --only-show-errors

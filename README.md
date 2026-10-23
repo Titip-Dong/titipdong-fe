@@ -62,23 +62,20 @@ Each module lives in `src/features/<module>/`. Other modules may **only import f
 Every backend module (F01–F08) is done, so the generated hooks for the remaining pages already exist. Backend
 documentation per module lives in `titipdong-be/docs/features/`.
 
-## Deploy (Azure Static Web Apps)
+## Deploy (Azure Storage static website)
 
-The frontend is deployed as a static Vite application on Azure Static Web Apps. The backend runs on AKS
+The frontend is a static Vite build served from the `$web` container of the storage account `titipdongst20261023`
+(`https://titipdongst20261023.z45.web.core.windows.net`). Static Web Apps is not available in the regions the
+subscription allows. The backend runs on AKS behind Caddy at `https://titipdong-api.indonesiacentral.cloudapp.azure.com`
 (`titipdong-be/deploy/k8s/README.md`).
 
-- `.github/workflows/deploy-static-web-app.yml` runs on every push to `main`: it installs, regenerates the client,
-  builds with `VITE_API_URL`, and uploads `dist/` using the `AZURE_STATIC_WEB_APPS_API_TOKEN` secret.
-- `public/staticwebapp.config.json` configures the SPA fallback so deep links are served by `index.html`.
+- `.github/workflows/deploy-storage.yml` runs on every push to `main`: it installs, regenerates the client, builds
+  with the `VITE_API_URL` repository variable, signs in to Azure with OIDC (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`,
+  `AZURE_SUBSCRIPTION_ID` secrets), and uploads `dist/` to the `STORAGE_ACCOUNT` variable's `$web` container.
+- The static website's error document is `index.html`, so deep links load the app (with a 404 status).
 - The prototype uses the backend's fake payment gateway. It has no Midtrans/Snap client key or script URL.
 - Enable branch protection on `main` and require a green `check` status before merge.
 
-Before the deployed app can talk to the backend:
-
-1. The backend needs a public HTTPS Ingress. Its LoadBalancer endpoint is HTTP only, and browsers block HTTPS-to-HTTP
-   calls.
-2. Put the frontend and the API under custom domains of one parent domain (for example `app.titipdong.id` and
-   `api.titipdong.id`). The refresh cookie is `SameSite=Lax`, so with the frontend on `*.azurestaticapps.net` the
-   browser does not send it and users are signed out on every reload.
-3. Replace the placeholder `VITE_API_URL` (`https://api.titipdong.invalid`) in the deploy workflow with the API URL.
-4. Set the backend's `CORS_ORIGINS` (ConfigMap `titipdong-api-config`) to the frontend origin.
+Known limit: the frontend (`web.core.windows.net`) and the API (`cloudapp.azure.com`) are different sites, so the
+`SameSite=Lax` refresh cookie is not sent and users are signed out on reload. Putting both under one custom domain
+fixes it; then update `VITE_API_URL` and the backend's `CORS_ORIGINS` (ConfigMap `titipdong-api-config`).
